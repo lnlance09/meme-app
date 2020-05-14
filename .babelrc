@@ -1,0 +1,39 @@
+{
+	"presets": [
+		[
+			"next/babel",
+			{
+				"preset-env": {
+					"useBuiltIns": "usage",
+					"corejs": "3.6"
+				}
+			}
+		],
+	],
+	"plugins": [
+		[
+			"module-resolver",
+			{
+				"alias": {
+					"@actions": "./redux/actions",
+					"@actionTypes": "./actionTypes",
+					"@components": "./components",
+					"@dummy": "./dummy",
+					"@layout": "./layout",
+					"@modules": "./modules",
+					"@public": "./public",
+					"@reducers": "./redux/reducers",
+					"@static": "./static",
+					"@style": "./style",
+					"@store": "./store",
+					"@sagas": "./sagas"
+				}
+			}
+		]
+	],
+	"env": {
+		"test": {
+			"presets": [["@babel/preset-env", { "modules": false } ], "next/babel"]
+		}
+	}
+}
