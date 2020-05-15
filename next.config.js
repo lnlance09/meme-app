@@ -1,13 +1,7 @@
-const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
+const withImages = require("next-images")
 
-module.exports = (phase, { defaultConfig }) => {
-  if (phase === PHASE_DEVELOPMENT_SERVER) {
-	return {
-	  /* development only config options here */
+module.exports = withImages({
+	webpack(config, options) {
+		return config
 	}
-  }
-
-  return {
-	/* config options for all phases except development here */
-  }
-}
+})

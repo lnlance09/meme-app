@@ -1,0 +1,79 @@
+@import './colors.scss';
+
+@font-face {
+	font-family: AngryBirds;
+	src: url("../public/fonts/angrybirds-regular.ttf");
+}
+
+.pageHeader {
+    .menu.globalHeader {
+        background: $blue;
+        box-shadow: none;
+        height: 72px;
+        z-index: 1001 !important;
+
+        .headerContainer {
+            .responsive {
+                display: flex;
+                width: 100%;
+            }
+
+            .headerMenuItem {
+                margin-right: 0 !important;
+                
+                .headerLogo {
+                    cursor: pointer;
+                    height: 48px;
+                    line-height: 4;
+                    margin-right: 12px;
+                    vertical-align: middle;
+                    width: 48px;
+                }
+
+                a {
+                    color: $white;
+                    font-size: 15px !important;
+                    font-weight: bold !important;
+
+                    &.logoText {
+                        font-family: AngryBirds;
+                        font-size: 36px !important;
+                        letter-spacing: 2.5px;
+                    }
+                }
+            }
+
+            .sidebarItem {
+                .button {
+                    margin-right: 18px;
+                }
+
+                .icon {
+                    cursor: pointer;
+
+                    &:hover {
+                        color: $blue;
+                    }
+                }
+            }
+
+            .dropDownMenu {
+                .menu.visible {
+                    z-index: 1001;
+                }
+            }
+        }
+    }
+
+    .sidebar.menu {
+        padding-top: 135px;
+
+        .fallacySidebarItem {
+            text-align: left;
+        }
+
+        .sidebarSearchBtn {
+            margin-top: 8px;
+        }
+    }
+}

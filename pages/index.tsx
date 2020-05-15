@@ -1,7 +1,8 @@
-import Footer from '@components/footer'
-import Head from 'next/head'
-import Header from '@components/header'
-import React, { useState } from 'react'
+import { Container } from "semantic-ui-react"
+import Footer from "@components/footer"
+import Head from "next/head"
+import Header from "@components/header"
+import React, { useState } from "react"
 
 const Home: React.FunctionComponent = () => (
 	<div className="container">
@@ -12,7 +13,7 @@ const Home: React.FunctionComponent = () => (
 
 		<Header />
 
-		<main></main>
+		<Container className="mainContainer"></Container>
 
 		<Footer />
 	</div>

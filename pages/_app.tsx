@@ -1,8 +1,8 @@
-import 'semantic-ui-css/semantic.min.css'
-import '@style/style.scss'
-import { Provider } from 'react-redux'
-import { AppProps } from 'next/app'
-import store from '@store'
+import "semantic-ui-css/semantic.min.css"
+import "@style/style.scss"
+import { Provider } from "react-redux"
+import { AppProps } from "next/app"
+import store from "@store"
 
 const App = ({ Component, pageProps }: AppProps) => {
 	return (
