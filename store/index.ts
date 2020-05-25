@@ -9,9 +9,11 @@ const middleware = [thunk]
 const store = createStore(
 	rootReducer,
 	initialState,
-	compose(
-		applyMiddleware(...middleware, logger)
-	)
+	compose(applyMiddleware(...middleware, logger))
 )
+
+export const initializeStore = (preloadedState = initialState) => {
+	return createStore(rootReducer, preloadedState)
+}
 
 export default store

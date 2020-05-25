@@ -11,7 +11,7 @@ import {
 	Sidebar
 } from "semantic-ui-react"
 import Link from "next/link"
-import Logo from "@public/images/logos/bird-logo.svg"
+import Logo from "@public/images/logos/jackie-chan.svg"
 import PropTypes from "prop-types"
 import React, { useEffect, useState } from "react"
 import store from "@store"
@@ -72,11 +72,9 @@ const Header: React.FunctionComponent = (props) => {
 
 		return (
 			<Menu.Item className="signInLink" direction="right" position="right">
-				<Button
-					color="green"
-					content="Sign In"
-					onClick={() => props.history.push("/signin?type=join")}
-				/>
+				<Link href="/signin?type=join">
+					<Button color="violet" content="Sign In" />
+				</Link>
 			</Menu.Item>
 		)
 	}
@@ -84,6 +82,7 @@ const Header: React.FunctionComponent = (props) => {
 	return (
 		<Provider store={store}>
 			<div className="pageHeader">
+				<div className="rainbow" />
 				<Menu borderless className="globalHeader" fitted="vertically" fixed="top">
 					<Container className="headerContainer">
 						{/*
@@ -110,15 +109,17 @@ const Header: React.FunctionComponent = (props) => {
 							<Menu.Item className="headerMenuItem">
 								<Image className="headerLogo" src={Logo} />
 								<Link href="/">
-									<a className="logoText">Twizzly</a>
+									<a className="logoText">Brandy</a>
 								</Link>
 							</Menu.Item>
-							<Menu.Item className="headerMenuItem">
+							<Menu.Item className="headerMenuItem" style={{ marginLeft: "80px" }}>
+								<Icon color="blue" name="plus" />
 								<Link href="/create">
 									<a>Create</a>
 								</Link>
 							</Menu.Item>
 							<Menu.Item className="headerMenuItem">
+								<Icon color="blue" name="block layout" />
 								<Link href="/explore">
 									<a>Explore</a>
 								</Link>
@@ -142,7 +143,7 @@ const Header: React.FunctionComponent = (props) => {
 							content="Assign a fallacy"
 							fluid
 							icon="pencil"
-							onClick={() => this.props.history.push("/assign")}
+							onClick={() => props.history.push("/assign")}
 						/>
 					</Menu.Item>
 					{props.authenticated && <Menu.Item onClick={this.onLogout}>Sign Out</Menu.Item>}

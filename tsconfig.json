@@ -23,16 +23,17 @@
 	},
 	"paths": {
 		"@actions/*": ["redux/actions/*"],
-		"@actionTypes/*": ["actionTypes/*"],
 		"@components/*": ["components/*"],
 		"@layout/*": ["layout/*"],
+		"@lib/*": ["lib/*"],
 		"@modules/*": ["modules/*"],
+		"@options/*": ["options/*"],
 		"@public/*": ["public/*"],
 		"@reducers/*": ["redux/reducers/*"],
-		"@sagas/*": ["sagas/*"],
 		"@static/*": ["static/*"],
 		"@store/*": ["store/*"],
 		"@style": ["style/*"],
+		"@utils": ["utils/*"],
 		"@dummy/*": ["__dummy__/*"]
 	},
 	"exclude": [

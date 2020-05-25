@@ -16,17 +16,19 @@
 			{
 				"alias": {
 					"@actions": "./redux/actions",
-					"@actionTypes": "./actionTypes",
 					"@components": "./components",
 					"@dummy": "./dummy",
 					"@layout": "./layout",
+					"@lib": "./lib",
 					"@modules": "./modules",
+					"@options": "./options",
 					"@public": "./public",
 					"@reducers": "./redux/reducers",
 					"@static": "./static",
 					"@style": "./style",
 					"@store": "./store",
-					"@sagas": "./sagas"
+					"@sagas": "./sagas",
+					"@utils": "./utils"
 				}
 			}
 		]

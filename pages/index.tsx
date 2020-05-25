@@ -1,22 +1,38 @@
 import { Container } from "semantic-ui-react"
+import { Provider, connect } from "react-redux"
 import Footer from "@components/footer"
 import Head from "next/head"
 import Header from "@components/header"
-import React, { useState } from "react"
+import PropTypes from "prop-types"
+import React, { Fragment, useCallback, useEffect, useState } from "react"
+import store from "@store"
 
-const Home: React.FunctionComponent = () => (
-	<div className="container">
-		<Head>
-			<title>Create Next App</title>
-			<link rel="icon" href="/favicon.ico" />
-		</Head>
+const Home: React.FunctionComponent = (props) => {
+	return (
+		<Provider store={store}>
+			<div className="homePage">
+				<Head>
+					<title>Home - Brandy</title>
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
 
-		<Header />
+				<Header />
 
-		<Container className="mainContainer"></Container>
+				<Container className="mainContainer"></Container>
 
-		<Footer />
-	</div>
-)
+				<Footer />
+			</div>
+		</Provider>
+	)
+}
 
-export default Home
+Home.propTypes = {}
+
+Home.defaultProps = {}
+
+const mapStateToProps = (state: any, ownProps: any) => ({
+	...state.meme,
+	...ownProps
+})
+
+export default connect(mapStateToProps, {})(Home)
