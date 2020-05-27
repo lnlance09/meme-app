@@ -1,16 +1,14 @@
 import { createMeme } from "@actions/meme"
-import { Button, Container, Divider, Grid, Image, Segment } from "semantic-ui-react"
+import { toDataURL } from "@utils/imageFunctions"
+import { Button, Divider, Grid } from "semantic-ui-react"
 import { Provider, connect } from "react-redux"
-import BlankImg from "@public/images/blank.png"
-import Draggable from "react-draggable"
-import Head from "next/head"
-import Header from "@components/header"
+import DefaultLayout from "@layouts/default"
 import html2canvas from "html2canvas"
-import ImgBox from "@components/imgBox"
+import MemeConfig from "@components/memeConfig"
+import MemeImages from "@components/memeImages"
 import PropTypes from "prop-types"
-import React, { Fragment, useCallback, useEffect, useState } from "react"
+import React, { useState } from "react"
 import store from "@store"
-import TextBox from "@components/textBox"
 
 const Create: React.FunctionComponent = (props) => {
 	let [images, setImages] = useState(props.images)
@@ -70,12 +68,6 @@ const Create: React.FunctionComponent = (props) => {
 	const changeColor = (imgIndex, textIndex, value) => {
 		let newImages = [...images]
 		newImages[imgIndex].texts[textIndex].color = value.hex
-		setImages(newImages)
-	}
-
-	const changeImgUrl = (imgIndex, value) => {
-		let newImages = [...images]
-		newImages[imgIndex].img = value
 		setImages(newImages)
 	}
 
@@ -151,130 +143,81 @@ const Create: React.FunctionComponent = (props) => {
 		setImages(newImages)
 	}
 
+	const onFileUpload = (base64, img, imgIndex) => {
+		let newImages = [...images]
+		newImages[imgIndex].base64 = base64
+		newImages[imgIndex].img = img
+		setImages(newImages)
+	}
+
+	const onKeyUp = (e, imgIndex) => {
+		if (e.keyCode === 8) {
+			let newImages = [...images]
+			newImages[imgIndex].img = ""
+			setImages(newImages)
+		}
+	}
+
+	const onPaste = (e, imgIndex) => {
+		const url = e.clipboardData.getData("Text")
+		const base64 = ""
+		let newImages = [...images]
+		newImages[imgIndex].base64 = base64
+		newImages[imgIndex].img = url
+		setImages(newImages)
+	}
+
 	console.log("images")
 	console.log(images)
 
 	return (
 		<Provider store={store}>
-			<div className="createPage">
-				<Head>
-					<title>Create a meme - Brandy</title>
-					<link rel="icon" href="/favicon.ico" />
-				</Head>
+			<DefaultLayout
+				seo={{
+					description: "",
+					image: {
+						height: 200,
+						src: "",
+						width: 200
+					},
+					title: "",
+					url: ""
+				}}
+			>
+				<Grid>
+					<Grid.Row>
+						<Grid.Column width={10}>
+							<MemeImages
+								clickImg={clickImg}
+								handleDrag={handleDrag}
+								handleDragStart={handleDragStart}
+								handleDragStop={handleDragStop}
+								images={images}
+							/>
+						</Grid.Column>
+						<Grid.Column width={6}>
+							<MemeConfig
+								addMoreText={addMoreText}
+								changeColor={changeColor}
+								changeFont={changeFont}
+								changeFontSize={changeFontSize}
+								changeText={changeText}
+								images={images}
+								onFileUpload={onFileUpload}
+								onKeyUp={onKeyUp}
+								onPaste={onPaste}
+							/>
+							<p className="addAnotherImage">
+								<span onClick={addMoreImage}>Add another image</span>
+							</p>
+						</Grid.Column>
+					</Grid.Row>
+				</Grid>
 
-				<Header />
+				<Divider section />
 
-				<Container className="mainContainer">
-					<Grid>
-						<Grid.Row>
-							<Grid.Column width={10}>
-								<div id="memeContainer">
-									{images.map((_img, i) => {
-										const { active, img, texts } = _img
-										return (
-											<div
-												className="draggableWrapper"
-												key={`draggableWrapper${i}`}
-											>
-												{texts.map((text, x) => (
-													<Draggable
-														bounds="parent"
-														handle=".memeText"
-														key={`draggable${x}`}
-														onDrag={(e, ui) => handleDrag(i, x, e, ui)}
-														onStart={() => handleDragStart(i, x)}
-														onStop={() => handleDragStop(i, x)}
-													>
-														<div
-															className="memeText"
-															style={{
-																color: text.color,
-																fontFamily: text.font,
-																fontSize: `${text.size}px`,
-																top: `${text.y}px`
-															}}
-														>
-															{text.text}
-														</div>
-													</Draggable>
-												))}
-												<Image
-													className={`memeImg ${active ? "active" : ""}`}
-													inline
-													onClick={() => clickImg(i)}
-													onError={(i) => (i.target.src = BlankImg)}
-													src={img === "" ? "/images/blank.png" : img}
-												/>
-											</div>
-										)
-									})}
-								</div>
-							</Grid.Column>
-							<Grid.Column width={6}>
-								{images.map((_img, i) => {
-									const { active, img, texts } = _img
-									if (active) {
-										return (
-											<Segment key={`textSegment${i}`} stacked>
-												<ImgBox
-													changeImgUrl={changeImgUrl}
-													imgIndex={i}
-													imgUrl={img}
-												/>
-												<Divider horizontal>Text 1</Divider>
-												{texts.map((text, x) => (
-													<Fragment key={`textFragment${x}`}>
-														<TextBox
-															changeColor={changeColor}
-															changeFont={changeFont}
-															changeFontSize={changeFontSize}
-															changeText={changeText}
-															color={text.color}
-															font={text.font}
-															fontSize={text.size}
-															imgIndex={i}
-															text={text.text}
-															textIndex={x}
-														/>
-														{x === texts.length - 1 ? (
-															<Divider />
-														) : (
-															<Divider horizontal>
-																Text {x + 2}
-															</Divider>
-														)}
-													</Fragment>
-												))}
-												<Button
-													color="black"
-													content="Add more text"
-													fluid
-													onClick={() => addMoreText(i)}
-												/>
-											</Segment>
-										)
-									}
-
-									return null
-								})}
-								<p className="addAnotherImage">
-									<span onClick={addMoreImage}>Add another image</span>
-								</p>
-							</Grid.Column>
-						</Grid.Row>
-					</Grid>
-
-					<Divider section />
-
-					<Button
-						color="blue"
-						content="Create a meme"
-						fluid
-						onClick={createMeme}
-						size="big"
-					/>
-				</Container>
-			</div>
+				<Button color="blue" content="CREATE" fluid onClick={createMeme} size="big" />
+			</DefaultLayout>
 		</Provider>
 	)
 }

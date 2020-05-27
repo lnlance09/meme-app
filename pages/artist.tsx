@@ -5,11 +5,11 @@ import PropTypes from "prop-types"
 import React from "react"
 import store from "@store"
 
-const Home: React.FunctionComponent = (props) => {
+const Artist: React.FunctionComponent = (props) => {
 	return (
 		<Provider store={store}>
 			<DefaultLayout
-				containerClassName="homePage"
+				containerClassName="memePage"
 				seo={{
 					description: "",
 					image: {
@@ -31,13 +31,13 @@ const Home: React.FunctionComponent = (props) => {
 	)
 }
 
-Home.propTypes = {}
+Artist.propTypes = {}
 
-Home.defaultProps = {}
+Artist.defaultProps = {}
 
 const mapStateToProps = (state: any, ownProps: any) => ({
-	...state.meme,
+	...state.user,
 	...ownProps
 })
 
-export default connect(mapStateToProps, {})(Home)
+export default connect(mapStateToProps, {})(Artist)

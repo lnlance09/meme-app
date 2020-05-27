@@ -22,6 +22,7 @@
     .menu.globalHeader {
         background: $white;
         border-bottom: dotted 2px $lightGrey;
+        // border-bottom: none;
         box-shadow: none;
         height: 72px;
         margin-top: 5px;
@@ -48,12 +49,14 @@
                     color: $black;
                     font-size: 15px !important;
                     font-weight: bold !important;
+                    margin-left: 18px;
 
                     &.logoText {
                         color: $black;
                         font-weight: normal;
                         font-family: 'Ubuntu Condensed', sans-serif;
                         font-size: 36px !important;
+                        margin: 0;
                         position: relative;
                     }
                 }

@@ -1,38 +1,55 @@
-import { Button, Divider, Input } from "semantic-ui-react"
+import { Button, Grid, Input } from "semantic-ui-react"
 import { useDropzone } from "react-dropzone"
 import PropTypes from "prop-types"
 import React, { useCallback, useEffect, useState } from "react"
 
 const ImgBox: React.FunctionComponent = (props) => {
-	const { changeImgUrl, imgIndex, imgUrl } = props
+	const { imgIndex, imgUrl, onFileUpload, onKeyUp, onPaste } = props
 
 	useEffect(() => {}, [])
 
-	const onDrop = useCallback((acceptedFiles) => {}, [])
+	const onDrop = useCallback((files) => {
+		const file = files[0]
+		const reader = new FileReader()
+		const base64 = reader.readAsDataURL(file)
+		reader.onload = () => {
+			const img = reader.result
+			onFileUpload(base64, img, imgIndex)
+		}
+	}, [])
 
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
 	return (
-		<div className="textBox">
-			<Input
-				fluid
-				icon="paperclip"
-				onChange={(e, { value }) => changeImgUrl(imgIndex, value)}
-				placeholder="Image URL"
-				value={imgUrl}
-			/>
-			<Divider horizontal>or</Divider>
-			<div {...getRootProps()}>
-				<input {...getInputProps()} />
-				<Button color="green" content="Upload" fluid />
-			</div>
+		<div className="imgBox">
+			<Grid columns={2}>
+				<Grid.Column style={{ paddingRight: 0 }} width={13}>
+					<Input
+						fluid
+						icon="paperclip"
+						onKeyUp={(e) => onKeyUp(e, imgIndex)}
+						onPaste={(e) => onPaste(e, imgIndex)}
+						placeholder="Image URL"
+						value={imgUrl}
+					/>
+				</Grid.Column>
+				<Grid.Column width={3}>
+					<div {...getRootProps()}>
+						<input {...getInputProps()} />
+						<Button color="blue" icon="upload" fluid />
+					</div>
+				</Grid.Column>
+			</Grid>
 		</div>
 	)
 }
 
 ImgBox.propTypes = {
-	changeImgUrl: PropTypes.func,
-	imgUrl: PropTypes.string
+	imgUrl: PropTypes.string,
+	imgIndex: PropTypes.number,
+	onFileUpload: PropTypes.func,
+	onKeyUp: PropTypes.func,
+	onPaste: PropTypes.func
 }
 
 ImgBox.defaultProps = {}

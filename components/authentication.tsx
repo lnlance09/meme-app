@@ -1,20 +1,5 @@
-import {
-	submitLoginForm,
-	submitRegistrationForm,
-	twitterRequestToken,
-	verifyEmail
-} from "@actions/authentication"
-import {
-	Button,
-	Divider,
-	Form,
-	Header,
-	Icon,
-	Input,
-	Label,
-	Message,
-	Segment
-} from "semantic-ui-react"
+import { submitLoginForm, submitRegistrationForm, verifyEmail } from "@actions/authentication"
+import { Button, Form, Header, Icon, Input, Message, Segment } from "semantic-ui-react"
 import { Provider, connect } from "react-redux"
 import PropTypes from "prop-types"
 import React, { useCallback, useEffect, useState } from "react"
@@ -36,9 +21,11 @@ const Authentication: React.FunctionComponent = (props) => {
 	const [verify, setVerify] = useState(false)
 
 	useEffect(() => {
+		/*
 		props.twitterRequestToken({
 			reset: true
 		})
+		*/
 	}, [])
 
 	const toggleLogin = useCallback(() => {
@@ -79,7 +66,7 @@ const Authentication: React.FunctionComponent = (props) => {
 		[email, password]
 	)
 
-	const submitRegistrationForm = useCallback(() => {
+	const submitRegistrationForm = () => {
 		setLoadingRegistration(true)
 		props.submitRegistrationForm({
 			email: regEmail,
@@ -87,23 +74,21 @@ const Authentication: React.FunctionComponent = (props) => {
 			password: regPassword,
 			username
 		})
-	}, [])
+	}
 
 	const EmailVerificationForm = () => {
 		if (props.verify) {
 			return (
-				<div>
-					<Form onSubmit={submitEmailVerificationForm}>
-						<Form.Field>
-							<Input
-								onChange={setVerificationCode}
-								placeholder="Verification code"
-								value={verificationCode}
-							/>
-						</Form.Field>
-						<Button color="green" content="Verify" fluid type="submit" />
-					</Form>
-				</div>
+				<Form onSubmit={submitEmailVerificationForm}>
+					<Form.Field>
+						<Input
+							onChange={setVerificationCode}
+							placeholder="Verification code"
+							value={verificationCode}
+						/>
+					</Form.Field>
+					<Button color="green" content="Verify" fluid type="submit" />
+				</Form>
 			)
 		}
 
@@ -126,12 +111,12 @@ const Authentication: React.FunctionComponent = (props) => {
 	const InfoBox = () => {
 		if (!props.verify) {
 			return (
-				<Label attached="bottom" className="registerText">
+				<p className="registerText">
 					{RegisterText()}{" "}
 					<span className="registerLink" onClick={() => toggleLogin()}>
 						{RegisterButton()}
 					</span>
-				</Label>
+				</p>
 			)
 		}
 
@@ -141,7 +126,7 @@ const Authentication: React.FunctionComponent = (props) => {
 	const MainForm = () => {
 		if (login && !props.verify) {
 			return (
-				<Form loading={loadingLogin && !props.loginError}>
+				<Form loading={loadingLogin && !props.loginError} size="big">
 					<Form.Field>
 						<Input
 							onChange={(e, { value }) => {
@@ -167,6 +152,7 @@ const Authentication: React.FunctionComponent = (props) => {
 							content="Sign in"
 							fluid
 							onClick={submitLoginForm}
+							size="big"
 							type="submit"
 						/>
 					</Form.Field>
@@ -176,7 +162,7 @@ const Authentication: React.FunctionComponent = (props) => {
 
 		if (!login && !props.verify) {
 			return (
-				<Form loading={loadingRegistration && !props.loginError}>
+				<Form loading={loadingRegistration && !props.loginError} size="big">
 					<Form.Field>
 						<Input
 							onChange={(e, { value }) => {
@@ -221,6 +207,7 @@ const Authentication: React.FunctionComponent = (props) => {
 							content="Create an account"
 							fluid
 							onClick={submitRegistrationForm}
+							size="big"
 							type="submit"
 						/>
 					</Form.Field>
@@ -231,32 +218,20 @@ const Authentication: React.FunctionComponent = (props) => {
 
 	const RegisterButton = () => (login ? "Create an account" : "Sign in")
 
-	const RegisterText = () => (login ? "New to Blather?" : "Already have an account?")
-
-	const TwitterLogin = (
-		<Button
-			className="twitterBtn"
-			color="twitter"
-			fluid
-			onClick={redirectToUrl(props.data.twitterUrl)}
-		>
-			<Icon name="twitter" /> {login ? "Sign in" : "Sign up"} with Twitter
-		</Button>
-	)
+	const RegisterText = () => (login ? "New to Brandy?" : "Already have an account?")
 
 	return (
 		<Provider store={store}>
 			<div className="authComponent">
-				<Header as="h1">{HeaderText()}</Header>
+				<Header as="h1" size="huge">
+					{HeaderText()}
+				</Header>
 				<Segment>
 					{MainForm()}
-					{ErrorMsg()}
 					{EmailVerificationForm()}
-					<Divider />
-					{InfoBox()}
+					{ErrorMsg()}
 				</Segment>
-				<Divider horizontal>Or</Divider>
-				<Segment>{TwitterLogin}</Segment>
+				{InfoBox()}
 			</div>
 		</Provider>
 	)
@@ -272,13 +247,6 @@ Authentication.propTypes = {
 		name: PropTypes.string,
 		id: PropTypes.string,
 		img: PropTypes.string,
-		linkedTwitter: PropTypes.bool,
-		twitterAccessToken: PropTypes.string,
-		twitterAccessSecret: PropTypes.string,
-		twitterDate: PropTypes.string,
-		twitterId: PropTypes.string,
-		twitterUrl: PropTypes.string,
-		twitterUsername: PropTypes.string,
 		username: PropTypes.string
 	}),
 	loadingLogin: PropTypes.bool,
@@ -307,6 +275,5 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 export default connect(mapStateToProps, {
 	submitLoginForm,
 	submitRegistrationForm,
-	twitterRequestToken,
 	verifyEmail
 })(Authentication)

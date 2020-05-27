@@ -19,11 +19,35 @@ body {
 	min-height: 100vh;
 	margin-top: 5.5em;
 	padding: 20px 15px;
+
+	&.homePage {
+		width: 100%;
+		padding: 0;
+
+		.homePageHeroImage {
+			background-image: url("../public/images/isometric/02.svg");
+			background-repeat: no-repeat;
+			background-size: cover;
+			height: 250px;
+			position: relative;
+			width: 100%;
+		}
+
+		.heroHeader {
+			color: $white;
+			font-size: 64px;
+			margin: 0;
+			position: relative;
+			text-shadow: 2px 2px $yellow;
+			top: 50%;
+			transform: translateY(-50%);
+			-ms-transform: translateY(-50%);
+		}
+	}
 }
 
 .draggableWrapper {
 	position: relative;
-
 
 	.memeImg {
 		// border: solid 4px $white;
@@ -77,6 +101,7 @@ body {
 }
 
 .addAnotherImage {
+	margin-top: 10px;
 	text-align: center;
 
 	span {
@@ -87,4 +112,8 @@ body {
 			text-decoration: underline;;
 		}
 	}
+}
+
+.signInPage {
+	margin-top: 0;
 }

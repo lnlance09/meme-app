@@ -1,10 +1,10 @@
 import * as constants from "../constants"
-import update from "react-addons-update"
 
 const initial = () => ({
 	images: [
 		{
 			active: true,
+			base64: "",
 			img: "",
 			texts: [
 				{

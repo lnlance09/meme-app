@@ -24,9 +24,9 @@
 	"paths": {
 		"@actions/*": ["redux/actions/*"],
 		"@components/*": ["components/*"],
-		"@layout/*": ["layout/*"],
+		"@layouts/*": ["layouts/*"],
 		"@lib/*": ["lib/*"],
-		"@modules/*": ["modules/*"],
+		"@models/*": ["models/*"],
 		"@options/*": ["options/*"],
 		"@public/*": ["public/*"],
 		"@reducers/*": ["redux/reducers/*"],

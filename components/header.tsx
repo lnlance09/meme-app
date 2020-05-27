@@ -13,7 +13,7 @@ import {
 import Link from "next/link"
 import Logo from "@public/images/logos/jackie-chan.svg"
 import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
+import React, { Fragment, useState } from "react"
 import store from "@store"
 
 const Header: React.FunctionComponent = (props) => {
@@ -83,88 +83,102 @@ const Header: React.FunctionComponent = (props) => {
 		<Provider store={store}>
 			<div className="pageHeader">
 				<div className="rainbow" />
-				<Menu borderless className="globalHeader" fitted="vertically" fixed="top">
-					<Container className="headerContainer">
-						{/*
-						<Responsive className="responsive" maxWidth={1024}>
-							<Menu.Item className="headerMenuItem"></Menu.Item>
-							<Menu.Item className="sidebarItem" position="right">
-								{!props.authenticated && (
-									<Button
-										color="red"
-										compact
-										content="Sign In"
-										onClick={() => props.history.push("/signin")}
-									/>
-								)}
-								<Icon
-									name="sidebar"
-									onClick={() => toggleVisibility(!visible)}
-									size="large"
+				{props.basic ? (
+					<Container className="headerContainer" textAlign="center">
+						<Link href="/">
+							<a>
+								<Image className="headerLogo" inline src={Logo} />
+							</a>
+						</Link>
+					</Container>
+				) : (
+					<Fragment>
+						<Menu borderless className="globalHeader" fitted="vertically" fixed="top">
+							<Container className="headerContainer">
+								{/*
+								<Responsive className="responsive" maxWidth={1024}>
+									<Menu.Item className="headerMenuItem"></Menu.Item>
+									<Menu.Item className="sidebarItem" position="right">
+										{!props.authenticated && (
+											<Button
+												color="red"
+												compact
+												content="Sign In"
+												onClick={() => props.history.push("/signin")}
+											/>
+										)}
+										<Icon
+											name="sidebar"
+											onClick={() => toggleVisibility(!visible)}
+											size="large"
+										/>
+									</Menu.Item>
+								</Responsive>
+								*/}
+								<Responsive className="responsive" minWidth={1025}>
+									<Menu.Item className="headerMenuItem">
+										<Image className="headerLogo" src={Logo} />
+										<Link href="/">
+											<a className="logoText">Brandy</a>
+										</Link>
+									</Menu.Item>
+									<Menu.Item className="headerMenuItem">
+										<Link href="/create">
+											<a>Create</a>
+										</Link>
+									</Menu.Item>
+									<Menu.Item className="headerMenuItem">
+										<Link href="/explore">
+											<a>Explore</a>
+										</Link>
+									</Menu.Item>
+									{LoginButton()}
+								</Responsive>
+							</Container>
+						</Menu>
+
+						<Sidebar
+							as={Menu}
+							animation="overlay"
+							icon="labeled"
+							vertical
+							visible={visible}
+							width="wide"
+						>
+							<Menu.Item>
+								<Button
+									color="blue"
+									content="Assign a fallacy"
+									fluid
+									icon="pencil"
+									onClick={() => props.history.push("/assign")}
 								/>
 							</Menu.Item>
-						</Responsive>
-						*/}
-						<Responsive className="responsive" minWidth={1025}>
-							<Menu.Item className="headerMenuItem">
-								<Image className="headerLogo" src={Logo} />
-								<Link href="/">
-									<a className="logoText">Brandy</a>
-								</Link>
-							</Menu.Item>
-							<Menu.Item className="headerMenuItem" style={{ marginLeft: "80px" }}>
-								<Icon color="blue" name="plus" />
-								<Link href="/create">
-									<a>Create</a>
-								</Link>
-							</Menu.Item>
-							<Menu.Item className="headerMenuItem">
-								<Icon color="blue" name="block layout" />
-								<Link href="/explore">
-									<a>Explore</a>
-								</Link>
-							</Menu.Item>
-							{LoginButton()}
-						</Responsive>
-					</Container>
-				</Menu>
-
-				<Sidebar
-					as={Menu}
-					animation="overlay"
-					icon="labeled"
-					vertical
-					visible={visible}
-					width="wide"
-				>
-					<Menu.Item>
-						<Button
-							color="blue"
-							content="Assign a fallacy"
-							fluid
-							icon="pencil"
-							onClick={() => props.history.push("/assign")}
-						/>
-					</Menu.Item>
-					{props.authenticated && <Menu.Item onClick={this.onLogout}>Sign Out</Menu.Item>}
-				</Sidebar>
+							{props.authenticated && (
+								<Menu.Item onClick={this.onLogout}>Sign Out</Menu.Item>
+							)}
+						</Sidebar>
+					</Fragment>
+				)}
 			</div>
 		</Provider>
 	)
 }
 
-Header.defaultProps = {
-	authenticated: false,
-	logout
-}
-
 Header.propTypes = {
 	authenticated: PropTypes.bool,
+	basic: PropTypes.bool,
 	logout: PropTypes.func
 }
 
+Header.defaultProps = {
+	authenticated: false,
+	basic: false,
+	logout
+}
+
 const mapStateToProps = (state: any, ownProps: any) => ({
-	...state.user,
+	...state.authentication,
 	...ownProps
 })
 

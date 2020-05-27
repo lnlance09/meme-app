@@ -1,38 +1,52 @@
 import * as constants from "../constants"
 import { parseJwt, setToken } from "@utils/tokenFunctions"
 import jwt from "jsonwebtoken"
-import request from "axios"
+import axios from "axios"
 
 export const changePassword = ({ bearer, confirmPassword, newPassword, password }) => (
 	dispatch
 ) => {
-	request.post(
-		`${constants.API_URL}users/changePassword`,
-		{
-			form: {
-				current_password: password,
-				new_password: newPassword,
-				confirm_password: confirmPassword
-			},
-			headers: {
-				Authorization: bearer
-			},
-			json: true
-		},
-		function (err, response, body) {
+	axios
+		.post("/api/user/changePassword", {
+			confirmPassword,
+			password,
+			newPassword
+		})
+		.then((response) => {
+			console.log(response)
 			dispatch({
-				payload: body,
+				payload: response,
 				type: constants.CHANGE_PASSWORD
 			})
-		}
-	)
+		})
+		.catch((error) => {
+			console.log(error)
+		})
 }
 
 export const changeProfilePic = ({ bearer, file }) => (dispatch) => {
 	const fr = new FileReader()
 	fr.onload = (event) => {
+		axios
+			.post("/api/user/changeProfilePic", {
+				confirmPassword,
+				password,
+				newPassword
+			})
+			.then((response) => {
+				console.log(response)
+				dispatch({
+					payload: response,
+					type: constants.CHANGE_PASSWORD
+				})
+			})
+			.catch((error) => {
+				console.log(error)
+			})
+
+		/*
 		request.post(
-			`${constants.API_URL}users/changeProfilePic`,
+			"/api/user/changeProfilePic",
 			{
 				headers: {
 					Authorization: bearer,
@@ -64,96 +78,16 @@ export const changeProfilePic = ({ bearer, file }) => (dispatch) => {
 				})
 			}
 		)
+		*/
 	}
 	fr.readAsArrayBuffer(file)
 }
 
-/*
-export const linkTwitter = ({ bearer, secret, token, verifier }) => (dispatch) => {
-	request.post(
-		`${window.location.origin}/api/twitter/getCredentials`,
-		{
-			form: {
-				oauth_token: token,
-				oauth_verifier: verifier
-			},
-			headers: {
-				Authorization: bearer
-			},
-			json: true
-		},
-		function (err, response, body) {
-			if (!body.error) {
-				let token = ""
-				if (bearer) {
-					let localData = parseJwt()
-					localData.twitterAccessSecret = body.user.twitterAccessSecret
-					localData.twitterAccessToken = body.user.twitterAccessToken
-					localData.twitterUrl = body.user.twitterUrl
-					if (body.user.linkedTwitter) {
-						localData.linkedTwitter = 1
-						localData.twitterDate = body.user.twitterDate
-						localData.twitterId = body.user.twitterId
-						localData.twitterUsername = body.user.twitterUsername
-					}
-					token = setToken(localData)
-					body.bearer = token
-
-					dispatch({
-						payload: body,
-						type: constants.LINK_TWITTER_ACCOUNT
-					})
-					return
-				}
-
-				token = setToken(body.user)
-				body.bearer = token
-				dispatch({
-					payload: body,
-					type: constants.SET_USER_DATA
-				})
-			}
-		}
-	)
-}
-*/
-
 export const logout = () => (dispatch) => {
-	localStorage.removeItem("jwtToken")
+	// localStorage.removeItem("jwtToken")
 	dispatch({
 		type: constants.LOGOUT
 	})
-}
-
-export const removeTwitter = (bearer) => (dispatch) => {
-	request.post(
-		`${constants.API_URL}twitter/remove`,
-		{
-			headers: {
-				Authorization: bearer
-			},
-			json: true
-		},
-		function (err, response, body) {
-			if (!body.error) {
-				let localData = parseJwt()
-				localData.linkedTwitter = false
-				localData.twitterAccessSecret = body.twitterAccessSecret
-				localData.twitterAccessToken = body.twitterAccessToken
-				localData.twitterDate = null
-				localData.twitterId = null
-				localData.twitterUrl = body.twitterUrl
-				localData.twitterUsername = null
-				const token = setToken(localData)
-				body.bearer = token
-
-				dispatch({
-					payload: body,
-					type: constants.REMOVE_TWITTER_ACCOUNT
-				})
-			}
-		}
-	)
 }
 
 export const resetPasswordProps = () => (dispatch) => {
@@ -163,107 +97,56 @@ export const resetPasswordProps = () => (dispatch) => {
 }
 
 export const submitLoginForm = ({ email, password }) => (dispatch) => {
-	request.post(
-		`${constants.API_URL}users/login`,
-		{
-			form: {
-				email,
-				password
-			},
-			json: true
-		},
-		function (err, response, body) {
-			if (!body.error) {
-				const token = setToken(body.user)
-				body.bearer = token
-			}
-
+	axios
+		.post("/api/user/login", {
+			email,
+			password
+		})
+		.then((response) => {
+			console.log(response)
 			dispatch({
-				payload: body,
+				payload: response,
 				type: constants.SET_USER_DATA
 			})
-		}
-	)
+		})
+		.catch((error) => {
+			console.log(error)
+		})
 }
 
 export const submitRegistrationForm = ({ email, name, password, username }) => (dispatch) => {
-	request.post(
-		`${constants.API_URL}users/register`,
-		{
-			form: {
-				email,
-				name,
-				password,
-				username
-			},
-			json: true
-		},
-		function (err, response, body) {
-			if (!body.error) {
-				const token = jwt.sign({ data: body.user }, "secret", {
-					expiresIn: 60 * 60 * 5
-				})
-				localStorage.setItem("jwtToken", token)
-				body.bearer = token
-			}
-
+	axios
+		.post("/api/user/login", {
+			email,
+			name,
+			password,
+			username
+		})
+		.then((response) => {
+			console.log(response)
 			dispatch({
-				payload: body,
+				payload: response,
 				type: constants.SET_USER_DATA
 			})
-		}
-	)
-}
-
-export const twitterRequestToken = ({ bearer, reset }) => (dispatch) => {
-	request.post(
-		`/twitter/requestToken`,
-		{
-			json: true
-		},
-		function (err, response, body) {
-			if (!body.error) {
-				let token = null
-				if (!reset) {
-					let localData = parseJwt()
-					localData.twitterUrl = body.url
-					token = setToken(localData)
-				}
-
-				dispatch({
-					payload: {
-						bearer: token,
-						twitterAccessSecret: body.secret,
-						twitterUrl: body.url
-					},
-					type: constants.SET_TWITTER_URL
-				})
-			}
-		}
-	)
+		})
+		.catch((error) => {
+			console.log(error)
+		})
 }
 
 export const verifyEmail = ({ code, bearer }) => (dispatch) => {
-	request.post(
-		`${constants.API_URL}users/verifyEmail`,
-		{
-			form: {
-				code
-			},
-			headers: {
-				Authorization: bearer
-			},
-			json: true
-		},
-		function (err, response, body) {
-			if (!body.error) {
-				setToken(body.user)
-			}
-
+	axios
+		.post("/api/users/verifyEmail", {
+			code
+		})
+		.then((response) => {
+			console.log(response)
 			dispatch({
-				payload: body,
+				payload: response,
 				type: constants.VERIFY_EMAIL
 			})
-		}
-	)
+		})
+		.catch((error) => {
+			console.log(error)
+		})
 }

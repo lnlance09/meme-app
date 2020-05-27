@@ -1,6 +1,8 @@
 @import './colors.scss';
 
 .authComponent {
+    width: 100%;
+
     .signInLogo {
         display: inline;
         fill: $blue;
@@ -15,9 +17,7 @@
     }
 
     .registerText {
-        background: $white;
-        border-top: solid 1px $lightGrey;
-        text-align: center;
+        font-size: 18px;
 
         .registerLink {
             color: $blue;
