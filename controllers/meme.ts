@@ -1,11 +1,23 @@
 const Aws = require("../utils/awsFunctions.ts")
 const db = require("../models/index.ts")
-const { Meme, MemeTemplate, Template, TemplateText } = db
+const jwt = require("jsonwebtoken")
+const jwtSecret = "mysuperdupersecret"
+const Meme = db.meme
+const MemeTemplate = db.memeTemplate
+const Template = db.template
+const TemplateText = db.templateText
 const Op = db.Sequelize.Op
 
 exports.create = async (req, res) => {
-	console.log("create meme")
-	console.log(req.body)
+	const token = req.headers.authorization
+	let decoded = {}
+	try {
+		decoded = jwt.verify(token, jwtSecret)
+		console.log("decoded", decoded)
+	} catch (err) {
+		// return res.status(401).json({ msg: err.message })
+	}
+
 	const { caption, images } = req.body
 	if (typeof images === "undefined") {
 		return res.status(422).json({ error: true, msg: "You must include at least one image" })
@@ -55,5 +67,3 @@ exports.delete = (req, res) => {}
 exports.findAll = (req, res) => {}
 
 exports.findOne = (req, res) => {}
-
-exports.update = (req, res) => {}

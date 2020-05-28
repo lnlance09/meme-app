@@ -1,14 +1,17 @@
 import "semantic-ui-css/semantic.min.css"
 import "@style/style.scss"
-import { Provider } from "react-redux"
 import { AppProps } from "next/app"
+import { CookiesProvider } from "react-cookie"
+import { Provider } from "react-redux"
 import store from "@store"
 
 const App = ({ Component, pageProps }: AppProps) => {
 	return (
-		<Provider store={store}>
-			<Component {...pageProps} />
-		</Provider>
+		<CookiesProvider>
+			<Provider store={store}>
+				<Component {...pageProps} />
+			</Provider>
+		</CookiesProvider>
 	)
 }
 

@@ -18,9 +18,6 @@ module.exports = (sequelize, Sequelize) => {
 			img: {
 				type: Sequelize.CHAR
 			},
-			linkedTwitter: {
-				type: Sequelize.BOOLEAN
-			},
 			name: {
 				type: Sequelize.CHAR
 			},

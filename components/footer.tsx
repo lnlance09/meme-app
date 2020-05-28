@@ -8,19 +8,22 @@ function Footer() {
 			<Container>
 				<List className="footerList" horizontal inverted link>
 					<List.Item>
-						<Link href="/about"><a>About</a></Link>
+						<Link href="/about">
+							<a>About</a>
+						</Link>
 					</List.Item>
 					<List.Item>
-						<Link href="/about/contact"><a>Contact</a></Link>
+						<Link href="/about/privacy">
+							<a>Privacy</a>
+						</Link>
 					</List.Item>
 					<List.Item>
-						<Link href="/about/privacy"><a>Privacy</a></Link>
-					</List.Item>
-					<List.Item>
-						<Link href="/about/rules"><a>Rules</a></Link>
+						<Link href="/about/rules">
+							<a>Rules</a>
+						</Link>
 					</List.Item>
 				</List>
-				<p>© 2018 - 2020, Blather</p>
+				<p>© 2020 Brandy</p>
 			</Container>
 		</Segment>
 	)

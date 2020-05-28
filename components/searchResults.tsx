@@ -1,53 +1,48 @@
 import { Button, Card, Placeholder, Visibility } from "semantic-ui-react"
 import PropTypes from "prop-types"
-import React, { Fragment useEffect, useState } from "react"
+import React, { Fragment, useEffect, useState } from "react"
 
-const MemeCard = ({ loading, image, title, subtitle, description }) => (
-    <Fragment>
-
-    </Fragment>
-)
+const MemeCard = ({ loading, image, title, subtitle, description }) => <Fragment></Fragment>
 
 const SearchResults: React.FunctionComponent = (props) => {
-	const { loading, results } = props
+	const { loading, results, type } = props
 
 	return (
 		<div className="searchResults">
 			<Card.Group doubling itemsPerRow={3} stackable>
 				{results.map((result, i) => {
+					return (
+						<Card key={`${type}Card${i}`}>
+							{loading ? (
+								<Placeholder>
+									<Placeholder.Image square />
+								</Placeholder>
+							) : (
+								<Image src={card.avatar} />
+							)}
 
-                    return (
-                        <Card key={card.header}>
-                            {loading ? (
-                                <Placeholder>
-                                    <Placeholder.Image square />
-                                </Placeholder>
-                            ) : (
-                                <Image src={card.avatar} />
-                            )}
-
-                            <Card.Content>
-                                {loading ? (
-                                    <Placeholder>
-                                        <Placeholder.Header>
-                                            <Placeholder.Line length="very short" />
-                                            <Placeholder.Line length="medium" />
-                                        </Placeholder.Header>
-                                        <Placeholder.Paragraph>
-                                            <Placeholder.Line length="short" />
-                                        </Placeholder.Paragraph>
-                                    </Placeholder>
-                                ) : (
-                                    <Fragment>
-                                        <Card.Header>{card.header}</Card.Header>
-                                        <Card.Meta>{card.date}</Card.Meta>
-                                        <Card.Description>{card.description}</Card.Description>
-                                    </Fragment>
-                                )}
-                            </Card.Content>
-                        </Card>
-                    )
-                })}
+							<Card.Content>
+								{loading ? (
+									<Placeholder>
+										<Placeholder.Header>
+											<Placeholder.Line length="very short" />
+											<Placeholder.Line length="medium" />
+										</Placeholder.Header>
+										<Placeholder.Paragraph>
+											<Placeholder.Line length="short" />
+										</Placeholder.Paragraph>
+									</Placeholder>
+								) : (
+									<Fragment>
+										<Card.Header>{card.header}</Card.Header>
+										<Card.Meta>{card.date}</Card.Meta>
+										<Card.Description>{card.description}</Card.Description>
+									</Fragment>
+								)}
+							</Card.Content>
+						</Card>
+					)
+				})}
 			</Card.Group>
 		</div>
 	)
@@ -74,8 +69,8 @@ SearchResults.propTypes = {
 				username: PropTypes.string
 			})
 		])
-    ),
-    type: PropTypes.oneOf(["artists", "memes", "templates"])
+	),
+	type: PropTypes.oneOf(["artists", "memes", "templates"])
 }
 
 SearchResults.defaultProps = {}

@@ -1,15 +1,8 @@
 import { logout } from "@actions/user"
 import { Provider, connect } from "react-redux"
-import {
-	Button,
-	Container,
-	Dropdown,
-	Icon,
-	Image,
-	Menu,
-	Responsive,
-	Sidebar
-} from "semantic-ui-react"
+import { useCookies } from "react-cookie"
+import { Button, Container, Dropdown, Image, Menu, Responsive, Sidebar } from "semantic-ui-react"
+import DefaultPic from "@public/images/avatar/small/chris.jpg"
 import Link from "next/link"
 import Logo from "@public/images/logos/jackie-chan.svg"
 import PropTypes from "prop-types"
@@ -17,18 +10,21 @@ import React, { Fragment, useState } from "react"
 import store from "@store"
 
 const Header: React.FunctionComponent = (props) => {
+	const { authenticated, basic, data } = props
+
+	const [removeCookie] = useCookies(["bearer"])
 	const [visible, toggleVisibility] = useState(false)
 
 	const LoginButton = () => {
-		if (props.authenticated) {
+		if (authenticated) {
 			const trigger = (
 				<Image
 					avatar
 					bordered
 					circular
-					onError={(i) => (i.target.src = ImagePic)}
+					onError={(i) => (i.target.src = DefaultPic)}
 					rounded
-					src={props.data.img ? props.data.img : ImagePic}
+					src={data.img ? data.img : DefaultPic}
 				/>
 			)
 
@@ -41,29 +37,35 @@ const Header: React.FunctionComponent = (props) => {
 						trigger={trigger}
 					>
 						<Dropdown.Menu>
-							<Dropdown.Item
-								onClick={() => props.history.push(`/users/${props.data.username}`)}
-								text={props.data.name}
-							/>
+							<Dropdown.Item>
+								<Link href={`/artists/${data.username}`}>
+									<a>{data.name}</a>
+								</Link>
+							</Dropdown.Item>
 							<Dropdown.Divider />
-							<Dropdown.Item
-								onClick={() =>
-									props.history.push(`/users/${props.data.username}/fallacies`)
-								}
-								text="My Fallacies"
-							/>
-							<Dropdown.Item
-								onClick={() =>
-									props.history.push(`/users/${props.data.username}/archives`)
-								}
-								text="My Archives"
-							/>
+							<Dropdown.Item>
+								<Link href={`/artists/${data.username}/memes`}>
+									<a>Memes</a>
+								</Link>
+							</Dropdown.Item>
+							<Dropdown.Item>
+								<Link href={`/artists/${data.username}/templates`}>
+									<a>Templates</a>
+								</Link>
+							</Dropdown.Item>
 							<Dropdown.Divider />
+							<Dropdown.Item>
+								<Link href="settings">
+									<a>Settings</a>
+								</Link>
+							</Dropdown.Item>
 							<Dropdown.Item
-								onClick={() => props.history.push(`/settings`)}
-								text="Settings"
+								onClick={() => {
+									removeCookie("bearer")
+									props.logout()
+								}}
+								text="Log out"
 							/>
-							<Dropdown.Item onClick={this.onLogout} text="Log out" />
 						</Dropdown.Menu>
 					</Dropdown>
 				</Menu.Item>
@@ -83,7 +85,7 @@ const Header: React.FunctionComponent = (props) => {
 		<Provider store={store}>
 			<div className="pageHeader">
 				<div className="rainbow" />
-				{props.basic ? (
+				{basic ? (
 					<Container className="headerContainer" textAlign="center">
 						<Link href="/">
 							<a>
@@ -151,11 +153,10 @@ const Header: React.FunctionComponent = (props) => {
 									content="Assign a fallacy"
 									fluid
 									icon="pencil"
-									onClick={() => props.history.push("/assign")}
 								/>
 							</Menu.Item>
-							{props.authenticated && (
-								<Menu.Item onClick={this.onLogout}>Sign Out</Menu.Item>
+							{authenticated && (
+								<Menu.Item onClick={() => props.logout()}>Sign Out</Menu.Item>
 							)}
 						</Sidebar>
 					</Fragment>

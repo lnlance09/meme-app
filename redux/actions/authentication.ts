@@ -1,6 +1,6 @@
 import * as constants from "../constants"
-import { parseJwt, setToken } from "@utils/tokenFunctions"
-import jwt from "jsonwebtoken"
+import { setCookies } from "@utils/auth"
+import { useRouter } from "next/router"
 import axios from "axios"
 
 export const changePassword = ({ bearer, confirmPassword, newPassword, password }) => (
@@ -29,9 +29,7 @@ export const changeProfilePic = ({ bearer, file }) => (dispatch) => {
 	fr.onload = (event) => {
 		axios
 			.post("/api/user/changeProfilePic", {
-				confirmPassword,
-				password,
-				newPassword
+				file
 			})
 			.then((response) => {
 				console.log(response)
@@ -83,8 +81,7 @@ export const changeProfilePic = ({ bearer, file }) => (dispatch) => {
 	fr.readAsArrayBuffer(file)
 }
 
-export const logout = () => (dispatch) => {
-	// localStorage.removeItem("jwtToken")
+export const logout = () => async (dispatch) => {
 	dispatch({
 		type: constants.LOGOUT
 	})
@@ -102,51 +99,72 @@ export const submitLoginForm = ({ email, password }) => (dispatch) => {
 			email,
 			password
 		})
-		.then((response) => {
-			console.log(response)
+		.then(async (response) => {
+			const { data } = response
+			await setCookies(data.token)
 			dispatch({
-				payload: response,
+				payload: data,
 				type: constants.SET_USER_DATA
 			})
+
+			if (data.emailVerified === 1) {
+				router.push("/")
+			}
 		})
 		.catch((error) => {
-			console.log(error)
+			dispatch({
+				payload: error.response.data,
+				type: constants.SET_LOGIN_ERROR
+			})
 		})
 }
 
 export const submitRegistrationForm = ({ email, name, password, username }) => (dispatch) => {
 	axios
-		.post("/api/user/login", {
+		.post("/api/user/create", {
 			email,
 			name,
 			password,
 			username
 		})
 		.then((response) => {
-			console.log(response)
 			dispatch({
-				payload: response,
+				payload: response.data,
 				type: constants.SET_USER_DATA
 			})
 		})
 		.catch((error) => {
-			console.log(error)
+			dispatch({
+				payload: error.response.data,
+				type: constants.SET_REGISTER_ERROR
+			})
 		})
 }
 
-export const verifyEmail = ({ code, bearer }) => (dispatch) => {
+export const submitVerificationForm = ({ code, bearer }) => (dispatch) => {
 	axios
-		.post("/api/users/verifyEmail", {
-			code
-		})
+		.post(
+			"/api/user/verify",
+			{
+				code
+			},
+			{
+				headers: {
+					Authorization: bearer
+				}
+			}
+		)
 		.then((response) => {
 			console.log(response)
 			dispatch({
-				payload: response,
+				payload: response.data,
 				type: constants.VERIFY_EMAIL
 			})
 		})
 		.catch((error) => {
-			console.log(error)
+			dispatch({
+				payload: error.response.data,
+				type: constants.SET_VERIFICATION_ERROR
+			})
 		})
 }

@@ -52,7 +52,6 @@ const DefaultLayout: React.FunctionComponent = ({
 				<link rel="canonical" href={url} />
 				<link rel="home" href="" />
 
-				<link rel="manifest" href="/manifest.json" />
 				<link rel="icon" href="/favicon.ico" />
 				<link rel="shortcut icon" href="/favicon.ico?v=3" />
 				<link rel="apple-touch-icon" sizes="128x128" href="/favicon.ico?v=3" />

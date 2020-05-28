@@ -1,8 +1,10 @@
-import { Header } from "semantic-ui-react"
+import { useCookies } from "react-cookie"
+import { Button, Header } from "semantic-ui-react"
 import { Provider, connect } from "react-redux"
 import DefaultLayout from "@layouts/default"
+import Link from "next/link"
 import PropTypes from "prop-types"
-import React from "react"
+import React, { useState } from "react"
 import store from "@store"
 
 const Home: React.FunctionComponent = (props) => {
@@ -24,6 +26,18 @@ const Home: React.FunctionComponent = (props) => {
 				<div className="homePageHeroImage">
 					<Header as="h1" className="heroHeader" textAlign="center">
 						Memes for the masses
+						<Header.Subheader>
+							<Link href="/create">
+								<a>
+									<Button
+										color="blue"
+										content="Get started"
+										size="big"
+										style={{ marginTop: "14px" }}
+									/>
+								</a>
+							</Link>
+						</Header.Subheader>
 					</Header>
 				</div>
 			</DefaultLayout>

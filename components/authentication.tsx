@@ -1,54 +1,42 @@
-import { submitLoginForm, submitRegistrationForm, verifyEmail } from "@actions/authentication"
-import { Button, Form, Header, Icon, Input, Message, Segment } from "semantic-ui-react"
+import {
+	submitLoginForm,
+	submitRegistrationForm,
+	submitVerificationForm
+} from "@actions/authentication"
+import { Button, Form, Header, Input, Message, Segment } from "semantic-ui-react"
 import { Provider, connect } from "react-redux"
 import PropTypes from "prop-types"
 import React, { useCallback, useEffect, useState } from "react"
 import store from "@store"
 
 const Authentication: React.FunctionComponent = (props) => {
+	const [buttonText, setButtonText] = useState("Create an account")
 	const [email, setEmail] = useState("")
+	const [headerText, setHeaderText] = useState("Sign In")
 	const [loadingLogin, setLoadingLogin] = useState(false)
 	const [loadingRegistration, setLoadingRegistration] = useState(false)
 	const [login, setLogin] = useState(true)
-	const [loginError, setLoginError] = useState(false)
 	const [name, setName] = useState("")
 	const [password, setPassword] = useState("")
 	const [regEmail, setRegEmail] = useState("")
+	const [registerText, setRegisterText] = useState("New to Brandy?")
 	const [regPassword, setRegPassword] = useState("")
-	const [user, setUser] = useState({})
 	const [username, setUsername] = useState("")
 	const [verificationCode, setVerificationCode] = useState("")
-	const [verify, setVerify] = useState(false)
 
-	useEffect(() => {
-		/*
-		props.twitterRequestToken({
-			reset: true
-		})
-		*/
-	}, [])
+	useEffect(() => {}, [])
 
 	const toggleLogin = useCallback(() => {
+		const buttonText = login ? "Sign in" : "Create an account"
+		const headerText = login ? "Create an account" : "Sign In"
+		const registerText = login ? "Already have an account?" : "New to Brandy?"
+		setButtonText(buttonText)
+		setHeaderText(headerText)
+		setRegisterText(registerText)
 		setLoadingLogin(false)
 		setLoadingRegistration(false)
 		setLogin(!login)
 	}, [login])
-
-	const redirectToUrl = useCallback((url) => {
-		if (url) {
-			window.open(url, "_self")
-		}
-	}, [])
-
-	const submitEmailVerificationForm = useCallback((e) => {
-		e.preventDefault()
-		if (verificationCode.length > 3) {
-			props.verifyEmail({
-				bearer: props.bearer,
-				code: verificationCode
-			})
-		}
-	}, [])
 
 	const submitLoginForm = useCallback(
 		(e) => {
@@ -76,45 +64,36 @@ const Authentication: React.FunctionComponent = (props) => {
 		})
 	}
 
-	const EmailVerificationForm = () => {
-		if (props.verify) {
-			return (
-				<Form onSubmit={submitEmailVerificationForm}>
-					<Form.Field>
-						<Input
-							onChange={setVerificationCode}
-							placeholder="Verification code"
-							value={verificationCode}
-						/>
-					</Form.Field>
-					<Button color="green" content="Verify" fluid type="submit" />
-				</Form>
-			)
-		}
-
-		return null
-	}
+	const submitVerificationForm = useCallback(
+		(e) => {
+			e.preventDefault()
+			if (verificationCode.length === 10) {
+				props.submitVerificationForm({
+					bearer: props.bearer,
+					code: verificationCode
+				})
+			}
+		},
+		[verificationCode]
+	)
 
 	const ErrorMsg = () => {
-		if (props.loginError && props.loginErrorMsg) {
-			return <Message content={props.loginErrorMsg} error />
+		if (login && props.loginError) {
+			return <Message content={props.loginErrorMsg} error size="big" />
 		}
-	}
 
-	const HeaderText = () => {
-		if (!props.verify) {
-			return login ? "Sign in" : "Create an account"
+		if (!login && props.registerError) {
+			return <Message content={props.registerErrorMsg} error size="big" />
 		}
-		return "Please verify your email"
 	}
 
 	const InfoBox = () => {
 		if (!props.verify) {
 			return (
 				<p className="registerText">
-					{RegisterText()}{" "}
+					{registerText}{" "}
 					<span className="registerLink" onClick={() => toggleLogin()}>
-						{RegisterButton()}
+						{buttonText}
 					</span>
 				</p>
 			)
@@ -124,7 +103,29 @@ const Authentication: React.FunctionComponent = (props) => {
 	}
 
 	const MainForm = () => {
-		if (login && !props.verify) {
+		if (props.verify) {
+			return (
+				<Form onSubmit={submitVerificationForm} size="big">
+					<Form.Field>
+						<Input
+							onChange={(e, { value }) => setVerificationCode(value)}
+							placeholder="Verification code"
+							value={verificationCode}
+						/>
+					</Form.Field>
+					<Button
+						color="green"
+						content="Verify"
+						disabled={verificationCode.length !== 10}
+						fluid
+						size="big"
+						type="submit"
+					/>
+				</Form>
+			)
+		}
+
+		if (login) {
 			return (
 				<Form loading={loadingLogin && !props.loginError} size="big">
 					<Form.Field>
@@ -160,75 +161,68 @@ const Authentication: React.FunctionComponent = (props) => {
 			)
 		}
 
-		if (!login && !props.verify) {
-			return (
-				<Form loading={loadingRegistration && !props.loginError} size="big">
-					<Form.Field>
-						<Input
-							onChange={(e, { value }) => {
-								setRegEmail(value)
-							}}
-							placeholder="Email"
-							value={regEmail}
-						/>
-					</Form.Field>
-					<Form.Field>
-						<Input
-							onChange={(e, { value }) => {
-								setRegPassword(value)
-							}}
-							value={regPassword}
-							placeholder="Password"
-							type="password"
-						/>
-					</Form.Field>
-					<Form.Field>
-						<Input
-							autoComplete="off"
-							onChange={(e, { value }) => {
-								setName(value)
-							}}
-							placeholder="Full name"
-							value={name}
-						/>
-					</Form.Field>
-					<Form.Field>
-						<Input
-							onChange={(e, { value }) => {
-								setUsername(value)
-							}}
-							placeholder="Username"
-							value={username}
-						/>
-					</Form.Field>
-					<Form.Field>
-						<Button
-							color="blue"
-							content="Create an account"
-							fluid
-							onClick={submitRegistrationForm}
-							size="big"
-							type="submit"
-						/>
-					</Form.Field>
-				</Form>
-			)
-		}
+		return (
+			<Form loading={loadingRegistration && !props.registerError} size="big">
+				<Form.Field>
+					<Input
+						onChange={(e, { value }) => {
+							setRegEmail(value)
+						}}
+						placeholder="Email"
+						value={regEmail}
+					/>
+				</Form.Field>
+				<Form.Field>
+					<Input
+						onChange={(e, { value }) => {
+							setRegPassword(value)
+						}}
+						value={regPassword}
+						placeholder="Password"
+						type="password"
+					/>
+				</Form.Field>
+				<Form.Field>
+					<Input
+						autoComplete="off"
+						onChange={(e, { value }) => {
+							setName(value)
+						}}
+						placeholder="Full name"
+						value={name}
+					/>
+				</Form.Field>
+				<Form.Field>
+					<Input
+						onChange={(e, { value }) => {
+							setUsername(value)
+						}}
+						placeholder="Username"
+						value={username}
+					/>
+				</Form.Field>
+				<Form.Field>
+					<Button
+						color="blue"
+						content="Create an account"
+						fluid
+						onClick={submitRegistrationForm}
+						size="big"
+						type="submit"
+					/>
+				</Form.Field>
+			</Form>
+		)
 	}
-
-	const RegisterButton = () => (login ? "Create an account" : "Sign in")
-
-	const RegisterText = () => (login ? "New to Brandy?" : "Already have an account?")
 
 	return (
 		<Provider store={store}>
 			<div className="authComponent">
 				<Header as="h1" size="huge">
-					{HeaderText()}
+					{props.verify ? "Verify your email" : headerText}
 				</Header>
 				<Segment>
 					{MainForm()}
-					{EmailVerificationForm()}
 					{ErrorMsg()}
 				</Segment>
 				{InfoBox()}
@@ -238,28 +232,25 @@ const Authentication: React.FunctionComponent = (props) => {
 }
 
 Authentication.propTypes = {
-	authenticated: PropTypes.bool,
 	bearer: PropTypes.string,
 	data: PropTypes.shape({
-		dateCreated: PropTypes.string,
+		createdAt: PropTypes.string,
 		email: PropTypes.string,
 		emailVerified: PropTypes.bool,
 		name: PropTypes.string,
-		id: PropTypes.string,
+		id: PropTypes.number,
 		img: PropTypes.string,
-		username: PropTypes.string
+		username: PropTypes.string,
+		verificationCode: PropTypes.string
 	}),
-	loadingLogin: PropTypes.bool,
-	loadingRegistration: PropTypes.bool,
-	login: PropTypes.bool,
 	loginError: PropTypes.bool,
 	loginErrorMsg: PropTypes.string,
-	submitLoginForm: PropTypes.func.isRequired,
-	submitRegistrationForm: PropTypes.func.isRequired,
-	twitterRequestToken: PropTypes.func,
-	verificationCode: PropTypes.string,
-	verify: PropTypes.bool,
-	verifyEmail: PropTypes.func
+	registerError: PropTypes.bool,
+	registerErrorMsg: PropTypes.string,
+	submitLoginForm: PropTypes.func,
+	submitRegistrationForm: PropTypes.func,
+	submitVerificationForm: PropTypes.func,
+	verify: PropTypes.bool
 }
 
 Authentication.defaultProps = {
@@ -275,5 +266,5 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 export default connect(mapStateToProps, {
 	submitLoginForm,
 	submitRegistrationForm,
-	verifyEmail
+	submitVerificationForm
 })(Authentication)

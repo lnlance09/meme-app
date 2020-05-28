@@ -1,37 +1,31 @@
 import * as constants from "../constants"
-import jwt from "jsonwebtoken"
+import { getCookies } from "@utils/auth"
 
-let authenticated = false
-let localData = {}
-let verify = false
-/*
-const token = localStorage.getItem("jwtToken")
-jwt.verify(token, "lancebass", (err, decoded) => {
-	if (decoded) {
-		authenticated = true
-		localData = decoded.data
-		verify = !localData.emailVerified ? true : false
-	}
-})
-*/
+const getCurrentCookies = () => {
+	const cookies = getCookies()
+	return cookies
+}
+console.log("aaaaa")
+const cookies = getCurrentCookies()
+console.log(cookies)
 
 const initial = () => ({
-	authenticated,
-	// bearer: token,
-	data: localData,
+	authenticated: false,
+	data: {},
 	passwordError: false,
-	patreonLoading: false,
-	verify
+	verify: false
 })
 
-const user = (state = initial(), action) => {
+const authentication = (state = initial(), action) => {
+	const { payload } = action
+
 	switch (action.type) {
 		case constants.CHANGE_PASSWORD:
 			return {
 				...state,
-				passwordChangeSuccessful: action.payload.error ? false : true,
-				passwordError: action.payload.error ? true : false,
-				passwordErrorMsg: action.payload.error
+				passwordChangeSuccessful: payload.error ? false : true,
+				passwordError: payload.error ? true : false,
+				passwordErrorMsg: payload.error
 			}
 
 		case constants.CHANGE_PROFILE_PIC:
@@ -39,25 +33,12 @@ const user = (state = initial(), action) => {
 				...state,
 				data: {
 					...state.data,
-					img: action.payload.img
+					img: payload.img
 				}
 			}
 
-		case constants.REMOVE_TWITTER_ACCOUNT:
-			return {
-				...state,
-				bearer: action.payload.bearer,
-				data: {
-					...state.data,
-					linkedTwitter: false,
-					twitterAccessSecret: action.payload.twitterAccessSecret,
-					twitterAccessToken: action.payload.twitterAccessToken,
-					twitterDate: null,
-					twitterId: null,
-					twitterUrl: action.payload.twitterUrl,
-					twitterUsername: null
-				}
-			}
+		case constants.LOGOUT:
+			return initial()
 
 		case constants.RESET_PASSWORD_PROPS:
 			return {
@@ -68,78 +49,66 @@ const user = (state = initial(), action) => {
 				passwordErrorMsg: ""
 			}
 
-		case constants.SET_TWITTER_URL:
+		case constants.SET_LOGIN_ERROR:
 			return {
 				...state,
-				bearer: action.payload.bearer,
-				data: {
-					...state.data,
-					twitterAccessSecret: action.payload.twitterAccessSecret,
-					twitterUrl: action.payload.twitterUrl
-				}
+				loginError: true,
+				loginErrorMsg: payload.msg
+			}
+
+		case constants.SET_REGISTER_ERROR:
+			return {
+				...state,
+				registerError: true,
+				registerErrorMsg: payload.msg
 			}
 
 		case constants.SET_USER_DATA:
-			let authenticated = false
-			let loginError = false
-			let loginErrorMsg = ""
 			let user = {}
 			let verify = false
 
-			if (action.payload.error) {
-				loginError = true
-				loginErrorMsg = action.payload.error
-			} else {
-				if (!action.payload.user.emailVerified) {
-					verify = true
-				}
+			if (!payload.user.emailVerified) {
+				verify = true
+			}
 
-				authenticated = true
-				user = {
-					bio: action.payload.user.bio,
-					dateCreated: action.payload.user.dateCreated,
-					email: action.payload.user.email,
-					emailVerified: action.payload.user.emailVerified,
-					name: action.payload.user.name,
-					id: action.payload.user.id,
-					img: action.payload.user.img,
-					linkedTwitter: action.payload.user.linkedTwitter,
-					linkedYoutube: action.payload.user.linkedYoutube,
-					patreonUsername: action.payload.user.patreonUsername,
-					twitterAccessToken: action.payload.user.twitterAccessToken,
-					twitterAccessSecret: action.payload.user.twitterAccessSecret,
-					twitterDate: action.payload.user.twitterDate,
-					twitterId: action.payload.user.twitterId,
-					twitterUrl: action.payload.user.twitterUrl,
-					twitterUsername: action.payload.user.twitterUsername,
-					username: action.payload.user.username,
-					youtubeAccessToken: action.payload.user.youtubeAccessToken,
-					youtubeDate: action.payload.user.youtubeDate,
-					youtubeId: action.payload.user.youtubeId,
-					youtubeRefreshToken: action.payload.user.youtubeRefreshToken,
-					youtubeUrl: action.payload.user.youtubeUrl
-				}
+			user = {
+				// bio: payload.user.bio,
+				createdAt: payload.user.createdAt,
+				email: payload.user.email,
+				emailVerified: payload.user.emailVerified,
+				name: payload.user.name,
+				id: payload.user.id,
+				img: payload.user.img,
+				username: payload.user.username,
+				verificationCode: payload.user.verificationCode
 			}
 
 			return {
 				...state,
-				authenticated,
-				bearer: action.payload.bearer,
+				authenticated: true,
+				bearer: payload.token,
 				data: user,
-				loadingLogin: false,
-				loadingRegistration: false,
-				loginError,
-				loginErrorMsg,
+				loginError: false,
+				loginErrorMsg: "",
+				registerError: false,
+				registerErrorMsg: "",
 				verify
+			}
+
+		case constants.SET_VERIFICATION_ERROR:
+			return {
+				...state,
+				verifyError: true,
+				verrifyErrorMsg: payload.msg
 			}
 
 		case constants.UPDATE_ABOUT:
 			return {
 				...state,
-				bearer: action.payload.bearer,
+				bearer: payload.token,
 				data: {
 					...state.data,
-					bio: action.payload.bio
+					bio: payload.bio
 				}
 			}
 
@@ -148,10 +117,10 @@ const user = (state = initial(), action) => {
 				...state,
 				data: {
 					...state.data,
-					emailVerified: !action.payload.error
+					emailVerified: true
 				},
-				loginError: action.payload.error,
-				loginErrorMsg: action.payload.error
+				verifyError: false,
+				verrifyErrorMsg: ""
 			}
 
 		default:
@@ -159,4 +128,4 @@ const user = (state = initial(), action) => {
 	}
 }
 
-export default user
+export default authentication

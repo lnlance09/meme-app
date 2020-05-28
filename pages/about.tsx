@@ -5,13 +5,13 @@ import PropTypes from "prop-types"
 import React, { Fragment } from "react"
 import store from "@store"
 
-const Meme: React.FunctionComponent = (props) => {
+const About: React.FunctionComponent = (props) => {
 	const [loading, setLoading] = useState(true)
 
 	return (
 		<Provider store={store}>
 			<DefaultLayout
-				containerClassName="memePage"
+				containerClassName="aboutPage"
 				seo={{
 					description: "",
 					image: {
@@ -49,13 +49,8 @@ const Meme: React.FunctionComponent = (props) => {
 	)
 }
 
-Meme.propTypes = {}
+About.propTypes = {}
 
-Meme.defaultProps = {}
+About.defaultProps = {}
 
-const mapStateToProps = (state: any, ownProps: any) => ({
-	...state.meme,
-	...ownProps
-})
-
-export default connect(mapStateToProps, {})(Meme)
+export default About
