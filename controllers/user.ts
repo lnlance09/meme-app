@@ -1,45 +1,44 @@
+const Auth = require("../utils/authFunctions.ts")
 const Aws = require("../utils/awsFunctions.ts")
 const db = require("../models/index.ts")
-const jwt = require("jsonwebtoken")
 const validator = require("validator")
 const randomize = require("randomatic")
 const sha1 = require("sha1")
-const jwtSecret = "mysuperdupersecret"
 const User = db.user
 const Op = db.Sequelize.Op
 
 exports.create = async (req, res) => {
 	const { email, name, password, username } = req.body
 	if (typeof email === "undefined" || email === "") {
-		return res.status(401).json({ error: true, msg: "You must include your email" })
+		return res.status(401).send({ error: true, msg: "You must include your email" })
 	}
 
 	if (!validator.isEmail(email)) {
-		return res.status(401).json({ error: true, msg: "Please provide a valid email" })
+		return res.status(401).send({ error: true, msg: "Please provide a valid email" })
 	}
 
 	if (typeof password === "undefined" || password === "") {
-		return res.status(401).json({ error: true, msg: "You must include your password" })
+		return res.status(401).send({ error: true, msg: "You must include your password" })
 	}
 
 	if (password.length < 7) {
 		return res
 			.status(401)
-			.json({ error: true, msg: "Your password must be at least 7 characters long" })
+			.send({ error: true, msg: "Your password must be at least 7 characters long" })
 	}
 
 	if (typeof name === "undefined" || name === "") {
-		return res.status(401).json({ error: true, msg: "You must provide your name" })
+		return res.status(401).send({ error: true, msg: "You must provide your name" })
 	}
 
 	if (typeof username === "undefined" || username === "") {
-		return res.status(401).json({ error: true, msg: "You must provide a username" })
+		return res.status(401).send({ error: true, msg: "You must provide a username" })
 	}
 
 	if (!validator.isAlphanumeric(username)) {
 		return res
 			.status(401)
-			.json({ error: true, msg: "Usernames can only contain letters and numbers" })
+			.send({ error: true, msg: "Usernames can only contain letters and numbers" })
 	}
 
 	const usernameCount = await User.count({
@@ -51,7 +50,7 @@ exports.create = async (req, res) => {
 	}).then((count) => count)
 
 	if (usernameCount === 1) {
-		return res.status(401).json({ error: true, msg: "That username has been taken" })
+		return res.status(401).send({ error: true, msg: "That username has been taken" })
 	}
 
 	const emailCount = await User.count({
@@ -65,7 +64,7 @@ exports.create = async (req, res) => {
 	if (emailCount === 1) {
 		return res
 			.status(401)
-			.json({ error: true, msg: "An account with that email already exists" })
+			.send({ error: true, msg: "An account with that email already exists" })
 	}
 
 	const verificationCode = randomize("aa", 10)
@@ -101,8 +100,8 @@ exports.create = async (req, res) => {
 				username,
 				verificationCode
 			}
-			const token = jwt.sign(userData, jwtSecret, { expiresIn: 60 * 24 })
-			res.status(200).send({
+			const token = Auth.signToken(userData)
+			return res.status(200).send({
 				error: false,
 				msg: "Your account has been created",
 				token,
@@ -110,7 +109,7 @@ exports.create = async (req, res) => {
 			})
 		})
 		.catch((err) => {
-			res.status(500).send({
+			return res.status(500).send({
 				error: true,
 				msg: err.message || "An error occurred"
 			})
@@ -123,16 +122,17 @@ exports.findOne = async (req, res) => {}
 
 exports.login = async (req, res) => {
 	const { email, password } = req.body
+
 	if (typeof email === "undefined" || email === "") {
-		return res.status(401).json({ error: true, msg: "You must include your email" })
+		return res.status(401).send({ error: true, msg: "You must include your email" })
 	}
 
 	if (!validator.isEmail(email)) {
-		return res.status(401).json({ error: true, msg: "Please provide a valid email" })
+		return res.status(401).send({ error: true, msg: "Please provide a valid email" })
 	}
 
 	if (typeof password === "undefined" || password === "") {
-		return res.status(401).json({ error: true, msg: "You must include your password" })
+		return res.status(401).send({ error: true, msg: "You must include your password" })
 	}
 
 	User.findAll({
@@ -155,8 +155,8 @@ exports.login = async (req, res) => {
 		.then((data) => {
 			if (data.length === 1) {
 				const userData = data[0]
-				const token = jwt.sign(userData.toJSON(), jwtSecret, { expiresIn: 60 * 24 })
-				res.status(200).send({
+				const token = Auth.signToken(userData.toJSON())
+				return res.status(200).send({
 					error: false,
 					msg: "Login successful",
 					token,
@@ -164,13 +164,13 @@ exports.login = async (req, res) => {
 				})
 			}
 
-			res.status(401).send({
+			return res.status(401).send({
 				error: true,
 				msg: "Incorrect login credentials"
 			})
 		})
 		.catch((err) => {
-			res.status(500).send({
+			return res.status(500).send({
 				error: true,
 				msg: err.message || "Some error occurred while retrieving tutorials."
 			})
@@ -181,23 +181,19 @@ exports.update = async (req, res) => {}
 
 exports.verify = async (req, res) => {
 	const { code } = req.body
-	const token = req.headers.authorization
-	let decoded = {}
+	const { authenticated, user } = Auth.parseAuthentication(req)
 
-	try {
-		decoded = jwt.verify(token, jwtSecret)
-		console.log("decoded", decoded)
-	} catch (err) {
-		return res.status(401).json({ error: true, msg: "You must be logged in" })
+	if (!authenticated) {
+		return res.status(401).send({ error: true, msg: "You must be logged in" })
 	}
 
 	if (typeof code === "undefined" || code === "") {
-		return res.status(401).json({ error: true, msg: "You must provide a verification code" })
+		return res.status(401).send({ error: true, msg: "You must provide a verification code" })
 	}
 
 	const count = await User.count({
 		where: {
-			id: decoded.id,
+			id: user.id,
 			verificationCode: code
 		},
 		distinct: true,
@@ -205,7 +201,7 @@ exports.verify = async (req, res) => {
 	}).then((count) => count)
 
 	if (count === 0) {
-		return res.status(401).json({ error: true, msg: "That code is incorrect" })
+		return res.status(401).send({ error: true, msg: "That code is incorrect" })
 	}
 
 	User.update(
@@ -213,16 +209,16 @@ exports.verify = async (req, res) => {
 			emailVerified: 1
 		},
 		{
-			where: { id: decoded.id }
+			where: { id: user.id }
 		}
 	)
 		.then((num) => {
 			if (num == 1) {
-				decoded.emailVerified = true
-				console.log("decoded")
-				console.log(decoded)
-				const token = jwt.sign(decoded, jwtSecret, { expiresIn: 60 * 24 })
-				res.status(200).send({
+				user.emailVerified = true
+				console.log("user", user)
+
+				const token = Auth.signToken(user)
+				return res.status(200).send({
 					error: false,
 					msg: "Success",
 					token
@@ -231,7 +227,7 @@ exports.verify = async (req, res) => {
 			}
 		})
 		.catch((err) => {
-			res.status(500).send({
+			return res.status(500).send({
 				error: true,
 				msg: "There was an error"
 			})

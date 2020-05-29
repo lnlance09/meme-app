@@ -1,7 +1,7 @@
 import * as constants from "../constants"
-import { setCookies } from "@utils/auth"
-import { useRouter } from "next/router"
+import { setToken } from "@utils/tokenFunctions"
 import axios from "axios"
+import Router from "next/router"
 
 export const changePassword = ({ bearer, confirmPassword, newPassword, password }) => (
 	dispatch
@@ -101,14 +101,14 @@ export const submitLoginForm = ({ email, password }) => (dispatch) => {
 		})
 		.then(async (response) => {
 			const { data } = response
-			await setCookies(data.token)
 			dispatch({
 				payload: data,
 				type: constants.SET_USER_DATA
 			})
 
-			if (data.emailVerified === 1) {
-				router.push("/")
+			await setToken(data.user)
+			if (data.user.emailVerified) {
+				Router.push("/")
 			}
 		})
 		.catch((error) => {

@@ -20,13 +20,13 @@ const MemeConfig: React.FunctionComponent = (props) => {
 	return (
 		<div className="memeConfig">
 			{images.map((_img, i) => {
-				const { active, img, texts } = _img
+				const { active, img, path, texts } = _img
 				if (active) {
 					return (
 						<Segment key={`textSegment${i}`} stacked>
 							<ImgBox
 								imgIndex={i}
-								imgUrl={img}
+								imgUrl={path ? path : img}
 								onFileUpload={onFileUpload}
 								onKeyUp={onKeyUp}
 								onPaste={onPaste}

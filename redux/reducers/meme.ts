@@ -4,12 +4,12 @@ const initial = () => ({
 	images: [
 		{
 			active: true,
-			base64: "",
 			img: "",
+			path: null,
 			texts: [
 				{
 					activeDrags: 0,
-					color: "#000000",
+					color: "#F3F4F5",
 					font: "Arial",
 					size: 32,
 					text: "",

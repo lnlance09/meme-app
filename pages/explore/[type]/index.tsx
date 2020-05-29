@@ -39,7 +39,7 @@ const Explore: React.FunctionComponent = (props) => {
 
 				<Divider hidden />
 
-				<Menu pointing secondary size="big">
+				<Menu pointing secondary size="huge">
 					<Menu.Item
 						active={activeItem === "memes"}
 						name="memes"

@@ -1,4 +1,4 @@
-import { useCookies } from "react-cookie"
+import { parseJwt } from "@utils/tokenFunctions"
 import Authentication from "@components/authentication"
 import DefaultLayout from "@layouts/default"
 import PropTypes from "prop-types"
@@ -6,14 +6,12 @@ import React, { useEffect } from "react"
 import Router from "next/router"
 
 const SignIn: React.FunctionComponent = () => {
-	const [cookies] = useCookies(["bearer"])
-
 	useEffect(() => {
-		console.log("cookies", cookies)
-		if (cookies.bearer) {
+		const userData = parseJwt()
+		if (userData) {
 			Router.push("/")
 		}
-	})
+	}, [])
 
 	return (
 		<DefaultLayout

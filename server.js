@@ -1,8 +1,10 @@
 const express = require("express")
 const next = require("next")
 const bodyParser = require("body-parser")
+const fileupload = require("express-fileupload")
 const db = require("./models/index.ts")
 const memes = require("./controllers/meme.ts")
+const templates = require("./controllers/template.ts")
 const users = require("./controllers/user.ts")
 
 const port = parseInt(process.env.PORT, 10) || 3000
@@ -12,11 +14,12 @@ const handle = app.getRequestHandler()
 
 app.prepare().then(() => {
 	const server = express()
-	server.use(bodyParser.json())
+	server.use(fileupload())
+	server.use(bodyParser.json({ limit: "50mb" }))
 	server.use(bodyParser.urlencoded({ extended: false }))
 	db.sequelize.sync()
 
-	server.get("/api/meme/:id", (req, res) => {})
+	server.get("/api/meme/:id", memes.findOne)
 
 	server.post("/api/meme/create", memes.create)
 
@@ -26,7 +29,7 @@ app.prepare().then(() => {
 
 	server.get("/api/template/:id", (req, res) => {})
 
-	server.post("/api/template/create", (req, res) => {})
+	server.post("/api/template/create", templates.create)
 
 	server.get("/api/template/search", (req, res) => {})
 

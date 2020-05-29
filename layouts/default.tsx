@@ -4,6 +4,7 @@ import Head from "next/head"
 import Header from "@components/header"
 import PropTypes from "prop-types"
 import React from "react"
+import Router from "next/router"
 
 const DefaultLayout: React.FunctionComponent = ({
 	basicHeader,
@@ -56,7 +57,7 @@ const DefaultLayout: React.FunctionComponent = ({
 				<link rel="shortcut icon" href="/favicon.ico?v=3" />
 				<link rel="apple-touch-icon" sizes="128x128" href="/favicon.ico?v=3" />
 
-				<title>Home - Brandy</title>
+				<title>{title} - Brandy</title>
 			</Head>
 
 			<Header basic={basicHeader} />

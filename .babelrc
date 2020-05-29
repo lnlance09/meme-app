@@ -17,6 +17,7 @@
 				"alias": {
 					"@actions": "./redux/actions",
 					"@components": "./components",
+					"@controllers": "./controllers",
 					"@dummy": "./dummy",
 					"@layouts": "./layouts",
 					"@lib": "./lib",

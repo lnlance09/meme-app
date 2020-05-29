@@ -1,5 +1,4 @@
 const AWS = require("aws-sdk")
-const fs = require("fs")
 
 const s3 = new AWS.S3({
 	accessKeyId: "AKIA3KB7ZZF26C4NLY6O",
@@ -8,14 +7,16 @@ const s3 = new AWS.S3({
 
 module.exports = {
 	uploadToS3: async function (file, fileName) {
-		const fileContent = fs.readFileSync(file)
+		const base64 = file.replace(/^data:image\/\w+;base64,/, "")
+		const buffer = new Buffer(base64, "base64")
 		const params = {
 			Bucket: "brandywine22",
 			Key: fileName,
-			Body: fileContent
+			Body: buffer,
+			ContentEncoding: "base64",
+			ContentType: "image/jpeg"
 		}
 
-		// Uploading files to the bucket
 		s3.upload(params, function (err, data) {
 			if (err) {
 				throw err

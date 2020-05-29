@@ -1,13 +1,12 @@
-import { useCookies } from "react-cookie"
 import { Button, Header } from "semantic-ui-react"
 import { Provider, connect } from "react-redux"
 import DefaultLayout from "@layouts/default"
 import Link from "next/link"
 import PropTypes from "prop-types"
-import React, { useState } from "react"
+import React from "react"
 import store from "@store"
 
-const Home: React.FunctionComponent = (props) => {
+const Home: React.FunctionComponent = () => {
 	return (
 		<Provider store={store}>
 			<DefaultLayout
@@ -30,7 +29,7 @@ const Home: React.FunctionComponent = (props) => {
 							<Link href="/create">
 								<a>
 									<Button
-										color="blue"
+										color="yellow"
 										content="Get started"
 										size="big"
 										style={{ marginTop: "14px" }}
@@ -50,7 +49,7 @@ Home.propTypes = {}
 Home.defaultProps = {}
 
 const mapStateToProps = (state: any, ownProps: any) => ({
-	...state.meme,
+	...state.home,
 	...ownProps
 })
 

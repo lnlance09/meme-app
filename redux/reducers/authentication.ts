@@ -1,16 +1,7 @@
 import * as constants from "../constants"
 import { getCookies } from "@utils/auth"
 
-const getCurrentCookies = () => {
-	const cookies = getCookies()
-	return cookies
-}
-console.log("aaaaa")
-const cookies = getCurrentCookies()
-console.log(cookies)
-
 const initial = () => ({
-	authenticated: false,
 	data: {},
 	passwordError: false,
 	verify: false

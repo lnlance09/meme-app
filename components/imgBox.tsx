@@ -1,12 +1,10 @@
 import { Button, Grid, Input } from "semantic-ui-react"
 import { useDropzone } from "react-dropzone"
 import PropTypes from "prop-types"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback } from "react"
 
 const ImgBox: React.FunctionComponent = (props) => {
 	const { imgIndex, imgUrl, onFileUpload, onKeyUp, onPaste } = props
-
-	useEffect(() => {}, [])
 
 	const onDrop = useCallback((files) => {
 		const file = files[0]
@@ -14,11 +12,11 @@ const ImgBox: React.FunctionComponent = (props) => {
 		const base64 = reader.readAsDataURL(file)
 		reader.onload = () => {
 			const img = reader.result
-			onFileUpload(base64, img, imgIndex)
+			onFileUpload(file.path, img, imgIndex)
 		}
 	}, [])
 
-	const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+	const { getRootProps, getInputProps } = useDropzone({ onDrop })
 
 	return (
 		<div className="imgBox">

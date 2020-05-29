@@ -20,8 +20,6 @@ const TextBox: React.FunctionComponent = (props) => {
 
 	const [colorPickerOpen, setColorPicker] = useState(false)
 
-	// useEffect((props) => {}, [text])
-
 	const toggleColorPicker = () => {
 		setColorPicker(!colorPickerOpen)
 	}

@@ -6,6 +6,30 @@
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Condensed&display=swap');
+  
+@keyframes increase {
+   from {
+       left: -5%;
+       width: 5%;
+    }
+    
+    to {
+       left: 130%;
+       width: 100%;
+    }
+}
+
+@keyframes decrease {
+    from { 
+        left: -80%;
+        width: 80%;
+    }
+
+    to {
+        left: 110%;
+        width: 10%;
+    }
+}
 
 .pageHeader {
     .rainbow {
@@ -13,20 +37,40 @@
         background-image: gradient(linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22));
         color: transparent;
         height: 5px !important;
+        // opacity: 0.7;
         position: fixed;
         top: 0;
         width: 100%;
         z-index: 99999;
     }
 
+    .subline {
+        background: $lightGrey;
+        height: 5px;
+        position: fixed;
+        top: 0;
+        z-index: 999999;
+    }
+
+    .inc {
+        animation: increase 2s infinite;
+    }
+
+    .dec {
+        animation: decrease 2s 0.5s infinite;
+    }
+
     .menu.globalHeader {
         background: $white;
         border-bottom: dashed 2px $lightGrey;
-        // border-bottom: none;
         box-shadow: none;
         height: 72px;
         margin-top: 5px;
         z-index: 1001 !important;
+
+        &.borderless {
+            border-bottom: none;
+        }
 
         .headerContainer {
             .responsive {
@@ -77,11 +121,8 @@
             }
 
             .dropDownMenu {
-                a {
-                    color: $black;
-                }
-
                 .menu.visible {
+                    min-width: 150px;
                     z-index: 1001;
                 }
             }

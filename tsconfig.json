@@ -24,6 +24,7 @@
 	"paths": {
 		"@actions/*": ["redux/actions/*"],
 		"@components/*": ["components/*"],
+		"@controllers/*": ["controllers/*"],
 		"@layouts/*": ["layouts/*"],
 		"@lib/*": ["lib/*"],
 		"@models/*": ["models/*"],

@@ -1,17 +1,17 @@
-import { Grid, Header, Image, Placeholder } from "semantic-ui-react"
+import { Grid, Header, Image, List, Placeholder } from "semantic-ui-react"
 import { Provider, connect } from "react-redux"
 import DefaultLayout from "@layouts/default"
 import PropTypes from "prop-types"
-import React, { Fragment } from "react"
+import React, { Fragment, useState } from "react"
 import store from "@store"
 
-const About: React.FunctionComponent = (props) => {
+const Meme: React.FunctionComponent = (props) => {
 	const [loading, setLoading] = useState(true)
 
 	return (
 		<Provider store={store}>
 			<DefaultLayout
-				containerClassName="aboutPage"
+				containerClassName="memePage"
 				seo={{
 					description: "",
 					image: {
@@ -49,8 +49,13 @@ const About: React.FunctionComponent = (props) => {
 	)
 }
 
-About.propTypes = {}
+Meme.propTypes = {}
 
-About.defaultProps = {}
+Meme.defaultProps = {}
 
-export default About
+const mapStateToProps = (state: any, ownProps: any) => ({
+	...state.meme,
+	...ownProps
+})
+
+export default connect(mapStateToProps, {})(Meme)
