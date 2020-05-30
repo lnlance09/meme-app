@@ -4,10 +4,10 @@ module.exports = (sequelize, Sequelize) => {
 		{
 			id: {
 				type: Sequelize.INTEGER,
-				unique: true,
 				allowNull: false,
+				autoIncrement: true,
 				primaryKey: true,
-				autoIncrement: true
+				unique: true
 			},
 			fontColor: {
 				type: Sequelize.CHAR
@@ -17,13 +17,6 @@ module.exports = (sequelize, Sequelize) => {
 			},
 			fontSize: {
 				type: Sequelize.CHAR
-			},
-			templateId: {
-				type: Sequelize.INTEGER,
-				references: {
-					model: "templates",
-					key: "id"
-				}
 			},
 			text: {
 				type: Sequelize.TEXT
@@ -40,6 +33,8 @@ module.exports = (sequelize, Sequelize) => {
 			updatedAt: false
 		}
 	)
+
+	TemplateText.associate = (models) => {}
 
 	return TemplateText
 }

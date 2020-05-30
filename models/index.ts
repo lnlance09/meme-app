@@ -1,5 +1,10 @@
 const dbConfig = require("../db.config.js")
 const Sequelize = require("sequelize")
+const Meme = require("./meme.ts")
+const MemeTemplate = require("./memeTemplate.ts")
+const Template = require("./template.ts")
+const TemplateText = require("./templateText.ts")
+const User = require("./user.ts")
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 	host: dbConfig.HOST,
@@ -13,14 +18,21 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 	}
 })
 
-let db = {}
+let db = {
+	meme: Meme(sequelize, Sequelize),
+	memeTemplate: MemeTemplate(sequelize, Sequelize),
+	template: Template(sequelize, Sequelize),
+	templateText: TemplateText(sequelize, Sequelize),
+	user: User(sequelize, Sequelize)
+}
+
+Object.keys(db).forEach((modelName) => {
+	if (db[modelName].associate) {
+		db[modelName].associate(db)
+	}
+})
+
 db.Sequelize = Sequelize
 db.sequelize = sequelize
-
-db.meme = require("./meme.ts")(sequelize, Sequelize)
-db.memeTemplate = require("./memeTemplate.ts")(sequelize, Sequelize)
-db.template = require("./template.ts")(sequelize, Sequelize)
-db.templateText = require("./templateText.ts")(sequelize, Sequelize)
-db.user = require("./user.ts")(sequelize, Sequelize)
 
 module.exports = db

@@ -2,8 +2,8 @@ import { ApolloServer, gql } from "apollo-server-micro"
 import Knex from "knex"
 
 const db = new Knex({
-	client: "mysql",
-	connection: ""
+	client: "mysql2",
+	connection: "http://localhost:3306/brandy"
 })
 
 const typeDefs = gql`

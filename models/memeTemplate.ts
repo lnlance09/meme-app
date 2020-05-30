@@ -4,24 +4,31 @@ module.exports = (sequelize, Sequelize) => {
 		{
 			id: {
 				type: Sequelize.INTEGER,
-				unique: true,
 				allowNull: false,
+				autoIncrement: true,
 				primaryKey: true,
-				autoIncrement: true
+				unique: true
 			},
 			memeId: {
-				type: Sequelize.INTEGER,
+				type: Sequelize.INTEGER
+				/*
 				references: {
+					key: "id",
 					model: "memes",
-					key: "id"
 				}
+				*/
 			},
 			templateId: {
-				type: Sequelize.INTEGER,
+				type: Sequelize.INTEGER
+				/*
 				references: {
-					model: "templates",
-					key: "id"
+					key: "id",
+					model: "templates"
 				}
+				*/
+			},
+			textId: {
+				type: Sequelize.INTEGER
 			}
 		},
 		{
@@ -29,6 +36,12 @@ module.exports = (sequelize, Sequelize) => {
 			updatedAt: false
 		}
 	)
+
+	MemeTemplate.associate = (models) => {
+		MemeTemplate.belongsTo(models.meme, { as: "meme", foreignKey: "memeId" })
+		MemeTemplate.belongsTo(models.template, { as: "template", foreignKey: "templateId" })
+		MemeTemplate.belongsTo(models.templateText, { as: "text", foreignKey: "textId" })
+	}
 
 	return MemeTemplate
 }

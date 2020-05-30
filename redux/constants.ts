@@ -7,7 +7,8 @@ export const SET_USER_DATA = "authentication:SET_USER_DATA"
 export const SET_VERIFICATION_ERROR = "authentication:SET_VERIFICATION_ERROR"
 export const VERIFY_EMAIL = "authentication:VERIFY_EMAIL"
 
-export const CREATE_MEME = "meme:CREATE_MEME"
+export const GET_MEME = "meme:GET_MEME"
+export const SET_MEME_FETCH_ERROR = "meme:SET_MEME_FETCH_ERROR"
 
 export const SEARCH_ARTISTS = "search:SEARCH_ARTISTS"
 export const SEARCH_MEMES = "search:SEARCH_MEMES"

@@ -6,6 +6,7 @@ const Meme = db.meme
 const MemeTemplate = db.memeTemplate
 const Template = db.template
 const TemplateText = db.templateText
+const User = db.user
 const Op = db.Sequelize.Op
 
 exports.create = async (req, res) => {
@@ -22,7 +23,7 @@ exports.create = async (req, res) => {
 
 	const meme = await Meme.create({
 		caption,
-		createdBy: authenticated ? user.id : 3
+		createdBy: authenticated ? user.id : 1
 	})
 		.then((data) => {
 			const { id } = data.dataValues
@@ -44,34 +45,29 @@ exports.create = async (req, res) => {
 		// console.log("image", img)
 		// console.log("texts", texts)
 
-		await MemeTemplate.create({
-			memeId,
-			templateId
-		})
-			.then((data) => {})
-			.catch((err) => {
-				return res.status(500).send({
-					error: true,
-					msg: err.message || "An error occurred"
-				})
-			})
-
 		texts.map(async (text) => {
 			TemplateText.create({
 				fontColor: text.color,
 				fontFamily: text.font,
 				fontSize: text.size,
-				templateId,
 				text: text.text,
 				x: text.x,
 				y: text.y
 			})
 				.then((data) => {
-					return res.status(200).send({
-						error: false,
-						id: memeId,
-						msg: "Success"
+					const { id } = data.dataValues
+					MemeTemplate.create({
+						memeId,
+						templateId,
+						textId: id
 					})
+						.then((data) => {})
+						.catch((err) => {
+							return res.status(500).send({
+								error: true,
+								msg: err.message || "An error occurred"
+							})
+						})
 				})
 				.catch((err) => {
 					return res.status(500).send({
@@ -81,6 +77,12 @@ exports.create = async (req, res) => {
 				})
 		})
 	})
+
+	return res.status(200).send({
+		error: false,
+		id: memeId,
+		msg: "Success"
+	})
 }
 
 exports.delete = (req, res) => {}
@@ -88,34 +90,64 @@ exports.delete = (req, res) => {}
 exports.findAll = (req, res) => {}
 
 exports.findOne = async (req, res) => {
-	console.log("findOne", req.body)
-	const { id } = req.body
+	const { id } = req.params
 
-	Meme.findAll({
+	MemeTemplate.findAll({
 		include: [
 			{
-				model: MemeTemplate,
+				model: Meme,
+				as: "meme",
 				required: true,
 				include: [
 					{
-						model: Template,
+						model: User,
+						as: "user",
 						required: true,
-						include: [TemplateText]
+						attributes: [
+							["img", "userImg"],
+							["name", "userName"]
+						]
 					}
 				]
+			},
+			{
+				model: Template,
+				as: "template",
+				attributes: [
+					["name", "templateName"],
+					["s3Link", "templateSrc"]
+				],
+				required: true
+			},
+			{
+				model: TemplateText,
+				as: "text",
+				required: true
 			}
 		],
 		where: {
-			id
-		}
-	}).then((memes) => {
-		console.log("memes", memes)
+			memeId: id
+		},
+		raw: true
 	})
+		.then((meme) => {
+			if (meme.length === 0) {
+				return res.status(404).send({
+					error: true,
+					msg: "That meme does not exist"
+				})
+			}
 
-	// TemplateText.hasOne(Template, { foreignKey: "templateId" })
-	// Template.
-
-	// User.hasMany(Post, {foreignKey: 'user_id'})
-	// Post.belongsTo(User, {foreignKey: 'user_id'})
-	// Post.find({ where: { ...}, include: [User]})
+			return res.status(200).send({
+				error: false,
+				meme,
+				msg: "Success"
+			})
+		})
+		.catch((err) => {
+			return res.status(500).send({
+				error: true,
+				msg: err.message || "An error occurred"
+			})
+		})
 }

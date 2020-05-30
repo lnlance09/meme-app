@@ -4,17 +4,19 @@ module.exports = (sequelize, Sequelize) => {
 		{
 			id: {
 				type: Sequelize.INTEGER,
-				unique: true,
 				allowNull: false,
+				autoIncrement: true,
 				primaryKey: true,
-				autoIncrement: true
+				unique: true
 			},
 			createdBy: {
-				type: Sequelize.INTEGER,
+				type: Sequelize.INTEGER
+				/*
 				references: {
-					model: "users",
-					key: "id"
+					key: "id",
+					model: "users"
 				}
+				*/
 			},
 			name: {
 				type: Sequelize.CHAR
@@ -28,6 +30,10 @@ module.exports = (sequelize, Sequelize) => {
 			updatedAt: false
 		}
 	)
+
+	Template.associate = (models) => {
+		Template.belongsTo(models.user, { as: "user", foreignKey: "createdBy" })
+	}
 
 	return Template
 }

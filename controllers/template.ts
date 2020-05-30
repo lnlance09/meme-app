@@ -28,7 +28,7 @@ exports.create = async (req, res) => {
 	console.log("imageUpload", imageUpload)
 
 	Template.create({
-		createdBy: authenticated ? user.id : 3,
+		createdBy: authenticated ? user.id : 1,
 		// name: "",
 		s3Link: fileName
 	})

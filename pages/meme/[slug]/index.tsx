@@ -1,12 +1,22 @@
+import { getMeme } from "@actions/meme"
 import { Grid, Header, Image, List, Placeholder } from "semantic-ui-react"
+import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
+import { withApollo } from "@lib/apollo"
 import DefaultLayout from "@layouts/default"
 import PropTypes from "prop-types"
-import React, { Fragment, useState } from "react"
+import React, { Fragment, useEffect, useState } from "react"
 import store from "@store"
 
-const Meme: React.FunctionComponent = (props) => {
-	const [loading, setLoading] = useState(true)
+const Meme: React.FunctionComponent = ({ getMeme, meme }) => {
+	const { error, errorMsg, loading } = meme
+
+	const router = useRouter()
+	const { slug } = router.query
+
+	useEffect(() => {
+		getMeme({ id: slug })
+	}, [])
 
 	return (
 		<Provider store={store}>
@@ -35,12 +45,7 @@ const Meme: React.FunctionComponent = (props) => {
 									<Image />
 								)}
 							</Grid.Column>
-							<Grid.Column width={5}>
-								<List size="big">
-									<List.Item>23 memes</List.Item>
-									<List.Item>23 templates</List.Item>
-								</List>
-							</Grid.Column>
+							<Grid.Column width={5}></Grid.Column>
 						</Grid.Row>
 					</Grid>
 				</Fragment>
@@ -49,13 +54,28 @@ const Meme: React.FunctionComponent = (props) => {
 	)
 }
 
-Meme.propTypes = {}
+Meme.propTypes = {
+	getMeme: PropTypes.func,
+	meme: PropTypes.shape({
+		error: PropTypes.bool,
+		errorMsg: PropTypes.string,
+		loading: PropTypes.bool
+	})
+}
 
-Meme.defaultProps = {}
+Meme.defaultProps = {
+	getMeme,
+	meme: {}
+}
+
+// export default Meme
+// export default withApollo({ ssr: true })(Meme)
 
 const mapStateToProps = (state: any, ownProps: any) => ({
 	...state.meme,
 	...ownProps
 })
 
-export default connect(mapStateToProps, {})(Meme)
+export default connect(mapStateToProps, {
+	getMeme
+})(Meme)

@@ -18,16 +18,32 @@ const initial = () => ({
 				}
 			]
 		}
-	]
+	],
+	meme: {
+		error: false,
+		errorMsg: "",
+		loading: true
+	}
 })
 
 const meme = (state = initial(), action) => {
 	const { payload } = action
 
 	switch (action.type) {
-		case constants.CREATE_MEME:
+		case constants.GET_MEME:
 			return {
-				state
+				...state,
+				meme: payload
+			}
+
+		case constants.SET_MEME_FETCH_ERROR:
+			return {
+				...state,
+				meme: {
+					error: true,
+					errorMsg: "This meme does not exist",
+					loading: false
+				}
 			}
 
 		default:
