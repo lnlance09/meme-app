@@ -19,15 +19,6 @@ const authentication = (state = initial(), action) => {
 				passwordErrorMsg: payload.error
 			}
 
-		case constants.CHANGE_PROFILE_PIC:
-			return {
-				...state,
-				data: {
-					...state.data,
-					img: payload.img
-				}
-			}
-
 		case constants.LOGOUT:
 			return initial()
 
@@ -90,7 +81,7 @@ const authentication = (state = initial(), action) => {
 			return {
 				...state,
 				verifyError: true,
-				verrifyErrorMsg: payload.msg
+				verifyErrorMsg: payload.msg
 			}
 
 		case constants.VERIFY_EMAIL:

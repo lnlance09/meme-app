@@ -127,11 +127,14 @@ export const submitRegistrationForm = ({ email, name, password, username }) => (
 			password,
 			username
 		})
-		.then((response) => {
+		.then(async (response) => {
+			const { data } = response
 			dispatch({
-				payload: response.data,
+				payload: data,
 				type: constants.SET_USER_DATA
 			})
+
+			await setToken(data.user)
 		})
 		.catch((error) => {
 			dispatch({
@@ -154,11 +157,17 @@ export const submitVerificationForm = ({ code, bearer }) => (dispatch) => {
 				}
 			}
 		)
-		.then((response) => {
+		.then(async (response) => {
+			const { data } = response
 			dispatch({
-				payload: response.data,
+				payload: data,
 				type: constants.VERIFY_EMAIL
 			})
+
+			await setToken(data.user)
+			if (!data.error) {
+				Router.push("/")
+			}
 		})
 		.catch((error) => {
 			dispatch({

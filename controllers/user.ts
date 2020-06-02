@@ -196,11 +196,9 @@ exports.login = async (req, res) => {
 		.then((data) => {
 			if (data.length === 1) {
 				const userData = data[0]
-				const token = Auth.signToken(userData.toJSON())
 				return res.status(200).send({
 					error: false,
 					msg: "Login successful",
-					token,
 					user: userData
 				})
 			}
@@ -253,18 +251,15 @@ exports.verify = async (req, res) => {
 			where: { id: user.id }
 		}
 	)
-		.then((num) => {
-			if (num == 1) {
+		.then((rows) => {
+			const num = rows[0]
+			if (num === 1) {
 				user.emailVerified = true
-				console.log("user", user)
-
-				const token = Auth.signToken(user)
 				return res.status(200).send({
 					error: false,
 					msg: "Success",
-					token
+					user
 				})
-			} else {
 			}
 		})
 		.catch((err) => {

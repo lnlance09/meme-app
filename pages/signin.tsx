@@ -7,7 +7,7 @@ import Router from "next/router"
 const SignIn: React.FunctionComponent = () => {
 	useEffect(() => {
 		const userData = parseJwt()
-		if (userData) {
+		if (userData ? userData.emailVerified : false) {
 			Router.push("/")
 		}
 	}, [])
@@ -18,13 +18,13 @@ const SignIn: React.FunctionComponent = () => {
 			containerClassName="signInPage"
 			isText
 			seo={{
-				description: "",
+				description: "Sign in or sign up with Brandy to start creating memes",
 				image: {
 					height: 200,
 					src: "",
 					width: 200
 				},
-				title: "",
+				title: "Sign In",
 				url: ""
 			}}
 			showFooter={false}

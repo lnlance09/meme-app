@@ -38,21 +38,15 @@ const Authentication: React.FunctionComponent = (props) => {
 		setLogin(!login)
 	}, [login])
 
-	const submitLoginForm = useCallback(
-		(e) => {
-			console.log("submitLoginForm")
-			console.log(email)
-			console.log(password)
-			if (email.length > 0 && password.length > 0) {
-				setLoadingLogin(true)
-				props.submitLoginForm({
-					email,
-					password
-				})
-			}
-		},
-		[email, password]
-	)
+	const submitLoginForm = () => {
+		if (email.length > 0 && password.length > 0) {
+			setLoadingLogin(true)
+			props.submitLoginForm({
+				email,
+				password
+			})
+		}
+	}
 
 	const submitRegistrationForm = () => {
 		setLoadingRegistration(true)
@@ -64,20 +58,20 @@ const Authentication: React.FunctionComponent = (props) => {
 		})
 	}
 
-	const submitVerificationForm = useCallback(
-		(e) => {
-			e.preventDefault()
-			if (verificationCode.length === 10) {
-				props.submitVerificationForm({
-					bearer: props.bearer,
-					code: verificationCode
-				})
-			}
-		},
-		[verificationCode]
-	)
+	const submitVerificationForm = () => {
+		if (verificationCode.length === 10) {
+			props.submitVerificationForm({
+				bearer: props.bearer,
+				code: verificationCode
+			})
+		}
+	}
 
 	const ErrorMsg = () => {
+		if (props.verify && props.verifyError) {
+			return <Message content={props.verifyErrorMsg} error size="big" />
+		}
+
 		if (login && props.loginError) {
 			return <Message content={props.loginErrorMsg} error size="big" />
 		}
@@ -85,6 +79,8 @@ const Authentication: React.FunctionComponent = (props) => {
 		if (!login && props.registerError) {
 			return <Message content={props.registerErrorMsg} error size="big" />
 		}
+
+		return null
 	}
 
 	const InfoBox = () => {
@@ -233,16 +229,6 @@ const Authentication: React.FunctionComponent = (props) => {
 
 Authentication.propTypes = {
 	bearer: PropTypes.string,
-	data: PropTypes.shape({
-		createdAt: PropTypes.string,
-		email: PropTypes.string,
-		emailVerified: PropTypes.bool,
-		name: PropTypes.string,
-		id: PropTypes.number,
-		img: PropTypes.string,
-		username: PropTypes.string,
-		verificationCode: PropTypes.string
-	}),
 	loginError: PropTypes.bool,
 	loginErrorMsg: PropTypes.string,
 	registerError: PropTypes.bool,
@@ -250,12 +236,16 @@ Authentication.propTypes = {
 	submitLoginForm: PropTypes.func,
 	submitRegistrationForm: PropTypes.func,
 	submitVerificationForm: PropTypes.func,
-	verify: PropTypes.bool
+	verify: PropTypes.bool,
+	verifyError: PropTypes.bool,
+	verifyErrorMsg: PropTypes.string
 }
 
 Authentication.defaultProps = {
-	data: {},
-	login: true
+	login: true,
+	submitLoginForm,
+	submitRegistrationForm,
+	submitVerificationForm
 }
 
 const mapStateToProps = (state: any, ownProps: any) => ({
