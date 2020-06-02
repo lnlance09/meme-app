@@ -14,7 +14,7 @@ const Template: React.FunctionComponent = (props) => {
 
 	const [currentUser, setCurrentUser] = useState({})
 
-	const { template } = props
+	const { getTemplate, template } = props
 
 	useEffect(() => {
 		const userData = parseJwt()

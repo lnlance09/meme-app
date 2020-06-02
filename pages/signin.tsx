@@ -1,7 +1,6 @@
 import { parseJwt } from "@utils/tokenFunctions"
 import Authentication from "@components/authentication"
 import DefaultLayout from "@layouts/default"
-import PropTypes from "prop-types"
 import React, { useEffect } from "react"
 import Router from "next/router"
 
@@ -34,14 +33,6 @@ const SignIn: React.FunctionComponent = () => {
 			<Authentication />
 		</DefaultLayout>
 	)
-}
-
-SignIn.propTypes = {
-	authenticated: PropTypes.bool
-}
-
-SignIn.defaultProps = {
-	authenticated: false
 }
 
 export default SignIn

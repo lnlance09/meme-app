@@ -59,7 +59,11 @@ const MemeImages: React.FunctionComponent = ({
 								}
 							}}
 							onError={(i) => (i.target.src = BlankImg)}
-							src={img === "" ? "/images/blank.png" : img}
+							src={
+								img === ""
+									? "/images/blank.png"
+									: `${img}?timestamp=${new Date().getTime()}`
+							}
 						/>
 					</div>
 				)

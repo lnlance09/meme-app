@@ -12,11 +12,11 @@ const initial = () => ({
 	}
 })
 
-const pageUser = (state = initial(), action) => {
+const user = (state = initial(), action) => {
 	const { payload } = action
 
 	switch (action.type) {
-		case constants.GET_USER_DATA:
+		case constants.GET_USER:
 			if (payload.error) {
 				return {
 					...state,
@@ -45,4 +45,4 @@ const pageUser = (state = initial(), action) => {
 	}
 }
 
-export default pageUser
+export default user

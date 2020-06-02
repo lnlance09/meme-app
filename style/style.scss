@@ -131,6 +131,13 @@ body {
 
 .signInPage {
 	margin-top: 0;
+	width: 100% !important;
+
+	@media only screen and (max-width: 767px) {
+		&.ui.container {
+			margin: 0 !important;
+		}
+	}
 }
 
 .explorePage {
@@ -148,7 +155,7 @@ body {
 	.exploreFilterBtnGroup {
 		.button {
 			&.active {
-				text-decoration: underline;
+				border: solid 1px $white;
 			}
 		}
 	}

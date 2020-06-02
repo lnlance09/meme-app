@@ -18,7 +18,7 @@ const Home: React.FunctionComponent = () => {
 						src: "",
 						width: 200
 					},
-					title: "",
+					title: "Home",
 					url: ""
 				}}
 			>

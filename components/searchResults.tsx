@@ -5,6 +5,8 @@ import PropTypes from "prop-types"
 import React, { Fragment, useEffect, useState } from "react"
 import Router from "next/router"
 
+const s3BaseUrl = `https://brandywine22.s3-us-west-2.amazonaws.com/`
+
 const MemeCard = ({ loading, title, subtitle, description }) => {
 	if (loading) {
 		return (
@@ -56,14 +58,7 @@ const SearchResults: React.FunctionComponent = (props) => {
 	}
 
 	const getCardImage = (s3Link) => {
-		let img = null
-		if (s3Link === null) {
-			img = DefaultPic
-		} else {
-			img = `https://brandywine22.s3-us-west-2.amazonaws.com/${s3Link}`
-		}
-
-		return img
+		return s3Link === null ? DefaultPic : `${s3BaseUrl}${s3Link}`
 	}
 
 	return (
@@ -76,7 +71,7 @@ const SearchResults: React.FunctionComponent = (props) => {
 					return (
 						<Card
 							className="searchCard"
-							key={`${type}_${results.id}`}
+							key={`${type}_${i}`}
 							onClick={() => Router.push(link)}
 						>
 							{loading ? (

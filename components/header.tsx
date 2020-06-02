@@ -1,4 +1,4 @@
-import { logout } from "@actions/user"
+import { logout } from "@actions/authentication"
 import { parseJwt } from "@utils/tokenFunctions"
 import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
@@ -8,6 +8,7 @@ import Link from "next/link"
 import Logo from "@public/images/logos/jackie-chan.svg"
 import PropTypes from "prop-types"
 import React, { Fragment, useEffect, useState } from "react"
+import Router from "next/router"
 import store from "@store"
 
 const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
@@ -73,6 +74,7 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 								onClick={() => {
 									localStorage.removeItem("jwtToken")
 									logout()
+									Router.reload(window.location.pathname)
 								}}
 								text="Log out"
 							/>

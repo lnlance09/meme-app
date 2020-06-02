@@ -16,7 +16,17 @@ const template = (state = initial(), action) => {
 			return {
 				...state,
 				tempalate: {
-					data: payload.template,
+					data: {
+						createdAt: payload.template.createdAt,
+						name: payload.template.templateName,
+						s3Link: payload.template.s3Link,
+						user: {
+							id: payload.template.id,
+							img: payload.template.img,
+							name: payload.template.name,
+							username: payload.template.username
+						}
+					},
 					error: false,
 					errorMsg: "",
 					loading: false

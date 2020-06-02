@@ -1,11 +1,14 @@
 @import './colors.scss';
 
 .authComponent {
-    width: 100%;
+    @media only screen and (max-width: 767px) {
+        .header.huge {
+            margin-bottom: 0;
+        }
+    }
 
     .authSegment {
         margin: 0 auto;
-        width: 85%;
 
         .error.message {
             margin-bottom: 14px;

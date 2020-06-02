@@ -32,7 +32,7 @@ module.exports = (sequelize, Sequelize) => {
 	)
 
 	Template.associate = (models) => {
-		Template.belongsTo(models.user, { as: "user", foreignKey: "createdBy" })
+		Template.belongsTo(models.user, { foreignKey: "createdBy" })
 	}
 
 	return Template

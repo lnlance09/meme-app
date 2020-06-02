@@ -93,16 +93,6 @@ const authentication = (state = initial(), action) => {
 				verrifyErrorMsg: payload.msg
 			}
 
-		case constants.UPDATE_ABOUT:
-			return {
-				...state,
-				bearer: payload.token,
-				data: {
-					...state.data,
-					bio: payload.bio
-				}
-			}
-
 		case constants.VERIFY_EMAIL:
 			return {
 				...state,

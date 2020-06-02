@@ -5,6 +5,7 @@ const axios = require("axios")
 const randomize = require("randomatic")
 const validator = require("validator")
 const Template = db.template
+const User = db.user
 const Op = db.Sequelize.Op
 
 exports.create = async (req, res) => {
@@ -88,7 +89,15 @@ exports.findOne = (req, res) => {
 
 	Template.findAll({
 		required: true,
-		attributes: ["name", "s3Link", "user.id", "user.img", "user.name", "user.username"],
+		attributes: [
+			"createdAt",
+			["name", "templateName"],
+			"s3Link",
+			"user.id",
+			"user.img",
+			"user.name",
+			"user.username"
+		],
 		where: {
 			id
 		},
@@ -102,10 +111,17 @@ exports.findOne = (req, res) => {
 		]
 	})
 		.then((template) => {
+			if (template.length === 0) {
+				return res.status(404).send({
+					error: true,
+					msg: "That template does not exist"
+				})
+			}
+
 			return res.status(200).send({
 				error: false,
 				msg: "Success",
-				template
+				template: template[0]
 			})
 		})
 		.catch((err) => {
