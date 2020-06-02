@@ -12,8 +12,4 @@ const store = createStore(
 	compose(applyMiddleware(...middleware, logger))
 )
 
-export const initializeStore = (preloadedState = initialState) => {
-	return createStore(rootReducer, preloadedState)
-}
-
 export default store

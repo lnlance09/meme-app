@@ -2,7 +2,7 @@ import { logout } from "@actions/user"
 import { parseJwt } from "@utils/tokenFunctions"
 import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
-import { Button, Container, Dropdown, Image, Menu, Sidebar } from "semantic-ui-react"
+import { Button, Container, Dropdown, Icon, Image, Menu, Sidebar } from "semantic-ui-react"
 import DefaultPic from "@public/images/avatar/small/chris.jpg"
 import Link from "next/link"
 import Logo from "@public/images/logos/jackie-chan.svg"
@@ -19,14 +19,13 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 
 	useEffect(() => {
 		const userData = parseJwt()
-		// console.log("userData", userData)
 		if (userData) {
 			setUser(userData)
 			setAuthenticated(true)
 		} else {
 			setAuthenticated(false)
 		}
-	}, [user])
+	}, [])
 
 	const { img, name, username } = user
 
@@ -85,12 +84,13 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 
 		if (authenticated === false) {
 			return (
-				<Menu.Item className="signInLink" direction="right" position="right">
+				<Menu.Item className="headerMenuItem signInLink" direction="right" position="right">
 					<Button
-						color="blue"
+						color="violet"
 						content="Sign In"
 						onClick={() => router.push("/signin?type=join")}
 					/>
+					<Icon name="sidebar" onClick={() => toggleVisibility(!visible)} size="big" />
 				</Menu.Item>
 			)
 		}
@@ -116,6 +116,7 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 							inline
 							onClick={() => router.push("/")}
 							src={Logo}
+							style={{ cursor: "pointer" }}
 						/>
 					</Container>
 				) : (
@@ -128,12 +129,12 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 										<a className="logoText">Brandy</a>
 									</Link>
 								</Menu.Item>
-								<Menu.Item className="headerMenuItem">
+								<Menu.Item className="headerMenuItem create">
 									<Link href="/create">
 										<a>Create</a>
 									</Link>
 								</Menu.Item>
-								<Menu.Item className="headerMenuItem">
+								<Menu.Item className="headerMenuItem explore">
 									<Link href="/explore/memes">
 										<a>Explore</a>
 									</Link>
@@ -145,20 +146,23 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 						<Sidebar
 							as={Menu}
 							animation="overlay"
+							borderless
 							icon="labeled"
 							vertical
 							visible={visible}
 							width="wide"
 						>
-							<Menu.Item>
-								<Button
-									color="blue"
-									content="Assign a fallacy"
-									fluid
-									icon="pencil"
-								/>
-							</Menu.Item>
 							{authenticated && <Menu.Item onClick={logout}>Sign Out</Menu.Item>}
+							<Menu.Item>
+								<Link href="/create">
+									<a>Create</a>
+								</Link>
+							</Menu.Item>
+							<Menu.Item>
+								<Link href="/create">
+									<a>Explore</a>
+								</Link>
+							</Menu.Item>
 						</Sidebar>
 					</Fragment>
 				)}

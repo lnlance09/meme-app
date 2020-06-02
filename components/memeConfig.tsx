@@ -23,7 +23,7 @@ const MemeConfig: React.FunctionComponent = (props) => {
 				const { active, img, path, texts } = _img
 				if (active) {
 					return (
-						<Segment key={`textSegment${i}`} stacked>
+						<Segment key={`textSegment${i}`}>
 							<ImgBox
 								imgIndex={i}
 								imgUrl={path ? path : img}
@@ -31,7 +31,7 @@ const MemeConfig: React.FunctionComponent = (props) => {
 								onKeyUp={onKeyUp}
 								onPaste={onPaste}
 							/>
-							<Divider horizontal>Text 1</Divider>
+							<Divider />
 							{texts.map((text, x) => (
 								<Fragment key={`textFragment${x}`}>
 									<TextBox
@@ -46,15 +46,11 @@ const MemeConfig: React.FunctionComponent = (props) => {
 										text={text.text}
 										textIndex={x}
 									/>
-									{x === texts.length - 1 ? (
-										<Divider />
-									) : (
-										<Divider horizontal>Text {x + 2}</Divider>
-									)}
+									<Divider />
 								</Fragment>
 							))}
 							<Button
-								color="black"
+								color="blue"
 								content="Add more text"
 								fluid
 								onClick={() => addMoreText(i)}
@@ -79,6 +75,7 @@ MemeConfig.propTypes = {
 		PropTypes.shape({
 			active: PropTypes.bool,
 			img: PropTypes.string,
+			path: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
 			texts: PropTypes.arrayOf(
 				PropTypes.shape({
 					activeDrags: PropTypes.number,

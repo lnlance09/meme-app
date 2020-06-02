@@ -62,15 +62,11 @@
 
     .menu.globalHeader {
         background: $white;
-        border-bottom: dashed 2px $lightGrey;
+        border-bottom: none;
         box-shadow: none;
         height: 72px;
         margin-top: 5px;
         z-index: 1001 !important;
-
-        &.borderless {
-            border-bottom: none;
-        }
 
         .headerContainer {
             .responsive {
@@ -80,6 +76,18 @@
 
             .headerMenuItem {
                 margin-right: 0 !important;
+
+                &.create, &.explore, &.signInLink button {
+                    @media only screen and (max-width: 600px) {
+                        display: none;
+                    }
+                }
+
+                &.signInLink > .icon.sidebar {
+                    @media only screen and (min-width: 600px) {
+                        display: none !important;
+                    }
+                }
 
                 .headerLogo {
                     cursor: pointer;
@@ -106,20 +114,6 @@
                 }
             }
 
-            .sidebarItem {
-                .button {
-                    margin-right: 18px;
-                }
-
-                .icon {
-                    cursor: pointer;
-
-                    &:hover {
-                        color: $blue;
-                    }
-                }
-            }
-
             .dropDownMenu {
                 .menu.visible {
                     min-width: 150px;
@@ -131,13 +125,10 @@
 
     .sidebar.menu {
         padding-top: 135px;
+        z-index: 999;
 
-        .fallacySidebarItem {
-            text-align: left;
-        }
-
-        .sidebarSearchBtn {
-            margin-top: 8px;
+        .item a {
+            color: $black !important;
         }
     }
 }

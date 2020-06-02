@@ -155,7 +155,6 @@ export const submitVerificationForm = ({ code, bearer }) => (dispatch) => {
 			}
 		)
 		.then((response) => {
-			console.log(response)
 			dispatch({
 				payload: response.data,
 				type: constants.VERIFY_EMAIL

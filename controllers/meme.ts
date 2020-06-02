@@ -87,7 +87,68 @@ exports.create = async (req, res) => {
 
 exports.delete = (req, res) => {}
 
-exports.findAll = (req, res) => {}
+exports.findAll = async (req, res) => {
+	const { q } = req.query
+
+	let where = {
+		[Op.or]: [
+			{
+				caption: {
+					[Op.like]: `%${q}%`
+				}
+			},
+			{
+				name: {
+					[Op.like]: `%${q}%`
+				}
+			}
+		]
+	}
+
+	if (typeof q === "undefined" || q === "") {
+		where = {}
+	}
+
+	Meme.findAll({
+		model: Meme,
+		as: "meme",
+		required: true,
+		attributes: [
+			"caption",
+			"createdAt",
+			"createdBy",
+			"id",
+			["name", "templateName"],
+			"s3Link",
+			"views",
+			"user.img",
+			"user.name",
+			"user.username"
+		],
+		include: [
+			{
+				model: User,
+				required: true,
+				attributes: []
+			}
+		],
+		where,
+		raw: true
+	})
+		.then((memes) => {
+			return res.status(200).send({
+				error: false,
+				memes,
+				msg: "Success"
+			})
+		})
+		.catch((err) => {
+			return res.status(500).send({
+				error: true,
+				msg: err.message || "An error occurred"
+			})
+		})
+}
 
 exports.findOne = async (req, res) => {
 	const { id } = req.params
@@ -103,10 +164,8 @@ exports.findOne = async (req, res) => {
 						model: User,
 						as: "user",
 						required: true,
-						attributes: [
-							["img", "userImg"],
-							["name", "userName"]
-						]
+						mapToModel: true,
+						attributes: [["img", "userImg"], ["name", "userName"], "username"]
 					}
 				]
 			},
@@ -122,7 +181,8 @@ exports.findOne = async (req, res) => {
 			{
 				model: TemplateText,
 				as: "text",
-				required: true
+				required: true,
+				mapToModel: true
 			}
 		],
 		where: {
@@ -130,13 +190,62 @@ exports.findOne = async (req, res) => {
 		},
 		raw: true
 	})
-		.then((meme) => {
-			if (meme.length === 0) {
+		.then((memes) => {
+			if (memes.length === 0) {
 				return res.status(404).send({
 					error: true,
 					msg: "That meme does not exist"
 				})
 			}
+
+			const firstRow = memes[0]
+			let meme = {
+				caption: firstRow["meme.caption"],
+				createdAt: firstRow["meme.createdAt"],
+				img: `https://brandywine22.s3-us-west-2.amazonaws.com/${firstRow["meme.s3Link"]}`,
+				name: firstRow["meme.name"],
+				templates: [],
+				user: {
+					id: firstRow["meme.user.id"],
+					img: `https://brandywine22.s3-us-west-2.amazonaws.com/${firstRow["meme.user.userImg"]}`,
+					name: firstRow["meme.user.userName"],
+					username: firstRow["meme.user.username"]
+				},
+				views: firstRow["meme.views"]
+			}
+
+			let templateIds = []
+			memes.map((_meme) => {
+				const templateId = _meme.templateId
+				const index = templateIds.indexOf(templateId)
+				if (index !== -1) {
+					meme.templates[index].texts.push({
+						color: _meme["text.fontColor"],
+						font: _meme["text.fontFamily"],
+						size: _meme["text.fontSize"],
+						text: _meme["text.text"],
+						x: _meme["text.x"],
+						y: _meme["text.y"]
+					})
+				} else {
+					templateIds.push(templateId)
+					meme.templates.push({
+						img: `https://brandywine22.s3-us-west-2.amazonaws.com/${_meme["template.templateSrc"]}`,
+						name: _meme["template.templateName"],
+						templateId,
+						texts: [
+							{
+								color: _meme["text.fontColor"],
+								font: _meme["text.fontFamily"],
+								size: _meme["text.fontSize"],
+								text: _meme["text.text"],
+								x: _meme["text.x"],
+								y: _meme["text.y"]
+							}
+						]
+					})
+				}
+			})
 
 			return res.status(200).send({
 				error: false,

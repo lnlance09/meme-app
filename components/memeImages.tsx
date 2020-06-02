@@ -4,24 +4,22 @@ import Draggable from "react-draggable"
 import PropTypes from "prop-types"
 import React from "react"
 
-const MemeImages: React.FunctionComponent = (props) => {
-	const { clickImg, handleDrag, handleDragStart, handleDragStop, images } = props
-
+const MemeImages: React.FunctionComponent = ({
+	clickImg,
+	editable,
+	handleDrag,
+	handleDragStart,
+	handleDragStop,
+	images
+}) => {
 	return (
 		<div id="memeContainer">
 			{images.map((_img, i) => {
 				const { active, img, texts } = _img
 				return (
 					<div className="draggableWrapper" key={`draggableWrapper${i}`}>
-						{texts.map((text, x) => (
-							<Draggable
-								bounds="parent"
-								handle=".memeText"
-								key={`draggable${x}`}
-								onDrag={(e, ui) => handleDrag(i, x, e, ui)}
-								onStart={() => handleDragStart(i, x)}
-								onStop={() => handleDragStop(i, x)}
-							>
+						{texts.map((text, x) => {
+							const textBlock = (
 								<div
 									className="memeText"
 									style={{
@@ -33,12 +31,33 @@ const MemeImages: React.FunctionComponent = (props) => {
 								>
 									{text.text}
 								</div>
-							</Draggable>
-						))}
+							)
+
+							if (editable) {
+								return (
+									<Draggable
+										bounds="parent"
+										handle=".memeText"
+										key={`draggable${x}`}
+										onDrag={(e, ui) => handleDrag(i, x, e, ui)}
+										onStart={() => handleDragStart(i, x)}
+										onStop={() => handleDragStop(i, x)}
+									>
+										{textBlock}
+									</Draggable>
+								)
+							}
+
+							return textBlock
+						})}
 						<Image
 							className={`memeImg ${active ? "active" : ""}`}
 							inline
-							onClick={() => clickImg(i)}
+							onClick={() => {
+								if (editable) {
+									clickImg(i)
+								}
+							}}
 							onError={(i) => (i.target.src = BlankImg)}
 							src={img === "" ? "/images/blank.png" : img}
 						/>
@@ -51,6 +70,7 @@ const MemeImages: React.FunctionComponent = (props) => {
 
 MemeImages.propTypes = {
 	clickImg: PropTypes.func,
+	editable: PropTypes.bool,
 	handleDrag: PropTypes.func,
 	handleDragStart: PropTypes.func,
 	handleDragStop: PropTypes.func,
@@ -58,6 +78,9 @@ MemeImages.propTypes = {
 		PropTypes.shape({
 			active: PropTypes.bool,
 			img: PropTypes.string,
+			name: PropTypes.string,
+			path: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+			templateId: PropTypes.number,
 			texts: PropTypes.arrayOf(
 				PropTypes.shape({
 					activeDrags: PropTypes.number,
@@ -73,6 +96,8 @@ MemeImages.propTypes = {
 	)
 }
 
-MemeImages.defaultProps = {}
+MemeImages.defaultProps = {
+	editable: true
+}
 
 export default MemeImages

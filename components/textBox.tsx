@@ -1,8 +1,8 @@
-import { Form, Input, Select, TextArea, Transition, TransitionablePortal } from "semantic-ui-react"
+import { Form, Input, Select, TextArea } from "semantic-ui-react"
 import { BlockPicker } from "react-color"
 import { fontOptions } from "@options/fonts"
 import PropTypes from "prop-types"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useState } from "react"
 
 const TextBox: React.FunctionComponent = (props) => {
 	const {
@@ -35,18 +35,17 @@ const TextBox: React.FunctionComponent = (props) => {
 						value={text}
 					/>
 				</Form.Field>
-				<Form.Field>
-					<Select
-						onChange={(e, { value }) => changeFont(imgIndex, textIndex, value)}
-						options={fontOptions}
-						search
-						value={font}
-					/>
-				</Form.Field>
-				<Form.Group widths="equal">
-					<Form.Field>
+				<Form.Group className="colorFields" unstackable>
+					<Form.Field width={11}>
+						<Select
+							onChange={(e, { value }) => changeFont(imgIndex, textIndex, value)}
+							options={fontOptions}
+							search
+							value={font}
+						/>
+					</Form.Field>
+					<Form.Field width={5}>
 						<Input
-							fluid
 							label={{ basic: true, content: "px" }}
 							labelPosition="right"
 							maxLength={3}
@@ -55,12 +54,35 @@ const TextBox: React.FunctionComponent = (props) => {
 							value={fontSize}
 						/>
 					</Form.Field>
-					<Form.Field>
+				</Form.Group>
+				<Form.Group unstackable>
+					<Form.Field width={8}>
 						<div className="colorSelectionWrapper" onClick={toggleColorPicker}>
 							<div
 								className="colorSelection"
 								style={{
-									background: color
+									background: color,
+									width: "100%"
+								}}
+							/>
+						</div>
+						{colorPickerOpen && (
+							<div className="colorPickerWrapper">
+								<div className="colorPickerOverlay" onClick={toggleColorPicker} />
+								<BlockPicker
+									onChange={(color) => changeColor(imgIndex, textIndex, color)}
+									triangle="hide"
+								/>
+							</div>
+						)}
+					</Form.Field>
+					<Form.Field width={8}>
+						<div className="colorSelectionWrapper" onClick={toggleColorPicker}>
+							<div
+								className="colorSelection"
+								style={{
+									background: color,
+									width: "100%"
 								}}
 							/>
 						</div>

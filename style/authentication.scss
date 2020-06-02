@@ -3,14 +3,10 @@
 .authComponent {
     width: 100%;
 
-    .signInLogo {
-        display: inline;
-        fill: $blue;
-        height: 48px;
-        width: 48px;
-    }
-
     .authSegment {
+        margin: 0 auto;
+        width: 85%;
+
         .error.message {
             margin-bottom: 14px;
         }

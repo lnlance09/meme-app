@@ -8,7 +8,7 @@ const Template = db.template
 const Op = db.Sequelize.Op
 
 exports.create = async (req, res) => {
-	const { img } = req.body
+	const { img, name } = req.body
 	const { authenticated, user } = Auth.parseAuthentication(req)
 
 	if (typeof img === "undefined" || img === "") {
@@ -24,12 +24,11 @@ exports.create = async (req, res) => {
 		image = Buffer.from(imageFromUrl.data).toString("base64")
 	}
 
-	const imageUpload = await Aws.uploadToS3(image, fileName)
-	console.log("imageUpload", imageUpload)
+	await Aws.uploadToS3(image, fileName)
 
 	Template.create({
 		createdBy: authenticated ? user.id : 1,
-		// name: "",
+		name,
 		s3Link: fileName
 	})
 		.then((data) => {
@@ -50,6 +49,69 @@ exports.create = async (req, res) => {
 
 exports.delete = (req, res) => {}
 
-exports.findAll = (req, res) => {}
+exports.findAll = (req, res) => {
+	const { q } = req.query
 
-exports.findOne = (req, res) => {}
+	let where = {
+		name: {
+			[Op.like]: `%${q}%`
+		}
+	}
+
+	if (typeof q === "undefined" || q === "") {
+		where = {}
+	}
+
+	Template.findAll({
+		required: true,
+		attributes: ["id", "name", "s3Link"],
+		where,
+		raw: true
+	})
+		.then((templates) => {
+			return res.status(200).send({
+				error: false,
+				templates,
+				msg: "Success"
+			})
+		})
+		.catch((err) => {
+			return res.status(500).send({
+				error: true,
+				msg: err.message || "An error occurred"
+			})
+		})
+}
+
+exports.findOne = (req, res) => {
+	const { id } = req.params
+
+	Template.findAll({
+		required: true,
+		attributes: ["name", "s3Link", "user.id", "user.img", "user.name", "user.username"],
+		where: {
+			id
+		},
+		raw: true,
+		include: [
+			{
+				model: User,
+				required: true,
+				attributes: []
+			}
+		]
+	})
+		.then((template) => {
+			return res.status(200).send({
+				error: false,
+				msg: "Success",
+				template
+			})
+		})
+		.catch((err) => {
+			return res.status(500).send({
+				error: true,
+				msg: err.message || "An error occurred"
+			})
+		})
+}

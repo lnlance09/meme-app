@@ -39,7 +39,7 @@ module.exports = (sequelize, Sequelize) => {
 
 	Meme.associate = (models) => {
 		// Meme.hasMany(models.memeTemplate, { as: "memeTemplates", foreignKey: "memeId" })
-		Meme.belongsTo(models.user, { as: "user", foreignKey: "createdBy" })
+		Meme.belongsTo(models.user, { foreignKey: "createdBy" })
 	}
 
 	return Meme

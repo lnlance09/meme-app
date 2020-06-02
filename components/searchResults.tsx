@@ -1,45 +1,107 @@
-import { Button, Card, Placeholder, Visibility } from "semantic-ui-react"
+import { Card, Image, Placeholder, Visibility } from "semantic-ui-react"
+import DefaultPic from "@public/images/placeholders/white-image.png"
+import Moment from "react-moment"
 import PropTypes from "prop-types"
 import React, { Fragment, useEffect, useState } from "react"
+import Router from "next/router"
 
-const MemeCard = ({ loading, image, title, subtitle, description }) => <Fragment></Fragment>
+const MemeCard = ({ loading, title, subtitle, description }) => {
+	if (loading) {
+		return (
+			<Placeholder>
+				<Placeholder.Header>
+					<Placeholder.Line length="very long" />
+					<Placeholder.Line length="long" />
+				</Placeholder.Header>
+				<Placeholder.Paragraph>
+					<Placeholder.Line length="medium" />
+				</Placeholder.Paragraph>
+			</Placeholder>
+		)
+	}
+
+	return (
+		<Fragment>
+			<Card.Header>{title}</Card.Header>
+			<Card.Meta>{subtitle}</Card.Meta>
+			<Card.Description>{description}</Card.Description>
+		</Fragment>
+	)
+}
 
 const SearchResults: React.FunctionComponent = (props) => {
-	const { loading, results, type } = props
+	const { justImages, loading, results, type } = props
+
+	useEffect(() => {}, [])
+
+	const getCardData = (type, result) => {
+		if (type === "memes") {
+			return {
+				description: result.caption,
+				link: `/meme/${result.id}`,
+				subtitle: (
+					<Fragment>
+						<Moment date={result.createdAt} fromNow /> • {result.views} views
+					</Fragment>
+				),
+				title: result.name === null ? `Meme #${result.id}` : result.name
+			}
+		}
+
+		if (type === "templates") {
+			return {
+				link: `/template/${result.id}`
+			}
+		}
+	}
+
+	const getCardImage = (s3Link) => {
+		let img = null
+		if (s3Link === null) {
+			img = DefaultPic
+		} else {
+			img = `https://brandywine22.s3-us-west-2.amazonaws.com/${s3Link}`
+		}
+
+		return img
+	}
 
 	return (
 		<div className="searchResults">
-			<Card.Group doubling itemsPerRow={3} stackable>
+			<Card.Group itemsPerRow={3} stackable>
 				{results.map((result, i) => {
+					const { description, link, subtitle, title } = getCardData(type, result)
+					const img = getCardImage(result.s3Link)
+
 					return (
-						<Card key={`${type}Card${i}`}>
+						<Card
+							className="searchCard"
+							key={`${type}_${results.id}`}
+							onClick={() => Router.push(link)}
+						>
 							{loading ? (
 								<Placeholder>
 									<Placeholder.Image square />
 								</Placeholder>
 							) : (
-								<Image src={card.avatar} />
+								<Image
+									onError={(i) => (i.target.src = DefaultPic)}
+									src={img}
+									wrapped
+									ui={false}
+								/>
 							)}
 
-							<Card.Content>
-								{loading ? (
-									<Placeholder>
-										<Placeholder.Header>
-											<Placeholder.Line length="very short" />
-											<Placeholder.Line length="medium" />
-										</Placeholder.Header>
-										<Placeholder.Paragraph>
-											<Placeholder.Line length="short" />
-										</Placeholder.Paragraph>
-									</Placeholder>
-								) : (
-									<Fragment>
-										<Card.Header>{card.header}</Card.Header>
-										<Card.Meta>{card.date}</Card.Meta>
-										<Card.Description>{card.description}</Card.Description>
-									</Fragment>
-								)}
-							</Card.Content>
+							{!justImages && (
+								<Card.Content>
+									<MemeCard
+										description={description}
+										loading={loading}
+										subtitle={subtitle}
+										title={title}
+									/>
+								</Card.Content>
+							)}
 						</Card>
 					)
 				})}
@@ -49,6 +111,7 @@ const SearchResults: React.FunctionComponent = (props) => {
 }
 
 SearchResults.propTypes = {
+	justImages: PropTypes.bool,
 	loading: PropTypes.bool,
 	results: PropTypes.arrayOf(
 		PropTypes.oneOfType([
@@ -60,8 +123,15 @@ SearchResults.propTypes = {
 			PropTypes.shape({
 				caption: PropTypes.string,
 				createdAt: PropTypes.string,
+				createdBy: PropTypes.number,
+				id: PropTypes.number,
+				img: PropTypes.string,
 				likes: PropTypes.number,
-				s3Link: PropTypes.string
+				name: PropTypes.string,
+				s3Link: PropTypes.string,
+				templateName: PropTypes.string,
+				username: PropTypes.string,
+				views: PropTypes.number
 			}),
 			PropTypes.shape({
 				img: PropTypes.string,

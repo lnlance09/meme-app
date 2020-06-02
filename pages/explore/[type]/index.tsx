@@ -1,36 +1,75 @@
 import { searchArtists, searchMemes, searchTemplates } from "@actions/search"
-import { Divider, Header, Menu } from "semantic-ui-react"
+import { Divider, Image, Button } from "semantic-ui-react"
 import { DebounceInput } from "react-debounce-input"
 import { Provider, connect } from "react-redux"
 import DefaultLayout from "@layouts/default"
 import PropTypes from "prop-types"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+import SearchResults from "@components/searchResults"
 import store from "@store"
 
 const Explore: React.FunctionComponent = (props) => {
-	const [activeItem, setActiveItem] = useState("memes")
+	const { artists, memes, templates } = props
+
+	const [activeItem, setActiveItem] = useState("templates")
 	const [searchVal, setSearchVal] = useState("")
+
+	useEffect(() => {
+		props.searchArtists({})
+		props.searchMemes({})
+		props.searchTemplates({})
+	}, [])
+
+	const onClickItem = (name) => {
+		setActiveItem(name)
+	}
+
+	const searchForResults = (e) => {
+		const q = e.target.value
+		setSearchVal(q)
+
+		if (activeItem === "artists") {
+			props.searchArtists({ q })
+		}
+
+		if (activeItem === "memes") {
+			props.searchMemes({ q })
+		}
+
+		if (activeItem === "templates") {
+			props.searchTemplates({ q })
+		}
+	}
+
+	let results = memes
+	if (activeItem === "artists") {
+		results = artists
+	}
+	if (activeItem === "templates") {
+		results = templates
+	}
 
 	return (
 		<Provider store={store}>
 			<DefaultLayout
+				containerClassName="explorePage"
 				seo={{
-					description: "",
+					description: "Find memes, templates, and artists on Brandy",
 					image: {
 						height: 200,
 						src: "",
 						width: 200
 					},
-					title: "",
+					title: `Search for ${activeItem}`,
 					url: ""
 				}}
+				showFooter={false}
 			>
-				<Header as="h1" content="Explore" size="huge" />
 				<div className="ui icon input fluid big">
 					<DebounceInput
 						debounceTimeout={300}
 						minLength={2}
-						onChange={(e) => setSearchVal(e.target.value)}
+						onChange={searchForResults}
 						placeholder="Search..."
 						value={searchVal}
 					/>
@@ -39,23 +78,41 @@ const Explore: React.FunctionComponent = (props) => {
 
 				<Divider hidden />
 
-				<Menu pointing secondary size="huge">
-					<Menu.Item
-						active={activeItem === "memes"}
-						name="memes"
-						onClick={(e, { name }) => setActiveItem(name)}
+				<Button.Group className="exploreFilterBtnGroup" widths={3}>
+					<Button
+						className={activeItem === "memes" ? "active" : ""}
+						color="blue"
+						content="Memes"
+						fluid
+						onClick={() => onClickItem("memes")}
+						size="big"
 					/>
-					<Menu.Item
-						active={activeItem === "templates"}
-						name="templates"
-						onClick={(e, { name }) => setActiveItem(name)}
+					<Button
+						className={activeItem === "templates" ? "active" : ""}
+						color="yellow"
+						content="Templates"
+						fluid
+						onClick={() => onClickItem("templates")}
+						size="big"
 					/>
-					<Menu.Item
-						active={activeItem === "artists"}
-						name="artists"
-						onClick={(e, { name }) => setActiveItem(name)}
+					<Button
+						className={activeItem === "artists" ? "active" : ""}
+						color="violet"
+						content="Artists"
+						fluid
+						onClick={() => onClickItem("artists")}
+						size="big"
 					/>
-				</Menu>
+				</Button.Group>
+
+				<Divider section />
+
+				<SearchResults
+					justImages
+					loading={results.loading}
+					results={results.results}
+					type={activeItem}
+				/>
 			</DefaultLayout>
 		</Provider>
 	)
@@ -83,8 +140,15 @@ Explore.propTypes = {
 				PropTypes.shape({
 					caption: PropTypes.string,
 					createdAt: PropTypes.string,
+					createdBy: PropTypes.number,
+					id: PropTypes.number,
 					likes: PropTypes.number,
-					s3Link: PropTypes.string
+					name: PropTypes.string,
+					s3Link: PropTypes.string,
+					userImg: PropTypes.string,
+					userName: PropTypes.string,
+					username: PropTypes.string,
+					views: PropTypes.number
 				})
 			])
 		)
@@ -107,9 +171,21 @@ Explore.propTypes = {
 }
 
 Explore.defaultProps = {
+	artists: {
+		loading: true,
+		results: [false, false, false, false, false]
+	},
+	memes: {
+		loading: true,
+		results: [false, false, false, false, false]
+	},
 	searchArtists,
 	searchMemes,
-	searchTemplates
+	searchTemplates,
+	templates: {
+		loading: true,
+		results: [false, false, false, false, false]
+	}
 }
 
 const mapStateToProps = (state: any, ownProps: any) => ({

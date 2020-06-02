@@ -20,6 +20,10 @@ const initial = () => ({
 		}
 	],
 	meme: {
+		data: {
+			templates: [],
+			user: {}
+		},
 		error: false,
 		errorMsg: "",
 		loading: true
@@ -33,13 +37,22 @@ const meme = (state = initial(), action) => {
 		case constants.GET_MEME:
 			return {
 				...state,
-				meme: payload
+				meme: {
+					data: payload.meme,
+					error: false,
+					errorMsg: "",
+					loading: false
+				}
 			}
 
 		case constants.SET_MEME_FETCH_ERROR:
 			return {
 				...state,
 				meme: {
+					data: {
+						templates: [],
+						user: {}
+					},
 					error: true,
 					errorMsg: "This meme does not exist",
 					loading: false

@@ -5,6 +5,10 @@
 @import './footer.scss';
 @import './header.scss';
 
+* {
+	border-radius: 0 !important;
+}
+
 body {
 	height: 100%;
 	margin: 0;
@@ -44,13 +48,24 @@ body {
 			-ms-transform: translateY(-50%);
 		}
 	}
+
+	&.templatePage {
+		padding: 0;
+		width: 100%;
+
+		.templatePageHero {
+			background: $lightGrey;
+			min-height: 450px;
+			position: relative;
+			width: 100%;
+		}
+	}
 }
 
 .draggableWrapper {
 	position: relative;
 
 	.memeImg {
-		// border: solid 4px $white;
 		cursor: pointer;
 		width: 100%;
 		z-index: 998;
@@ -105,7 +120,7 @@ body {
 	text-align: center;
 
 	span {
-		color: $lightBlack;
+		color: $grey;
 		cursor: pointer;
 
 		&:hover {
@@ -116,4 +131,57 @@ body {
 
 .signInPage {
 	margin-top: 0;
+}
+
+.explorePage {
+	@media only screen and (max-width: 767px) {
+		.exploreFilterBtnGroup {
+			display: inline-flex;
+			flex-direction: column;
+
+			.button {
+				width: 100% !important;
+			}
+		}
+	}
+
+	.exploreFilterBtnGroup {
+		.button {
+			&.active {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	.searchResults {
+		.card {
+			border: solid 3px $blue;
+			box-shadow: none;
+			cursor: pointer;
+			height: min-content;
+			max-height: 300px;
+			overflow: hidden;
+		}
+	}
+}
+
+.memePage {
+	.templateImages {
+		.image {
+			cursor: pointer;
+			margin-bottom: 0;
+			margin-top: 0;
+		}
+	}
+
+	.memeCaption {
+		font-weight: normal;
+		margin-bottom: 40px;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.ui.form .fields.colorFields {
+		margin-bottom: 1em !important;
+	}
 }

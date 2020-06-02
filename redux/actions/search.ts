@@ -1,16 +1,16 @@
 import * as constants from "../constants"
 import axios from "axios"
 
-export const searchArtists = ({ callback, images }) => (dispatch) => {
+export const searchArtists = ({ q }) => (dispatch) => {
 	axios
-		.post("/api/meme/create", {
-			images
+		.get("/api/user/search", {
+			q
 		})
 		.then((response) => {
-			console.log(response)
+			const { data } = response
 			dispatch({
-				payload: {},
-				type: constants.CREATE_MEME
+				payload: data,
+				type: constants.SEARCH_ARTISTS
 			})
 		})
 		.catch((error) => {
@@ -18,16 +18,18 @@ export const searchArtists = ({ callback, images }) => (dispatch) => {
 		})
 }
 
-export const searchMemes = ({ callback, images }) => (dispatch) => {
+export const searchMemes = ({ q }) => (dispatch) => {
 	axios
-		.post("/api/meme/create", {
-			images
+		.get("/api/meme/search", {
+			params: {
+				q
+			}
 		})
 		.then((response) => {
-			console.log(response)
+			const { data } = response
 			dispatch({
-				payload: {},
-				type: constants.CREATE_MEME
+				payload: data,
+				type: constants.SEARCH_MEMES
 			})
 		})
 		.catch((error) => {
@@ -35,16 +37,16 @@ export const searchMemes = ({ callback, images }) => (dispatch) => {
 		})
 }
 
-export const searchTemplates = ({ callback, images }) => (dispatch) => {
+export const searchTemplates = ({ q }) => (dispatch) => {
 	axios
-		.post("/api/meme/create", {
-			images
+		.get("/api/template/search", {
+			q
 		})
 		.then((response) => {
-			console.log(response)
+			const { data } = response
 			dispatch({
-				payload: {},
-				type: constants.CREATE_MEME
+				payload: data,
+				type: constants.SEARCH_TEMPLATES
 			})
 		})
 		.catch((error) => {

@@ -221,7 +221,7 @@ const Authentication: React.FunctionComponent = (props) => {
 				<Header as="h1" size="huge">
 					{props.verify ? "Verify your email" : headerText}
 				</Header>
-				<Segment>
+				<Segment basic className="authSegment">
 					{MainForm()}
 					{ErrorMsg()}
 				</Segment>

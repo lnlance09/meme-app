@@ -116,7 +116,48 @@ exports.create = async (req, res) => {
 		})
 }
 
-exports.findAll = async (req, res) => {}
+exports.findAll = async (req, res) => {
+	const { q } = req.query
+
+	let where = {
+		[Op.or]: [
+			{
+				username: {
+					[Op.like]: `%${q}%`
+				}
+			},
+			{
+				name: {
+					[Op.like]: `%${q}%`
+				}
+			}
+		]
+	}
+
+	if (typeof q === "undefined" || q === "") {
+		where = {}
+	}
+
+	User.findAll({
+		required: true,
+		attributes: ["createdAt", "img", "name", "username"],
+		where,
+		raw: true
+	})
+		.then((users) => {
+			return res.status(200).send({
+				error: false,
+				users,
+				msg: "Success"
+			})
+		})
+		.catch((err) => {
+			return res.status(500).send({
+				error: true,
+				msg: err.message || "An error occurred"
+			})
+		})
+}
 
 exports.findOne = async (req, res) => {}
 

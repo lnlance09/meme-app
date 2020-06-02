@@ -3,11 +3,10 @@ import { Button, Divider, Form, Grid, TextArea } from "semantic-ui-react"
 import { Provider, connect } from "react-redux"
 import axios from "axios"
 import DefaultLayout from "@layouts/default"
-import html2canvas from "html2canvas"
 import MemeConfig from "@components/memeConfig"
 import MemeImages from "@components/memeImages"
 import PropTypes from "prop-types"
-import React, { useState } from "react"
+import React, { useCallback, useState } from "react"
 import store from "@store"
 
 const defaultImg = {
@@ -33,15 +32,31 @@ const Create: React.FunctionComponent = (props) => {
 	const [images, setImages] = useState(props.images)
 	const [processing, setProcessing] = useState(false)
 
-	const addMoreImage = () => {
-		let newImages = [...images, defaultImg]
-		newImages.map((img, i) => {
-			if (i !== newImages.length - 1) {
-				newImages[i].active = false
-			}
+	const addMoreImage = useCallback(() => {
+		images.map((img, i) => {
+			images[i].active = false
 		})
+		let newImages = [
+			...images,
+			{
+				active: true,
+				img: "",
+				path: null,
+				texts: [
+					{
+						activeDrags: 0,
+						color: "#F3F4F5",
+						font: "Arial",
+						size: 32,
+						text: "",
+						x: 0,
+						y: 10
+					}
+				]
+			}
+		]
 		setImages(newImages)
-	}
+	}, [images])
 
 	const addMoreText = (imgIndex) => {
 		let newImages = [...images]
@@ -52,7 +67,9 @@ const Create: React.FunctionComponent = (props) => {
 			lastY = 0
 		}
 
-		let newTexts = [...images[imgIndex].texts, defaultImg.texts[0]]
+		let newText = defaultImg.texts[0]
+		newText.y = lastY + 35
+		let newTexts = [...images[imgIndex].texts, newText]
 		newImages[imgIndex].texts = newTexts
 		setImages(newImages)
 	}
@@ -102,19 +119,6 @@ const Create: React.FunctionComponent = (props) => {
 
 		setProcessing(true)
 		props.createMeme({ caption, images })
-
-		/*
-		html2canvas(document.getElementById("memeContainer"), {
-			allowTaint: true,
-			scale: 1,
-			scrollY: -window.scrollY,
-			useCORS: true
-		}).then((canvas) => {
-			let ctx = canvas.getContext("2d")
-			ctx.globalAlpha = 1
-			const img = canvas.toDataURL("image/png")
-		})
-		*/
 	}
 
 	const createTemplate = (img, imgIndex, isFile) => {
@@ -133,13 +137,6 @@ const Create: React.FunctionComponent = (props) => {
 			.catch((error) => {
 				console.log(error)
 			})
-	}
-
-	const downloadMeme = (img) => {
-		let link = document.createElement("a")
-		link.download = `meme.png`
-		link.href = img
-		link.click()
 	}
 
 	const handleDrag = (imgIndex, textIndex, e, ui) => {
@@ -188,24 +185,22 @@ const Create: React.FunctionComponent = (props) => {
 		setImages(newImages)
 	}
 
-	console.log("images")
-	console.log(images)
-
 	return (
 		<Provider store={store}>
 			<DefaultLayout
 				seo={{
-					description: "",
+					description: "Creating a meme was never so quick and easy",
 					image: {
 						height: 200,
 						src: "",
 						width: 200
 					},
-					title: "",
+					title: "Create a Meme",
 					url: ""
 				}}
+				showFooter={false}
 			>
-				<Grid>
+				<Grid stackable>
 					<Grid.Row>
 						<Grid.Column width={10}>
 							<MemeImages
@@ -235,12 +230,12 @@ const Create: React.FunctionComponent = (props) => {
 					</Grid.Row>
 				</Grid>
 
-				<Divider section />
+				<Divider hidden />
 
 				{formVisible && (
 					<Form size="big">
 						<TextArea
-							placeholder="Caption"
+							placeholder="Caption (Optional)"
 							onChange={(e, { value }) => setCaption(value)}
 							row={3}
 							value={caption}

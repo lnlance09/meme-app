@@ -14,6 +14,9 @@ export const SEARCH_ARTISTS = "search:SEARCH_ARTISTS"
 export const SEARCH_MEMES = "search:SEARCH_MEMES"
 export const SEARCH_TEMPLATES = "search:SEARCH_TEMPLATES"
 
+export const GET_TEMPLATE = "template:GET_TEMPLATE"
+export const SET_TEMPLATE_FETCH_ERROR = "template:SET_TEMPLATE_FETCH_ERROR"
+
 export const CHANGE_PROFILE_PIC = "user:CHANGE_PROFILE_PIC"
 export const GET_USER_DATA = "user:GET_USER_DATA"
 export const UPDATE_ABOUT = "user:UPDATE_ABOUT"

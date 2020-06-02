@@ -21,7 +21,7 @@ const ImgBox: React.FunctionComponent = (props) => {
 	return (
 		<div className="imgBox">
 			<Grid columns={2}>
-				<Grid.Column style={{ paddingRight: 0 }} width={13}>
+				<Grid.Column style={{ paddingRight: 0 }} width={12}>
 					<Input
 						fluid
 						icon="paperclip"
@@ -31,7 +31,7 @@ const ImgBox: React.FunctionComponent = (props) => {
 						value={imgUrl}
 					/>
 				</Grid.Column>
-				<Grid.Column width={3}>
+				<Grid.Column width={4}>
 					<div {...getRootProps()}>
 						<input {...getInputProps()} />
 						<Button color="blue" icon="upload" fluid />

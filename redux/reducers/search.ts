@@ -19,9 +19,31 @@ const search = (state = initial(), action) => {
 	const { payload } = action
 
 	switch (action.type) {
-		case constants.CREATE_MEME:
+		case constants.SEARCH_ARTISTS:
 			return {
-				state
+				...state,
+				artists: {
+					loading: false,
+					results: payload.artists
+				}
+			}
+
+		case constants.SEARCH_MEMES:
+			return {
+				...state,
+				memes: {
+					loading: false,
+					results: payload.memes
+				}
+			}
+
+		case constants.SEARCH_TEMPLATES:
+			return {
+				...state,
+				templates: {
+					loading: false,
+					results: payload.templates
+				}
 			}
 
 		default:
