@@ -13,6 +13,8 @@ exports.create = async (req, res) => {
 	const { caption, images } = req.body
 	const { authenticated, user } = Auth.parseAuthentication(req)
 
+	console.log("user", user)
+
 	if (typeof images === "undefined") {
 		return res.status(422).send({ error: true, msg: "You must include at least one image" })
 	}
@@ -23,7 +25,7 @@ exports.create = async (req, res) => {
 
 	const meme = await Meme.create({
 		caption,
-		createdBy: authenticated ? user.id : 1
+		createdBy: authenticated ? user.data.id : 1
 	})
 		.then((data) => {
 			const { id } = data.dataValues
@@ -202,7 +204,10 @@ exports.findOne = async (req, res) => {
 			let meme = {
 				caption: firstRow["meme.caption"],
 				createdAt: firstRow["meme.createdAt"],
-				img: `https://brandywine22.s3-us-west-2.amazonaws.com/${firstRow["meme.s3Link"]}`,
+				id: firstRow["meme.id"],
+				img: `https://brandywine22.s3-us-west-2.amazonaws.com/${
+					firstRow["meme.s3Link"] === null ? "" : firstRow["meme.s3Link"]
+				}`,
 				name: firstRow["meme.name"],
 				templates: [],
 				user: {
@@ -215,11 +220,12 @@ exports.findOne = async (req, res) => {
 			}
 
 			let templateIds = []
-			memes.map((_meme) => {
+			memes.map((_meme, i) => {
 				const templateId = _meme.templateId
 				const index = templateIds.indexOf(templateId)
 				if (index !== -1) {
 					meme.templates[index].texts.push({
+						advtiveDrags: 0,
 						color: _meme["text.fontColor"],
 						font: _meme["text.fontFamily"],
 						size: _meme["text.fontSize"],
@@ -230,11 +236,13 @@ exports.findOne = async (req, res) => {
 				} else {
 					templateIds.push(templateId)
 					meme.templates.push({
+						active: i === 0 ? true : false,
 						img: `https://brandywine22.s3-us-west-2.amazonaws.com/${_meme["template.templateSrc"]}`,
 						name: _meme["template.templateName"],
 						templateId,
 						texts: [
 							{
+								advtiveDrags: 0,
 								color: _meme["text.fontColor"],
 								font: _meme["text.fontFamily"],
 								size: _meme["text.fontSize"],
@@ -259,4 +267,67 @@ exports.findOne = async (req, res) => {
 				msg: err.message || "An error occurred"
 			})
 		})
+}
+
+exports.update = async (req, res) => {
+	const { id } = req.params
+	const { caption, name } = req.body
+	const { authenticated, user } = Auth.parseAuthentication(req)
+
+	if (!authenticated) {
+		return res.status(401).send({ error: true, msg: "You must be logged in" })
+	}
+
+	const count = await Meme.count({
+		where: {
+			createdBy: user.data.id,
+			id
+		},
+		distinct: true,
+		col: "meme.id"
+	}).then((count) => count)
+
+	if (count === 0) {
+		return res
+			.status(401)
+			.send({ error: true, msg: "You don't have permission to edit this meme" })
+	}
+
+	let updateData = {}
+	if (typeof caption !== "undefined" && caption !== "") {
+		updateData.caption = caption
+	}
+
+	if (typeof name !== "undefined" && name !== "") {
+		updateData.name = name
+	}
+
+	Meme.update(updateData, {
+		where: { id }
+	})
+		.then(async () => {
+			const meme = await Meme.findByPk(id, { raw: true })
+			return res.status(200).send({
+				error: false,
+				meme,
+				msg: "Success"
+			})
+		})
+		.catch((err) => {
+			return res.status(500).send({
+				error: true,
+				msg: "There was an error"
+			})
+		})
+}
+
+exports.updateViews = async (req, res) => {
+	const { id } = req.params
+
+	Meme.increment("views", { where: { id } })
+
+	return res.status(200).send({
+		error: false,
+		msg: "Views updated"
+	})
 }

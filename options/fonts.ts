@@ -1,44 +1,72 @@
 export const fontOptions = [
-	{ key: "arial", value: "Arial", text: "Arial" },
 	{
-		key: "verdana",
-		value: "Verdana",
-		text: "Verdana"
+		key: "regular",
+		value: "OswaldRegular",
+		text: "Regular"
 	},
 	{
-		key: "trebuchet-ms",
-		value: "Trebuchet MS",
-		text: "Trebuchet MS"
+		key: "regular italic",
+		value: "OswaldRegularItalic",
+		text: "Regular Italic"
 	},
 	{
-		key: "times-new-roman",
-		value: "Times New Roman",
-		text: "Times New Roman"
-	},
-	{ key: "didot", value: "Didot", text: "Didot" },
-	{
-		key: "american-typewriter",
-		value: "American Typewriter",
-		text: "American Typewriter"
+		key: "light",
+		value: "OswaldLight",
+		text: "Light"
 	},
 	{
-		key: "andale-mono",
-		value: "Andale Mono",
-		text: "Andale Mono"
+		key: "light italic",
+		value: "OswaldLightItalic",
+		text: "Light Italic"
 	},
 	{
-		key: "courier",
-		value: "Courier",
-		text: "Courier"
+		key: "extra light",
+		value: "OswaldExtraLight",
+		text: "Extra Light"
 	},
 	{
-		key: "bradley-hand",
-		value: "Bradley Hand",
-		text: "Bradley Hand"
+		key: "extra light italic",
+		value: "OswaldExtraLightItalic",
+		text: "Extra Light Italic"
 	},
 	{
-		key: "luminari",
-		value: "Luminari",
-		text: "Luminari"
+		key: "medium",
+		value: "OswaldMedium",
+		text: "Medium"
+	},
+	{
+		key: "medium italic",
+		value: "OswaldMediumItalic",
+		text: "Medium Italic"
+	},
+	{
+		key: "heavy",
+		value: "OswaldHeavy",
+		text: "Heavy"
+	},
+	{
+		key: "heavy italic",
+		value: "OswaldHeavyItalic",
+		text: "Heavy Italic"
+	},
+	{
+		key: "semi bold",
+		value: "OswaldSemiBold",
+		text: "Semi Bold"
+	},
+	{
+		key: "semi bold italic",
+		value: "OswaldSemiBoldItalic",
+		text: "Semi Bold Italic"
+	},
+	{
+		key: "bold",
+		value: "OswaldBold",
+		text: "Bold"
+	},
+	{
+		key: "bold italic",
+		value: "OswaldBoldItalic",
+		text: "Bold Italic"
 	}
 ]

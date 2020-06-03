@@ -1,5 +1,5 @@
-import "moment-timezone"
-import { getMeme } from "@actions/meme"
+import * as linkify from "linkifyjs"
+import { getMeme, updateMeme, updateViews } from "@actions/meme"
 import {
 	Button,
 	Divider,
@@ -7,6 +7,7 @@ import {
 	Grid,
 	Header,
 	Image,
+	Input,
 	Placeholder,
 	TextArea
 } from "semantic-ui-react"
@@ -14,34 +15,62 @@ import { parseJwt } from "@utils/tokenFunctions"
 import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
 import DefaultLayout from "@layouts/default"
+import hashtag from "linkifyjs/plugins/hashtag"
 import html2canvas from "html2canvas"
 import Link from "next/link"
+import Linkify from "linkifyjs/react"
 import MemeImages from "@components/memeImages"
 import Moment from "react-moment"
 import PropTypes from "prop-types"
-import React, { Fragment, useEffect, useState } from "react"
+import React, { Fragment, useEffect, useRef, useState } from "react"
 import store from "@store"
 
-const Meme: React.FunctionComponent = ({ getMeme, meme }) => {
+const Meme: React.FunctionComponent = ({ getMeme, meme, updateMeme, updateViews }) => {
+	const node = useRef(null)
 	const router = useRouter()
 	const { slug } = router.query
 
 	const { data, error, errorMsg, loading } = meme
-	const { createdAt, name, s3Link, templates, user, views } = data
+	let { createdAt, id, img, name, templates, user, views } = data
+	if (name === null) {
+		name = `Untitled Meme #${id}`
+	}
 
+	const [bearer, setBearer] = useState(null)
 	const [caption, setCaption] = useState(data.caption)
 	const [currentUser, setCurrentUser] = useState({})
+	const [editMode, setEditMode] = useState(false)
+	const [title, setTitle] = useState(name)
 
 	useEffect(() => {
+		hashtag(linkify)
+
 		const userData = parseJwt()
 		if (userData) {
+			setBearer(localStorage.getItem("jwtToken"))
 			setCurrentUser(userData)
 		}
 
 		if (typeof slug !== "undefined") {
 			getMeme({ id: slug })
+			updateViews({ id: slug })
 		}
 	}, [slug])
+
+	useEffect(() => {
+		setCaption(data.caption)
+		setTitle(name)
+
+		if (editMode) {
+			document.addEventListener("mousedown", handleClick)
+		} else {
+			document.removeEventListener("mousedown", handleClick)
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClick)
+		}
+	}, [editMode])
 
 	const downloadMeme = () => {
 		html2canvas(document.getElementById("memeContainer"), {
@@ -52,12 +81,21 @@ const Meme: React.FunctionComponent = ({ getMeme, meme }) => {
 		}).then((canvas) => {
 			let ctx = canvas.getContext("2d")
 			ctx.globalAlpha = 1
+
 			const img = canvas.toDataURL("image/png")
 			let link = document.createElement("a")
-			link.download = `meme.png`
+			link.download = `brandyMeme.png`
 			link.href = img
 			link.click()
 		})
+	}
+
+	const handleClick = (e) => {
+		if (node.current.contains(e.target)) {
+			return
+		}
+
+		setEditMode(false)
 	}
 
 	const onClickTemplate = (templateId) => {
@@ -66,37 +104,81 @@ const Meme: React.FunctionComponent = ({ getMeme, meme }) => {
 
 	const rightColumn = (
 		<Fragment>
-			<Header as="h1">
-				{name === null ? "Unititled Meme" : name}
-				<Header.Subheader>
-					<Moment date={createdAt} fromNow /> •{" "}
-					<Link href={`/artists/${user.username}`}>
-						<a>{user.username}</a>
-					</Link>{" "}
-					• {views} views
-				</Header.Subheader>
-			</Header>
+			{!editMode && (
+				<Header as="h1">
+					{name}
+					<Header.Subheader>
+						<Moment date={createdAt} fromNow /> •{" "}
+						<Link href={`/artists/${user.username}`}>
+							<a>{user.username}</a>
+						</Link>{" "}
+						• {views} views
+						{currentUser.id === user.id && (
+							<Fragment>
+								{" "}
+								•{" "}
+								<span className="editMeme" onClick={() => setEditMode(true)}>
+									Edit
+								</span>
+							</Fragment>
+						)}
+					</Header.Subheader>
+				</Header>
+			)}
 
-			{currentUser.id === user.id ? (
-				<Form>
-					<TextArea
-						onChange={(e, { value }) => setCaption(value)}
-						placeholder="Caption"
-						rows={5}
-						value={caption}
-					/>
-				</Form>
+			{editMode ? (
+				<div ref={node}>
+					<Form>
+						<Input
+							fluid
+							onChange={(e, { value }) => setTitle(value)}
+							placeholder="Title"
+							value={title}
+						/>
+						<Divider />
+						<TextArea
+							onChange={(e, { value }) => setCaption(value)}
+							onClick={() => setEditMode(true)}
+							placeholder="Caption"
+							rows={5}
+							value={caption}
+						/>
+						<Button
+							className="memeUpdateButton"
+							color="blue"
+							content="Update"
+							fluid
+							onClick={() =>
+								updateMeme({
+									bearer,
+									callback: () => setEditMode(false),
+									data: { caption },
+									id
+								})
+							}
+						/>
+					</Form>
+				</div>
 			) : (
 				<Header as="p" className="memeCaption">
-					{data.caption}
+					<Linkify
+						options={{
+							formatHref: {
+								hashtag: (val) =>
+									`http://localhost:3000/explore/memes?q=${val.substr(1)}`
+							}
+						}}
+					>
+						{data.caption}
+					</Linkify>
 				</Header>
 			)}
 
 			<div style={{ margin: "24px 0 12px 0" }}>
-				<Image.Group className="templateImages" itemsPerRow={2} size="tiny">
-					{templates.map((template) => (
+				<Image.Group className="templateImages" size="tiny">
+					{templates.map((template, i) => (
 						<Image
-							borderless
+							key={`templateImage${i}`}
 							onClick={() => onClickTemplate(template.templateId)}
 							src={template.img}
 							ui={false}
@@ -105,15 +187,15 @@ const Meme: React.FunctionComponent = ({ getMeme, meme }) => {
 				</Image.Group>
 			</div>
 
-			<Button.Group widths="2">
-				<Button color="blue" content="Download" icon="download" onClick={downloadMeme} />
-				<Button
-					color="yellow"
-					content="Fork"
-					icon="fork"
-					onClick={() => router.push(`/create?id=${slug}`)}
-				/>
-			</Button.Group>
+			<Button color="green" content="Download" fluid icon="download" onClick={downloadMeme} />
+			<Button
+				color="violet"
+				content="Fork"
+				fluid
+				icon="fork"
+				onClick={() => router.push(`/create?id=${slug}`)}
+				style={{ marginTop: "15px" }}
+			/>
 		</Fragment>
 	)
 
@@ -122,32 +204,36 @@ const Meme: React.FunctionComponent = ({ getMeme, meme }) => {
 			<DefaultLayout
 				containerClassName="memePage"
 				seo={{
-					description: "",
+					description: caption,
 					image: {
 						height: 200,
-						src: "",
+						src: img,
 						width: 200
 					},
-					title: "",
+					title: name,
 					url: ""
 				}}
 				showFooter={false}
 			>
 				<Fragment>
-					<Grid stackable>
-						<Grid.Row>
-							<Grid.Column width={11}>
-								{loading ? (
-									<Placeholder fluid>
-										<Placeholder.Image square />
-									</Placeholder>
-								) : (
-									<MemeImages editable={false} images={templates} />
-								)}
-							</Grid.Column>
-							<Grid.Column width={5}>{!loading && rightColumn}</Grid.Column>
-						</Grid.Row>
-					</Grid>
+					{error ? (
+						<div>This meme does not exist</div>
+					) : (
+						<Grid stackable>
+							<Grid.Row>
+								<Grid.Column width={11}>
+									{loading ? (
+										<Placeholder fluid>
+											<Placeholder.Image square />
+										</Placeholder>
+									) : (
+										<MemeImages editable={false} images={templates} />
+									)}
+								</Grid.Column>
+								<Grid.Column width={5}>{!loading && rightColumn}</Grid.Column>
+							</Grid.Row>
+						</Grid>
+					)}
 				</Fragment>
 			</DefaultLayout>
 		</Provider>
@@ -190,7 +276,9 @@ Meme.propTypes = {
 		error: PropTypes.bool,
 		errorMsg: PropTypes.string,
 		loading: PropTypes.bool
-	})
+	}),
+	updateMeme: PropTypes.func,
+	updateViews: PropTypes.func
 }
 
 Meme.defaultProps = {
@@ -204,5 +292,7 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 })
 
 export default connect(mapStateToProps, {
-	getMeme
+	getMeme,
+	updateMeme,
+	updateViews
 })(Meme)

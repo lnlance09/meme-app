@@ -1,12 +1,13 @@
-import { createMeme } from "@actions/meme"
+import { createMeme, getMeme } from "@actions/meme"
 import { Button, Divider, Form, Grid, TextArea } from "semantic-ui-react"
+import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
 import axios from "axios"
 import DefaultLayout from "@layouts/default"
 import MemeConfig from "@components/memeConfig"
 import MemeImages from "@components/memeImages"
 import PropTypes from "prop-types"
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import store from "@store"
 
 const defaultImg = {
@@ -16,8 +17,9 @@ const defaultImg = {
 	texts: [
 		{
 			activeDrags: 0,
-			color: "#F3F4F5",
-			font: "Arial",
+			backgroundColor: "transparent",
+			color: "#0c243c",
+			font: "OswaldRegular",
 			size: 32,
 			text: "",
 			x: 0,
@@ -27,10 +29,25 @@ const defaultImg = {
 }
 
 const Create: React.FunctionComponent = (props) => {
+	const router = useRouter()
+	const { id } = router.query
+
+	const [bearer, setBearer] = useState("")
 	const [caption, setCaption] = useState("")
 	const [formVisible, setFormVisible] = useState(false)
 	const [images, setImages] = useState(props.images)
 	const [processing, setProcessing] = useState(false)
+
+	useEffect(() => {
+		const token = localStorage.getItem("jwtToken")
+		if (typeof token !== "undefined") {
+			setBearer(token)
+		}
+
+		if (typeof id !== "undefined") {
+			props.getMeme({ callback: (data) => setImages(data), setImages, id })
+		}
+	}, [id])
 
 	const addMoreImage = useCallback(() => {
 		images.map((img, i) => {
@@ -45,8 +62,9 @@ const Create: React.FunctionComponent = (props) => {
 				texts: [
 					{
 						activeDrags: 0,
-						color: "#F3F4F5",
-						font: "Arial",
+						backgroundColor: "transparent",
+						color: "#0c243c",
+						font: "OswaldRegular",
 						size: 32,
 						text: "",
 						x: 0,
@@ -74,6 +92,12 @@ const Create: React.FunctionComponent = (props) => {
 		setImages(newImages)
 	}
 
+	const changeBackgroundColor = (imgIndex, textIndex, value) => {
+		let newImages = [...images]
+		newImages[imgIndex].texts[textIndex].backgroundColor = value.hex
+		setImages(newImages)
+	}
+
 	const changeColor = (imgIndex, textIndex, value) => {
 		let newImages = [...images]
 		newImages[imgIndex].texts[textIndex].color = value.hex
@@ -87,10 +111,6 @@ const Create: React.FunctionComponent = (props) => {
 	}
 
 	const changeFontSize = (imgIndex, textIndex, value) => {
-		if (isNaN(value)) {
-			return
-		}
-
 		let newImages = [...images]
 		newImages[imgIndex].texts[textIndex].size = value
 		setImages(newImages)
@@ -118,7 +138,7 @@ const Create: React.FunctionComponent = (props) => {
 		}
 
 		setProcessing(true)
-		props.createMeme({ caption, images })
+		props.createMeme({ bearer, caption, images })
 	}
 
 	const createTemplate = (img, imgIndex, isFile) => {
@@ -214,6 +234,7 @@ const Create: React.FunctionComponent = (props) => {
 						<Grid.Column width={6}>
 							<MemeConfig
 								addMoreText={addMoreText}
+								changeBackgroundColor={changeBackgroundColor}
 								changeColor={changeColor}
 								changeFont={changeFont}
 								changeFontSize={changeFontSize}
@@ -259,6 +280,7 @@ const Create: React.FunctionComponent = (props) => {
 
 Create.propTypes = {
 	createMeme: PropTypes.func,
+	getMeme: PropTypes.func,
 	images: PropTypes.arrayOf(
 		PropTypes.shape({
 			active: PropTypes.bool,
@@ -267,6 +289,7 @@ Create.propTypes = {
 			texts: PropTypes.arrayOf(
 				PropTypes.shape({
 					activeDrags: PropTypes.number,
+					backgroundColor: PropTypes.string,
 					color: PropTypes.string,
 					font: PropTypes.string,
 					size: PropTypes.number,
@@ -280,7 +303,8 @@ Create.propTypes = {
 }
 
 Create.defaultProps = {
-	createMeme
+	createMeme,
+	getMeme
 }
 
 const mapStateToProps = (state: any, ownProps: any) => ({
@@ -289,5 +313,6 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 })
 
 export default connect(mapStateToProps, {
-	createMeme
+	createMeme,
+	getMeme
 })(Create)

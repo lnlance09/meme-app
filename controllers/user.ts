@@ -4,6 +4,8 @@ const db = require("../models/index.ts")
 const validator = require("validator")
 const randomize = require("randomatic")
 const sha1 = require("sha1")
+const Meme = db.meme
+const Template = db.template
 const User = db.user
 const Op = db.Sequelize.Op
 
@@ -159,7 +161,59 @@ exports.findAll = async (req, res) => {
 		})
 }
 
-exports.findOne = async (req, res) => {}
+exports.findOne = async (req, res) => {
+	const { username } = req.params
+
+	User.findAll({
+		attributes: ["createdAt", "id", "img", "name", "username"],
+		limit: 1,
+		where: {
+			username
+		},
+		raw: true
+	})
+		.then(async (data) => {
+			if (data.length === 1) {
+				let userData = data[0]
+
+				const memeCount = await Meme.count({
+					where: {
+						createdBy: userData.id
+					},
+					distinct: true,
+					col: "meme.id"
+				}).then((count) => count)
+
+				const templateCount = await Template.count({
+					where: {
+						createdBy: userData.id
+					},
+					distinct: true,
+					col: "template.id"
+				}).then((count) => count)
+
+				userData.memeCount = memeCount
+				userData.templateCount = templateCount
+
+				return res.status(200).send({
+					error: false,
+					msg: "success",
+					user: userData
+				})
+			}
+
+			return res.status(401).send({
+				error: true,
+				msg: "That user does not exist"
+			})
+		})
+		.catch((err) => {
+			return res.status(500).send({
+				error: true,
+				msg: err.message || "Some error occurred"
+			})
+		})
+}
 
 exports.login = async (req, res) => {
 	const { email, password } = req.body
@@ -211,7 +265,7 @@ exports.login = async (req, res) => {
 		.catch((err) => {
 			return res.status(500).send({
 				error: true,
-				msg: err.message || "Some error occurred while retrieving tutorials."
+				msg: err.message || "Some error occurred"
 			})
 		})
 }

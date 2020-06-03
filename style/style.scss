@@ -4,6 +4,77 @@
 @import './authentication.scss';
 @import './footer.scss';
 @import './header.scss';
+@import './searchResults.scss';
+
+@font-face {
+	font-family: OswaldBold;
+	src: url("../public/fonts/oswald/OswaldBold.ttf");
+}
+
+@font-face {
+	font-family: OswaldBoldItalic;
+	src: url("../public/fonts/oswald/OswaldBoldItalic.ttf");
+}
+
+@font-face {
+	font-family: OswaldExtraLight;
+	src: url("../public/fonts/oswald/OswaldExtraLight.ttf");
+}
+
+@font-face {
+	font-family: OswaldExtraLightItalic;
+	src: url("../public/fonts/oswald/OswaldExtraLightItalic.ttf");
+}
+
+@font-face {
+	font-family: OswaldHeavy;
+	src: url("../public/fonts/oswald/OswaldHeavy.ttf");
+}
+
+@font-face {
+	font-family: OswaldHeavyItalic;
+	src: url("../public/fonts/oswald/OswaldHeavyItalic.ttf");
+}
+
+@font-face {
+	font-family: OswaldLight;
+	src: url("../public/fonts/oswald/OswaldLight.ttf");
+}
+
+@font-face {
+	font-family: OswaldLightItalic;
+	src: url("../public/fonts/oswald/OswaldLightItalic.ttf");
+}
+
+@font-face {
+	font-family: OswaldMedium;
+	src: url("../public/fonts/oswald/OswaldMedium.ttf");
+}
+
+@font-face {
+	font-family: OswaldMediumItalic;
+	src: url("../public/fonts/oswald/OswaldMediumItalic.ttf");
+}
+
+@font-face {
+	font-family: OswaldRegular;
+	src: url("../public/fonts/oswald/OswaldRegular.ttf");
+}
+
+@font-face {
+	font-family: OswaldRegularItalic;
+	src: url("../public/fonts/oswald/OswaldRegularItalic.ttf");
+}
+
+@font-face {
+	font-family: OswaldSemiBold;
+	src: url("../public/fonts/oswald/OswaldSemiBold.ttf");
+}
+
+@font-face {
+	font-family: OswaldSemiBoldItalic;
+	src: url("../public/fonts/oswald/OswaldSemiBoldItalic.ttf");
+}
 
 * {
 	border-radius: 0 !important;
@@ -79,6 +150,7 @@ body {
 		cursor: move;
 		left: 20px;
 		line-height: 0.8;
+		padding: 10px;
 		position: absolute;
 		max-width: 94%;
 		word-wrap: break-word;
@@ -129,13 +201,10 @@ body {
 	}
 }
 
-.signInPage {
-	margin-top: 0;
-	width: 100% !important;
-
-	@media only screen and (max-width: 767px) {
-		&.ui.container {
-			margin: 0 !important;
+.artistPage {
+	.artistProfileList {
+		.item {
+			cursor: pointer;
 		}
 	}
 }
@@ -159,17 +228,6 @@ body {
 			}
 		}
 	}
-
-	.searchResults {
-		.card {
-			border: solid 4px $blue;
-			box-shadow: none;
-			cursor: pointer;
-			height: min-content;
-			max-height: 300px;
-			overflow: hidden;
-		}
-	}
 }
 
 .memePage {
@@ -185,10 +243,90 @@ body {
 		font-weight: normal;
 		margin-bottom: 40px;
 	}
+
+	.memeUpdateButton {
+		margin-top: 15px;
+	}
+
+	span.editMeme {
+		color: $blue;
+		cursor: pointer;
+	}
+}
+
+.signInPage {
+	margin-top: 0;
+	width: 100% !important;
+
+	@media only screen and (max-width: 767px) {
+		&.ui.container {
+			margin: 0 !important;
+		}
+	}
 }
 
 @media only screen and (max-width: 767px) {
 	.ui.form .fields.colorFields {
 		margin-bottom: 1em !important;
+	}
+}
+
+.fontSelection {
+	.item {
+		&:nth-of-type(1) {
+			font-family: OswaldRegular !important;
+		}
+
+		&:nth-of-type(2) {
+			font-family: OswaldRegularItalic !important;
+		}
+
+		&:nth-of-type(3) {
+			font-family: OswaldLight !important;
+		}
+
+		&:nth-of-type(4) {
+			font-family: OswaldLightItalic !important;
+		}
+
+		&:nth-of-type(5) {
+			font-family: OswaldExtraLight !important;
+		}
+
+		&:nth-of-type(6) {
+			font-family: OswaldExtraLightItalic !important;
+		}
+
+		&:nth-of-type(7) {
+			font-family: OswaldMedium !important;
+		}
+
+		&:nth-of-type(8) {
+			font-family: OswaldMediumItalic !important;
+		}
+
+		&:nth-of-type(9) {
+			font-family: OswaldHeavy !important;
+		}
+
+		&:nth-of-type(10) {
+			font-family: OswaldHeavyItalic !important;
+		}
+
+		&:nth-of-type(11) {
+			font-family: OswaldSemiBold !important;
+		}
+
+		&:nth-of-type(12) {
+			font-family: OswaldSemiBoldItalic !important;
+		}
+
+		&:nth-of-type(13) {
+			font-family: OswaldBold !important;
+		}
+
+		&:nth-of-type(14) {
+			font-family: OswaldBoldItalic !important;
+		}
 	}
 }

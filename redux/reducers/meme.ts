@@ -9,8 +9,9 @@ const initial = () => ({
 			texts: [
 				{
 					activeDrags: 0,
-					color: "#F3F4F5",
-					font: "Arial",
+					backgroundColor: "transparent",
+					color: "#0c243c",
+					font: "OswaldRegular",
 					size: 32,
 					text: "",
 					x: 0,
@@ -56,6 +57,20 @@ const meme = (state = initial(), action) => {
 					error: true,
 					errorMsg: "This meme does not exist",
 					loading: false
+				}
+			}
+
+		case constants.UPDATE_MEME:
+			return {
+				...state,
+				meme: {
+					...state.meme,
+					data: {
+						...state.meme.data,
+						caption: payload.meme.caption,
+						img: payload.meme.img,
+						name: payload.meme.name
+					}
 				}
 			}
 

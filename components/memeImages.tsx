@@ -22,7 +22,9 @@ const MemeImages: React.FunctionComponent = ({
 							const textBlock = (
 								<div
 									className="memeText"
+									key={`textBlock${i}`}
 									style={{
+										backgroundColor: text.backgroundColor,
 										color: text.color,
 										fontFamily: text.font,
 										fontSize: `${text.size}px`,
@@ -52,6 +54,7 @@ const MemeImages: React.FunctionComponent = ({
 						})}
 						<Image
 							className={`memeImg ${active ? "active" : ""}`}
+							crossOrigin={editable ? null : "anonymous"}
 							inline
 							onClick={() => {
 								if (editable) {

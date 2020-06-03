@@ -1,14 +1,15 @@
 import * as constants from "../constants"
 
 const initial = () => ({
-	user: {},
-	memes: {
-		loading: true,
-		results: [false, false, false, false, false]
-	},
-	templates: {
-		loading: true,
-		results: [false, false, false, false, false]
+	user: {
+		memes: {
+			loading: true,
+			results: [false, false, false, false, false, false]
+		},
+		templates: {
+			loading: true,
+			results: [false, false, false, false, false, false]
+		}
 	}
 })
 
@@ -17,26 +18,43 @@ const user = (state = initial(), action) => {
 
 	switch (action.type) {
 		case constants.GET_USER:
-			if (payload.error) {
-				return {
-					...state,
-					error: true
-				}
-			}
-
 			return {
 				...state,
 				error: false,
 				loading: false,
 				user: {
-					archiveCount: payload.user.archive_count,
-					bio: payload.user.bio,
+					...state.user,
 					createdAt: payload.user.createdAt,
-					emailVerified: payload.user.emailVerified === "1",
-					id: parseInt(payload.user.id, 10),
+					id: payload.user.id,
 					img: payload.user.img,
+					memeCount: payload.user.memeCount,
 					name: payload.user.name,
+					templateCount: payload.user.templateCount,
 					username: payload.user.username
+				}
+			}
+
+		case constants.GET_USER_MEMES:
+			return {
+				...state,
+				user: {
+					...state.user,
+					memes: {
+						loading: false,
+						results: payload.memes
+					}
+				}
+			}
+
+		case constants.GET_USER_TEMPLATES:
+			return {
+				...state,
+				user: {
+					...state.user,
+					templates: {
+						loading: false,
+						results: payload.templates
+					}
 				}
 			}
 

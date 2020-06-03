@@ -7,6 +7,7 @@ import TextBox from "@components/textBox"
 const MemeConfig: React.FunctionComponent = (props) => {
 	const {
 		addMoreText,
+		changeBackgroundColor,
 		changeColor,
 		changeFont,
 		changeFontSize,
@@ -35,6 +36,8 @@ const MemeConfig: React.FunctionComponent = (props) => {
 							{texts.map((text, x) => (
 								<Fragment key={`textFragment${x}`}>
 									<TextBox
+										backgroundColor={text.backgroundColor}
+										changeBackgroundColor={changeBackgroundColor}
 										changeColor={changeColor}
 										changeFont={changeFont}
 										changeFontSize={changeFontSize}
@@ -50,6 +53,7 @@ const MemeConfig: React.FunctionComponent = (props) => {
 								</Fragment>
 							))}
 							<Button
+								basic
 								color="blue"
 								content="Add more text"
 								fluid
@@ -67,6 +71,7 @@ const MemeConfig: React.FunctionComponent = (props) => {
 
 MemeConfig.propTypes = {
 	addMoreText: PropTypes.func,
+	changeBackgroundColor: PropTypes.func,
 	changeColor: PropTypes.func,
 	changeFont: PropTypes.func,
 	changeFontSize: PropTypes.func,

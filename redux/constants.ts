@@ -9,6 +9,7 @@ export const VERIFY_EMAIL = "authentication:VERIFY_EMAIL"
 
 export const GET_MEME = "meme:GET_MEME"
 export const SET_MEME_FETCH_ERROR = "meme:SET_MEME_FETCH_ERROR"
+export const UPDATE_MEME = "meme:UPDATE_MEME"
 
 export const SEARCH_ARTISTS = "search:SEARCH_ARTISTS"
 export const SEARCH_MEMES = "search:SEARCH_MEMES"
@@ -19,5 +20,9 @@ export const SET_TEMPLATE_FETCH_ERROR = "template:SET_TEMPLATE_FETCH_ERROR"
 
 export const CHANGE_PROFILE_PIC = "user:CHANGE_PROFILE_PIC"
 export const GET_USER = "user:GET_USER"
+export const GET_USER_MEMES = "user:GET_USER_MEMES"
+export const GET_USER_TEMPLATES = "user:GET_USER_TEMPLATES"
 export const SET_USER_FETCH_ERROR = "user:SET_USER_FETCH_ERROR"
+export const SET_USER_MEMES_FETCH_ERROR = "user:SET_USER_MEMES_FETCH_ERROR"
+export const SET_USER_TEMPLATES_FETCH_ERROR = "user:SET_USER_TEMPLATES_FETCH_ERROR"
 export const UPDATE_USER = "user:UPDATE_USER"

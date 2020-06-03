@@ -1,5 +1,6 @@
 import { searchArtists, searchMemes, searchTemplates } from "@actions/search"
 import { Divider, Image, Button } from "semantic-ui-react"
+import { useRouter } from "next/router"
 import { DebounceInput } from "react-debounce-input"
 import { Provider, connect } from "react-redux"
 import DefaultLayout from "@layouts/default"
@@ -9,16 +10,25 @@ import SearchResults from "@components/searchResults"
 import store from "@store"
 
 const Explore: React.FunctionComponent = (props) => {
+	const router = useRouter()
+	const { q, type } = router.query
+
 	const { artists, memes, templates } = props
 
-	const [activeItem, setActiveItem] = useState("templates")
-	const [searchVal, setSearchVal] = useState("")
+	const [activeItem, setActiveItem] = useState("memes")
+	const [searchVal, setSearchVal] = useState(q)
 
 	useEffect(() => {
-		props.searchArtists({})
-		props.searchMemes({})
-		props.searchTemplates({})
-	}, [])
+		if (typeof type !== "undefined") {
+			setActiveItem(type)
+		}
+
+		setSearchVal(q)
+
+		props.searchArtists({ q })
+		props.searchMemes({ q })
+		props.searchTemplates({ q })
+	}, [q, type])
 
 	const onClickItem = (name) => {
 		setActiveItem(name)

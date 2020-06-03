@@ -1,0 +1,9 @@
+.searchResults {
+    .card {
+        box-shadow: none;
+        cursor: pointer;
+        height: min-content;
+        max-height: 300px;
+        overflow: hidden;
+    }
+}

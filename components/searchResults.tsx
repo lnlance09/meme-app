@@ -1,5 +1,5 @@
 import { Card, Image, Placeholder, Visibility } from "semantic-ui-react"
-import DefaultPic from "@public/images/placeholders/white-image.png"
+import DefaultPic from "@public/images/placeholders/image.png"
 import Moment from "react-moment"
 import PropTypes from "prop-types"
 import React, { Fragment, useEffect, useState } from "react"

@@ -18,6 +18,9 @@ module.exports = (sequelize, Sequelize) => {
 				}
 				*/
 			},
+			hash: {
+				type: Sequelize.STRING
+			},
 			name: {
 				type: Sequelize.CHAR
 			},

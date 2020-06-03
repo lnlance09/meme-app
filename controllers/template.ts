@@ -3,6 +3,7 @@ const Aws = require("../utils/awsFunctions.ts")
 const db = require("../models/index.ts")
 const axios = require("axios")
 const randomize = require("randomatic")
+const sha1 = require("sha1")
 const validator = require("validator")
 const Template = db.template
 const User = db.user
@@ -19,6 +20,30 @@ exports.create = async (req, res) => {
 	let image = img
 	const timestamp = new Date().getTime()
 	const fileName = `templates/${randomize("aa", 24)}-${timestamp}.png`
+	const hash = sha1(image)
+
+	const templateId = await Template.findAll({
+		required: true,
+		attributes: ["id"],
+		where: {
+			hash
+		},
+		raw: true
+	}).then((template) => {
+		if (template.length === 1) {
+			return template[0].id
+		}
+
+		return false
+	})
+
+	if (templateId) {
+		return res.status(200).send({
+			error: false,
+			id: templateId,
+			msg: "success"
+		})
+	}
 
 	if (validator.isURL(img)) {
 		const imageFromUrl = await axios.get(img, { responseType: "arraybuffer" })
@@ -29,6 +54,7 @@ exports.create = async (req, res) => {
 
 	Template.create({
 		createdBy: authenticated ? user.id : 1,
+		hash,
 		name,
 		s3Link: fileName
 	})

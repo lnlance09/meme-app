@@ -9,6 +9,9 @@ module.exports = (sequelize, Sequelize) => {
 				primaryKey: true,
 				unique: true
 			},
+			backgroundColor: {
+				type: Sequelize.STRING
+			},
 			fontColor: {
 				type: Sequelize.CHAR
 			},

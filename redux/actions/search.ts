@@ -4,7 +4,9 @@ import axios from "axios"
 export const searchArtists = ({ q }) => (dispatch) => {
 	axios
 		.get("/api/user/search", {
-			q
+			params: {
+				q
+			}
 		})
 		.then((response) => {
 			const { data } = response
@@ -40,7 +42,9 @@ export const searchMemes = ({ q }) => (dispatch) => {
 export const searchTemplates = ({ q }) => (dispatch) => {
 	axios
 		.get("/api/template/search", {
-			q
+			params: {
+				q
+			}
 		})
 		.then((response) => {
 			const { data } = response
