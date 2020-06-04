@@ -34,7 +34,7 @@ const ImgBox: React.FunctionComponent = (props) => {
 				<Grid.Column width={4}>
 					<div {...getRootProps()}>
 						<input {...getInputProps()} />
-						<Button color="green" icon="upload" fluid />
+						<Button color="blue" icon="upload" fluid />
 					</div>
 				</Grid.Column>
 			</Grid>

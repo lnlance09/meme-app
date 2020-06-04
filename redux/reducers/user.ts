@@ -1,7 +1,9 @@
 import * as constants from "../constants"
 
 const initial = () => ({
+	loading: true,
 	user: {
+		img: "",
 		memes: {
 			loading: true,
 			results: [false, false, false, false, false, false]
@@ -17,6 +19,15 @@ const user = (state = initial(), action) => {
 	const { payload } = action
 
 	switch (action.type) {
+		case constants.CHANGE_PROFILE_PIC:
+			return {
+				...state,
+				user: {
+					...state.user,
+					img: payload.img
+				}
+			}
+
 		case constants.GET_USER:
 			return {
 				...state,

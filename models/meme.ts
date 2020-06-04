@@ -14,12 +14,6 @@ module.exports = (sequelize, Sequelize) => {
 			},
 			createdBy: {
 				type: Sequelize.INTEGER
-				/*
-				references: {
-					key: "id",
-					model: "users"
-				}
-				*/
 			},
 			name: {
 				type: Sequelize.CHAR
@@ -38,7 +32,6 @@ module.exports = (sequelize, Sequelize) => {
 	)
 
 	Meme.associate = (models) => {
-		// Meme.hasMany(models.memeTemplate, { as: "memeTemplates", foreignKey: "memeId" })
 		Meme.belongsTo(models.user, { foreignKey: "createdBy" })
 	}
 

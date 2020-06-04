@@ -46,6 +46,23 @@ export const getMeme = ({ callback = () => null, id }) => (dispatch) => {
 		})
 }
 
+export const updateImg = ({ file, id }) => (dispatch) => {
+	axios
+		.post(`/api/meme/${id}/updateImg`, {
+			file
+		})
+		.then((response) => {
+			const { data } = response
+			dispatch({
+				payload: data,
+				type: constants.UPDATE_MEME_IMG
+			})
+		})
+		.catch((error) => {
+			console.log(error)
+		})
+}
+
 export const updateViews = ({ id }) => (dispatch) => {
 	axios
 		.post(`/api/meme/${id}/updateViews`)

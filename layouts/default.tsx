@@ -1,10 +1,10 @@
 import { Container } from "semantic-ui-react"
+import { baseUrl } from "@options/config"
 import Footer from "@components/footer"
 import Head from "next/head"
 import Header from "@components/header"
 import PropTypes from "prop-types"
 import React from "react"
-import Router from "next/router"
 
 const DefaultLayout: React.FunctionComponent = ({
 	basicHeader,
@@ -16,6 +16,7 @@ const DefaultLayout: React.FunctionComponent = ({
 	textAlign
 }) => {
 	const { description, image, title, url } = seo
+	const fullUrl = `${baseUrl}${url}`
 
 	return (
 		<div>
@@ -37,7 +38,7 @@ const DefaultLayout: React.FunctionComponent = ({
 				<meta property="og:site_name" content="Blather" />
 				<meta property="og:title" content={title} />
 				<meta property="og:type" content="website" />
-				<meta property="og:url" content={url} />
+				<meta property="og:url" content={fullUrl} />
 
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@blatherio" />
@@ -50,7 +51,7 @@ const DefaultLayout: React.FunctionComponent = ({
 				<meta name="keywords" content="" />
 				<meta name="title" content={title} />
 
-				<link rel="canonical" href={url} />
+				<link rel="canonical" href={fullUrl} />
 				<link rel="home" href="" />
 
 				<link rel="icon" href="/favicon.ico" />

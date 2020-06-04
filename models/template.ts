@@ -11,12 +11,6 @@ module.exports = (sequelize, Sequelize) => {
 			},
 			createdBy: {
 				type: Sequelize.INTEGER
-				/*
-				references: {
-					key: "id",
-					model: "users"
-				}
-				*/
 			},
 			hash: {
 				type: Sequelize.STRING
@@ -29,7 +23,6 @@ module.exports = (sequelize, Sequelize) => {
 			}
 		},
 		{
-			createdAt: false,
 			updatedAt: false
 		}
 	)

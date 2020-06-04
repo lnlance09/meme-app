@@ -2,6 +2,7 @@ const Auth = require("../utils/authFunctions.ts")
 const Aws = require("../utils/awsFunctions.ts")
 const db = require("../models/index.ts")
 const axios = require("axios")
+const randomize = require("randomatic")
 const Meme = db.meme
 const MemeTemplate = db.memeTemplate
 const Template = db.template
@@ -44,40 +45,41 @@ exports.create = async (req, res) => {
 
 	images.map(async (_img) => {
 		const { templateId, texts } = _img
-		// console.log("image", img)
-		// console.log("texts", texts)
 
-		texts.map(async (text) => {
-			TemplateText.create({
-				fontColor: text.color,
-				fontFamily: text.font,
-				fontSize: text.size,
-				text: text.text,
-				x: text.x,
-				y: text.y
-			})
-				.then((data) => {
-					const { id } = data.dataValues
-					MemeTemplate.create({
-						memeId,
-						templateId,
-						textId: id
-					})
-						.then((data) => {})
-						.catch((err) => {
-							return res.status(500).send({
-								error: true,
-								msg: err.message || "An error occurred"
-							})
+		if (templateId) {
+			texts.map(async (text) => {
+				TemplateText.create({
+					backgroundColor: text.backgroundColor,
+					fontColor: text.color,
+					fontFamily: text.font,
+					fontSize: text.size,
+					text: text.text,
+					x: text.x,
+					y: text.y
+				})
+					.then((data) => {
+						const { id } = data.dataValues
+						MemeTemplate.create({
+							memeId,
+							templateId,
+							textId: id
 						})
-				})
-				.catch((err) => {
-					return res.status(500).send({
-						error: true,
-						msg: err.message || "An error occurred"
+							.then((data) => {})
+							.catch((err) => {
+								return res.status(500).send({
+									error: true,
+									msg: err.message || "An error occurred"
+								})
+							})
 					})
-				})
-		})
+					.catch((err) => {
+						return res.status(500).send({
+							error: true,
+							msg: err.message || "An error occurred"
+						})
+					})
+			})
+		}
 	})
 
 	return res.status(200).send({
@@ -190,6 +192,7 @@ exports.findOne = async (req, res) => {
 		where: {
 			memeId: id
 		},
+		order: [["id", "ASC"]],
 		raw: true
 	})
 		.then((memes) => {
@@ -226,6 +229,7 @@ exports.findOne = async (req, res) => {
 				if (index !== -1) {
 					meme.templates[index].texts.push({
 						advtiveDrags: 0,
+						backgroundColor: _meme["text.backgroundColor"],
 						color: _meme["text.fontColor"],
 						font: _meme["text.fontFamily"],
 						size: _meme["text.fontSize"],
@@ -243,6 +247,7 @@ exports.findOne = async (req, res) => {
 						texts: [
 							{
 								advtiveDrags: 0,
+								backgroundColor: _meme["text.backgroundColor"],
 								color: _meme["text.fontColor"],
 								font: _meme["text.fontFamily"],
 								size: _meme["text.fontSize"],
@@ -265,6 +270,41 @@ exports.findOne = async (req, res) => {
 			return res.status(500).send({
 				error: true,
 				msg: err.message || "An error occurred"
+			})
+		})
+}
+
+exports.updateImg = async (req, res) => {
+	const { id } = req.params
+	const { file } = req.body
+
+	if (typeof file === "undefined") {
+		return res.status(401).send({ error: true, msg: "You must include a picture" })
+	}
+
+	const timestamp = new Date().getTime()
+	const fileName = `memes/${randomize("aa", 24)}-${timestamp}.png`
+	await Aws.uploadToS3(file, fileName)
+
+	Meme.update(
+		{
+			s3Link: fileName
+		},
+		{
+			where: { id }
+		}
+	)
+		.then(() => {
+			return res.status(200).send({
+				error: false,
+				msg: "Success",
+				s3Link: fileName
+			})
+		})
+		.catch(() => {
+			return res.status(500).send({
+				error: true,
+				msg: "There was an error"
 			})
 		})
 }

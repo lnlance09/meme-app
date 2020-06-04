@@ -42,5 +42,10 @@ module.exports = (sequelize, Sequelize) => {
 		}
 	)
 
+	User.associate = (models) => {
+		User.hasMany(models.meme, { foreignKey: "createdBy" })
+		User.hasMany(models.template, { foreignKey: "createdBy" })
+	}
+
 	return User
 }

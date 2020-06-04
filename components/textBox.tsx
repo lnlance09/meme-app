@@ -1,29 +1,9 @@
 import { Form, Input, Segment, Select, TextArea } from "semantic-ui-react"
 import { CirclePicker } from "react-color"
+import { colorOptions } from "@options/colors"
 import { fontOptions } from "@options/fonts"
 import PropTypes from "prop-types"
 import React, { useEffect, useRef, useState } from "react"
-
-const colors = [
-	"#e91e63",
-	"#9c27b0",
-	"#673ab7",
-	"#3f51b5",
-	"#03a9f4",
-	"#00bcd4",
-	"#009688",
-	"#4caf50",
-	"#8bc34a",
-	"#cddc39",
-	"#ffeb3b",
-	"#ffc107",
-	"#ff9800",
-	"#ff5722",
-	"#b53847",
-	"#0c243c",
-	"#ffffff",
-	"transparent"
-]
 
 const TextBox: React.FunctionComponent = (props) => {
 	const node = useRef(null)
@@ -118,7 +98,7 @@ const TextBox: React.FunctionComponent = (props) => {
 							<div className="colorPickerWrapper" ref={node}>
 								<Segment>
 									<CirclePicker
-										colors={colors}
+										colors={colorOptions}
 										onChange={(color) => {
 											changeColor(imgIndex, textIndex, color)
 											setColorPicker(false)
@@ -145,7 +125,7 @@ const TextBox: React.FunctionComponent = (props) => {
 							<div className="colorPickerWrapper" ref={node}>
 								<Segment>
 									<CirclePicker
-										colors={colors}
+										colors={colorOptions}
 										onChange={(color) => {
 											changeBackgroundColor(imgIndex, textIndex, color)
 											setBackgroundColorPicker(false)
@@ -169,7 +149,7 @@ TextBox.propTypes = {
 	changeText: PropTypes.func,
 	color: PropTypes.string,
 	font: PropTypes.string,
-	fontSize: PropTypes.number,
+	fontSize: PropTypes.string,
 	imgIndex: PropTypes.number,
 	text: PropTypes.string,
 	textIndex: PropTypes.number

@@ -12,7 +12,7 @@ const initial = () => ({
 					backgroundColor: "transparent",
 					color: "#0c243c",
 					font: "OswaldRegular",
-					size: 32,
+					size: "32",
 					text: "",
 					x: 0,
 					y: 10
@@ -70,6 +70,18 @@ const meme = (state = initial(), action) => {
 						caption: payload.meme.caption,
 						img: payload.meme.img,
 						name: payload.meme.name
+					}
+				}
+			}
+
+		case constants.UPDATE_MEME_IMG:
+			return {
+				...state,
+				meme: {
+					...state.meme,
+					data: {
+						...state.meme.data,
+						s3Link: payload.s3Link
 					}
 				}
 			}

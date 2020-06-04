@@ -1,5 +1,5 @@
 import { searchArtists, searchMemes, searchTemplates } from "@actions/search"
-import { Divider, Image, Button } from "semantic-ui-react"
+import { Button, Divider, Image, Item } from "semantic-ui-react"
 import { useRouter } from "next/router"
 import { DebounceInput } from "react-debounce-input"
 import { Provider, connect } from "react-redux"
@@ -7,6 +7,7 @@ import DefaultLayout from "@layouts/default"
 import PropTypes from "prop-types"
 import React, { useEffect, useState } from "react"
 import SearchResults from "@components/searchResults"
+import UsersList from "@components/usersList"
 import store from "@store"
 
 const Explore: React.FunctionComponent = (props) => {
@@ -15,23 +16,46 @@ const Explore: React.FunctionComponent = (props) => {
 
 	const { artists, memes, templates } = props
 
-	const [activeItem, setActiveItem] = useState("memes")
+	const types = ["artists", "memes", "templates"]
+	const defaultType = types.includes(type) ? type : "memes"
+
+	const [activeItem, setActiveItem] = useState(defaultType)
 	const [searchVal, setSearchVal] = useState(q)
 
 	useEffect(() => {
 		if (typeof type !== "undefined") {
 			setActiveItem(type)
+
+			if (type === "artists") {
+				props.searchArtists({ q })
+			}
+
+			if (type === "memes") {
+				props.searchMemes({ q })
+			}
+
+			if (type === "templates") {
+				props.searchTemplates({ q })
+			}
 		}
 
 		setSearchVal(q)
-
-		props.searchArtists({ q })
-		props.searchMemes({ q })
-		props.searchTemplates({ q })
 	}, [q, type])
 
 	const onClickItem = (name) => {
 		setActiveItem(name)
+
+		if (name === "artists") {
+			props.searchArtists({ q })
+		}
+
+		if (name === "memes") {
+			props.searchMemes({ q })
+		}
+
+		if (name === "templates") {
+			props.searchTemplates({ q })
+		}
 	}
 
 	const searchForResults = (e) => {
@@ -117,12 +141,16 @@ const Explore: React.FunctionComponent = (props) => {
 
 				<Divider section />
 
-				<SearchResults
-					justImages
-					loading={results.loading}
-					results={results.results}
-					type={activeItem}
-				/>
+				{activeItem === "artists" ? (
+					<UsersList loading={results.loading} results={results.results} />
+				) : (
+					<SearchResults
+						justImages={activeItem === "templates"}
+						loading={results.loading}
+						results={results.results}
+						type={activeItem}
+					/>
+				)}
 			</DefaultLayout>
 		</Provider>
 	)
@@ -135,8 +163,11 @@ Explore.propTypes = {
 			PropTypes.oneOfType([
 				PropTypes.bool,
 				PropTypes.shape({
+					createdAt: PropTypes.string,
 					img: PropTypes.string,
+					memeCount: PropTypes.number,
 					name: PropTypes.string,
+					templateCount: PropTypes.number,
 					username: PropTypes.string
 				})
 			])
@@ -183,18 +214,18 @@ Explore.propTypes = {
 Explore.defaultProps = {
 	artists: {
 		loading: true,
-		results: [false, false, false, false, false]
+		results: [false, false, false, false, false, false]
 	},
 	memes: {
 		loading: true,
-		results: [false, false, false, false, false]
+		results: [false, false, false, false, false, false]
 	},
 	searchArtists,
 	searchMemes,
 	searchTemplates,
 	templates: {
 		loading: true,
-		results: [false, false, false, false, false]
+		results: [false, false, false, false, false, false]
 	}
 }
 

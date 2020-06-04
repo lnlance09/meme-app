@@ -1,16 +1,27 @@
-import { getUser } from "@actions/user"
-import { Divider, Grid, Header, Image, List, Placeholder } from "semantic-ui-react"
+import { changeProfilePic, getUser } from "@actions/user"
+import {
+	Button,
+	Dimmer,
+	Divider,
+	Grid,
+	Header,
+	Icon,
+	Image,
+	List,
+	Placeholder
+} from "semantic-ui-react"
+import { s3BaseUrl } from "@options/config"
+import { parseJwt } from "@utils/tokenFunctions"
 import { useRouter } from "next/router"
+import { useDropzone } from "react-dropzone"
 import { Provider, connect } from "react-redux"
 import DefaultLayout from "@layouts/default"
 import DefaultPic from "@public/images/avatar/large/steve.jpg"
 import Moment from "react-moment"
 import PropTypes from "prop-types"
-import React, { Fragment, useEffect, useState } from "react"
+import React, { Fragment, useCallback, useEffect, useState } from "react"
 import SearchResults from "@components/searchResults"
 import store from "@store"
-
-const s3BaseUrl = `https://brandywine22.s3-us-west-2.amazonaws.com/`
 
 const Artist: React.FunctionComponent = (props) => {
 	const router = useRouter()
@@ -19,7 +30,10 @@ const Artist: React.FunctionComponent = (props) => {
 	const { error, loading, user } = props
 	const { createdAt, id, img, memeCount, memes, name, templateCount, templates } = user
 
+	const [active, setActive] = useState(true)
 	const [activeItem, setActiveItem] = useState("memes")
+	const [bearer, setBearer] = useState(null)
+	const [currentUser, setCurrentUser] = useState({})
 
 	useEffect(() => {
 		if (typeof username !== "undefined") {
@@ -27,9 +41,61 @@ const Artist: React.FunctionComponent = (props) => {
 		}
 	}, [username])
 
+	useEffect(() => {
+		const userData = parseJwt()
+		if (userData) {
+			setBearer(localStorage.getItem("jwtToken"))
+			setCurrentUser(userData)
+		}
+	}, [bearer])
+
+	const onDrop = useCallback(
+		(files) => {
+			if (files.length > 0) {
+				props.changeProfilePic({
+					bearer,
+					file: files[0]
+				})
+			}
+		},
+		[bearer]
+	)
+
+	const { getRootProps, getInputProps } = useDropzone({ onDrop })
+
 	let results = memes
 	if (activeItem === "templates") {
 		results = templates
+	}
+
+	const ProfilePic = () => {
+		const src = img === null || img === "" ? DefaultPic : `${s3BaseUrl}${img}`
+		const content = (
+			<div {...getRootProps()}>
+				<input {...getInputProps()} />
+				<Header>Change your pic</Header>
+				<Button className="changePicBtn" color="blue" icon>
+					<Icon name="image" />
+				</Button>
+			</div>
+		)
+
+		if (currentUser.id === id) {
+			return (
+				<Dimmer.Dimmable
+					as={Image}
+					className="profilePic"
+					dimmed={active}
+					dimmer={{ active, content, inverted: true }}
+					onError={(i) => (i.target.src = DefaultPic)}
+					onMouseEnter={() => setActive(true)}
+					onMouseLeave={() => setActive(false)}
+					src={src}
+				/>
+			)
+		}
+
+		return <Image fluid onError={(i) => (i.target.src = DefaultPic)} src={src} />
 	}
 
 	return (
@@ -44,7 +110,7 @@ const Artist: React.FunctionComponent = (props) => {
 						width: 200
 					},
 					title: name,
-					url: ""
+					url: `artists/${username}`
 				}}
 				showFooter={false}
 			>
@@ -57,11 +123,7 @@ const Artist: React.FunctionComponent = (props) => {
 										<Placeholder.Image square />
 									</Placeholder>
 								) : (
-									<Image
-										fluid
-										onError={(i) => (i.target.src = DefaultPic)}
-										src={img === null ? DefaultPic : `${s3BaseUrl}${img}`}
-									/>
+									ProfilePic()
 								)}
 							</Grid.Column>
 							<Grid.Column width={12}>
@@ -102,6 +164,7 @@ const Artist: React.FunctionComponent = (props) => {
 }
 
 Artist.propTypes = {
+	changeProfilePic: PropTypes.func,
 	error: PropTypes.bool,
 	getUser: PropTypes.func,
 	loading: PropTypes.bool,
@@ -143,6 +206,7 @@ Artist.propTypes = {
 }
 
 Artist.defaultProps = {
+	changeProfilePic,
 	getUser
 }
 
@@ -152,5 +216,6 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 })
 
 export default connect(mapStateToProps, {
+	changeProfilePic,
 	getUser
 })(Artist)

@@ -24,63 +24,6 @@ export const changePassword = ({ bearer, confirmPassword, newPassword, password 
 		})
 }
 
-export const changeProfilePic = ({ bearer, file }) => (dispatch) => {
-	const fr = new FileReader()
-	fr.onload = (event) => {
-		axios
-			.post("/api/user/changeProfilePic", {
-				file
-			})
-			.then((response) => {
-				console.log(response)
-				dispatch({
-					payload: response,
-					type: constants.CHANGE_PASSWORD
-				})
-			})
-			.catch((error) => {
-				console.log(error)
-			})
-
-		/*
-		request.post(
-			"/api/user/changeProfilePic",
-			{
-				headers: {
-					Authorization: bearer,
-					"Content-Type": "multipart/form-data",
-					enctype: "multipart/form-data"
-				},
-				json: true,
-				multipart: {
-					chunked: false,
-					data: [
-						{
-							"Content-Disposition": `form-data; name="file"; filename="${file.name}"`,
-							body: event.target.result
-						}
-					]
-				}
-			},
-			function (err, response, body) {
-				let localData = parseJwt()
-				if (!body.error) {
-					localData.img = body.img
-				}
-				const token = setToken(localData)
-				body.bearer = token
-
-				dispatch({
-					payload: body,
-					type: constants.CHANGE_PROFILE_PIC
-				})
-			}
-		)
-		*/
-	}
-	fr.readAsArrayBuffer(file)
-}
-
 export const logout = () => async (dispatch) => {
 	dispatch({
 		type: constants.LOGOUT

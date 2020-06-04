@@ -54,21 +54,7 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 						<Dropdown.Menu>
 							<Dropdown.Item
 								onClick={() => router.push(`/artists/${username}`)}
-								text={name}
-							/>
-							<Dropdown.Divider />
-							<Dropdown.Item
-								onClick={() => router.push(`/artists/${username}/memes`)}
-								text="Memes"
-							/>
-							<Dropdown.Item
-								onClick={() => router.push(`/artists/${username}/templates`)}
-								text="Templates"
-							/>
-							<Dropdown.Divider />
-							<Dropdown.Item
-								onClick={() => router.push("/settings")}
-								text="Settings"
+								text="Profile"
 							/>
 							<Dropdown.Item
 								onClick={() => {

@@ -9,6 +9,48 @@ const Template = db.template
 const User = db.user
 const Op = db.Sequelize.Op
 
+exports.changeProfilePic = async (req, res) => {
+	const { file } = req.files
+	const { authenticated, user } = Auth.parseAuthentication(req)
+
+	if (!authenticated) {
+		return res.status(401).send({ error: true, msg: "You must be logged in" })
+	}
+
+	if (typeof file === "undefined") {
+		return res.status(401).send({ error: true, msg: "You must include a picture" })
+	}
+
+	const image = file.data
+	const timestamp = new Date().getTime()
+	const fileName = `users/${randomize("aa", 24)}-${timestamp}.png`
+	await Aws.uploadToS3(image, fileName, false)
+
+	setTimeout(() => {
+		User.update(
+			{
+				img: fileName
+			},
+			{
+				where: { id: user.data.id }
+			}
+		)
+			.then(() => {
+				return res.status(200).send({
+					error: false,
+					img: fileName,
+					msg: "success"
+				})
+			})
+			.catch(() => {
+				return res.status(500).send({
+					error: true,
+					msg: "There was an error"
+				})
+			})
+	}, 3500)
+}
+
 exports.create = async (req, res) => {
 	const { email, name, password, username } = req.body
 	if (typeof email === "undefined" || email === "") {
@@ -141,16 +183,44 @@ exports.findAll = async (req, res) => {
 	}
 
 	User.findAll({
-		required: true,
-		attributes: ["createdAt", "img", "name", "username"],
+		attributes: [
+			"createdAt",
+			"id",
+			"img",
+			"name",
+			"username",
+			[
+				db.Sequelize.fn("COUNT", db.Sequelize.fn("DISTINCT", db.Sequelize.col("memes.id"))),
+				"memeCount"
+			],
+			[
+				db.Sequelize.fn(
+					"COUNT",
+					db.Sequelize.fn("DISTINCT", db.Sequelize.col("templates.id"))
+				),
+				"templateCount"
+			]
+		],
+		include: [
+			{
+				model: Meme,
+				attributes: []
+			},
+			{
+				model: Template,
+				attributes: []
+			}
+		],
 		where,
+		group: ["id"],
+		distinct: true,
 		raw: true
 	})
 		.then((users) => {
 			return res.status(200).send({
 				error: false,
-				users,
-				msg: "Success"
+				msg: "Success",
+				users
 			})
 		})
 		.catch((err) => {

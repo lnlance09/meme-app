@@ -2,7 +2,7 @@ import { Image } from "semantic-ui-react"
 import BlankImg from "@public/images/blank.png"
 import Draggable from "react-draggable"
 import PropTypes from "prop-types"
-import React from "react"
+import React, { useEffect } from "react"
 
 const MemeImages: React.FunctionComponent = ({
 	clickImg,
@@ -12,6 +12,8 @@ const MemeImages: React.FunctionComponent = ({
 	handleDragStop,
 	images
 }) => {
+	useEffect(() => {}, [images])
+
 	return (
 		<div id="memeContainer">
 			{images.map((_img, i) => {
@@ -19,41 +21,43 @@ const MemeImages: React.FunctionComponent = ({
 				return (
 					<div className="draggableWrapper" key={`draggableWrapper${i}`}>
 						{texts.map((text, x) => {
+							console.log("text", text)
 							const textBlock = (
 								<div
-									className="memeText"
-									key={`textBlock${i}`}
+									className={`memeText ${editable ? "" : "disabled"}`}
+									key={`textBlock${x}${i}`}
 									style={{
 										backgroundColor: text.backgroundColor,
 										color: text.color,
 										fontFamily: text.font,
-										fontSize: `${text.size}px`,
-										top: `${text.y}px`
+										fontSize: `${text.size}px`
 									}}
 								>
 									{text.text}
 								</div>
 							)
 
-							if (editable) {
-								return (
-									<Draggable
-										bounds="parent"
-										handle=".memeText"
-										key={`draggable${x}`}
-										onDrag={(e, ui) => handleDrag(i, x, e, ui)}
-										onStart={() => handleDragStart(i, x)}
-										onStop={() => handleDragStop(i, x)}
-									>
-										{textBlock}
-									</Draggable>
-								)
-							}
-
-							return textBlock
+							return (
+								<Draggable
+									bounds="parent"
+									defaultPosition={{ x: text.x, y: text.y }}
+									handle=".memeText"
+									key={`draggable${x}`}
+									onDrag={(e, ui) => handleDrag(i, x, e, ui)}
+									onStart={() => {
+										if (!editable) {
+											return false
+										}
+										handleDragStart(i, x)
+									}}
+									onStop={() => handleDragStop(i, x)}
+								>
+									{textBlock}
+								</Draggable>
+							)
 						})}
 						<Image
-							className={`memeImg ${active ? "active" : ""}`}
+							className={`memeImg ${active && editable ? "active" : ""}`}
 							crossOrigin={editable ? null : "anonymous"}
 							inline
 							onClick={() => {
@@ -91,9 +95,10 @@ MemeImages.propTypes = {
 			texts: PropTypes.arrayOf(
 				PropTypes.shape({
 					activeDrags: PropTypes.number,
+					backgroundColor: PropTypes.string,
 					color: PropTypes.string,
 					font: PropTypes.string,
-					size: PropTypes.number,
+					size: PropTypes.string,
 					text: PropTypes.string,
 					x: PropTypes.number,
 					y: PropTypes.number

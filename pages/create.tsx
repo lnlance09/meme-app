@@ -10,24 +10,6 @@ import PropTypes from "prop-types"
 import React, { useCallback, useEffect, useState } from "react"
 import store from "@store"
 
-const defaultImg = {
-	active: true,
-	img: "",
-	path: null,
-	texts: [
-		{
-			activeDrags: 0,
-			backgroundColor: "transparent",
-			color: "#0c243c",
-			font: "OswaldRegular",
-			size: 32,
-			text: "",
-			x: 0,
-			y: 10
-		}
-	]
-}
-
 const Create: React.FunctionComponent = (props) => {
 	const router = useRouter()
 	const { id } = router.query
@@ -65,7 +47,7 @@ const Create: React.FunctionComponent = (props) => {
 						backgroundColor: "transparent",
 						color: "#0c243c",
 						font: "OswaldRegular",
-						size: 32,
+						size: "32",
 						text: "",
 						x: 0,
 						y: 10
@@ -85,9 +67,19 @@ const Create: React.FunctionComponent = (props) => {
 			lastY = 0
 		}
 
-		let newText = defaultImg.texts[0]
-		newText.y = lastY + 35
-		let newTexts = [...images[imgIndex].texts, newText]
+		let newTexts = [
+			...images[imgIndex].texts,
+			{
+				activeDrags: 0,
+				backgroundColor: "transparent",
+				color: "#0c243c",
+				font: "OswaldRegular",
+				size: "32",
+				text: "",
+				x: 0,
+				y: lastY + 35
+			}
+		]
 		newImages[imgIndex].texts = newTexts
 		setImages(newImages)
 	}
@@ -169,13 +161,13 @@ const Create: React.FunctionComponent = (props) => {
 
 	const handleDragStart = (imgIndex, textIndex) => {
 		let newImages = [...images]
-		++newImages[imgIndex].texts[textIndex].activeDrags
+		newImages[imgIndex].texts[textIndex].activeDrags++
 		setImages(newImages)
 	}
 
 	const handleDragStop = (imgIndex, textIndex) => {
 		let newImages = [...images]
-		--newImages[imgIndex].texts[textIndex].activeDrags
+		newImages[imgIndex].texts[textIndex].activeDrags--
 		setImages(newImages)
 	}
 
@@ -204,6 +196,8 @@ const Create: React.FunctionComponent = (props) => {
 		newImages[imgIndex].img = url
 		setImages(newImages)
 	}
+
+	console.log("images", images)
 
 	return (
 		<Provider store={store}>
@@ -244,9 +238,13 @@ const Create: React.FunctionComponent = (props) => {
 								onKeyUp={onKeyUp}
 								onPaste={onPaste}
 							/>
-							<p className="addAnotherImage">
-								<span onClick={addMoreImage}>Add another image</span>
-							</p>
+							<Button
+								color="green"
+								content="Add an image"
+								fluid
+								onClick={addMoreImage}
+								style={{ marginTop: "16px" }}
+							/>
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
@@ -292,7 +290,7 @@ Create.propTypes = {
 					backgroundColor: PropTypes.string,
 					color: PropTypes.string,
 					font: PropTypes.string,
-					size: PropTypes.number,
+					size: PropTypes.string,
 					text: PropTypes.string,
 					x: PropTypes.number,
 					y: PropTypes.number

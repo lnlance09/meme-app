@@ -10,6 +10,7 @@ export const VERIFY_EMAIL = "authentication:VERIFY_EMAIL"
 export const GET_MEME = "meme:GET_MEME"
 export const SET_MEME_FETCH_ERROR = "meme:SET_MEME_FETCH_ERROR"
 export const UPDATE_MEME = "meme:UPDATE_MEME"
+export const UPDATE_MEME_IMG = "meme:UPDATE_MEME_IMG"
 
 export const SEARCH_ARTISTS = "search:SEARCH_ARTISTS"
 export const SEARCH_MEMES = "search:SEARCH_MEMES"

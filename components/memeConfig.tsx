@@ -53,7 +53,6 @@ const MemeConfig: React.FunctionComponent = (props) => {
 								</Fragment>
 							))}
 							<Button
-								basic
 								color="blue"
 								content="Add more text"
 								fluid
@@ -84,9 +83,10 @@ MemeConfig.propTypes = {
 			texts: PropTypes.arrayOf(
 				PropTypes.shape({
 					activeDrags: PropTypes.number,
+					backgroundColor: PropTypes.string,
 					color: PropTypes.string,
 					font: PropTypes.string,
-					size: PropTypes.number,
+					size: PropTypes.string,
 					text: PropTypes.string,
 					x: PropTypes.number,
 					y: PropTypes.number

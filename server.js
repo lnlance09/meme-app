@@ -25,6 +25,7 @@ app.prepare().then(() => {
 	server.get("/api/meme/search", memes.findAll)
 	server.get("/api/meme/:id", memes.findOne)
 	server.post("/api/meme/:id/update", memes.update)
+	server.post("/api/meme/:id/updateImg", memes.updateImg)
 	server.post("/api/meme/:id/updateViews", memes.updateViews)
 
 	// Templates
@@ -33,9 +34,10 @@ app.prepare().then(() => {
 	server.get("/api/template/:id", templates.findOne)
 
 	// Users
+	server.post("/api/user/changeProfilePic", users.changeProfilePic)
 	server.post("/api/user/create", users.create)
 	server.post("/api/user/login", users.login)
-	server.post("/api/user/search", users.findAll)
+	server.get("/api/user/search", users.findAll)
 	server.post("/api/user/update", users.update)
 	server.post("/api/user/verify", users.verify)
 	server.get("/api/user/:username", users.findOne)

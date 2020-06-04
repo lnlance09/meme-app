@@ -1,6 +1,30 @@
 import * as constants from "../constants"
 import axios from "axios"
 
+export const changeProfilePic = ({ bearer, file }) => (dispatch) => {
+	let formData = new FormData()
+	formData.set("file", file)
+
+	axios
+		.post("/api/user/changeProfilePic", formData, {
+			headers: {
+				Authorization: bearer,
+				"Content-Type": "multipart/form-data",
+				enctype: "multipart/form-data"
+			}
+		})
+		.then((response) => {
+			const { data } = response
+			dispatch({
+				payload: data,
+				type: constants.CHANGE_PROFILE_PIC
+			})
+		})
+		.catch((error) => {
+			console.log(error)
+		})
+}
+
 export const getUser = ({ username }) => (dispatch) => {
 	axios
 		.get(`/api/user/${username}`)

@@ -24,7 +24,7 @@ const search = (state = initial(), action) => {
 				...state,
 				artists: {
 					loading: false,
-					results: payload.artists
+					results: payload.users
 				}
 			}
 

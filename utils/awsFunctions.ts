@@ -6,13 +6,17 @@ const s3 = new AWS.S3({
 })
 
 module.exports = {
-	uploadToS3: async function (file, fileName) {
-		const base64 = file.replace(/^data:image\/\w+;base64,/, "")
-		const buffer = new Buffer(base64, "base64")
+	uploadToS3: async function (file, fileName, useBuffer = true) {
+		let body = file
+		if (useBuffer) {
+			const base64 = file.replace(/^data:image\/\w+;base64,/, "")
+			body = new Buffer(base64, "base64")
+		}
+
 		const params = {
 			Bucket: "brandywine22",
 			Key: fileName,
-			Body: buffer,
+			Body: body,
 			ContentEncoding: "base64",
 			ContentType: "image/jpeg"
 		}

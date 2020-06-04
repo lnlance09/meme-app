@@ -1,11 +1,13 @@
+import * as linkify from "linkifyjs"
 import { Card, Image, Placeholder, Visibility } from "semantic-ui-react"
-import DefaultPic from "@public/images/placeholders/image.png"
+import { baseUrl, s3BaseUrl } from "@options/config"
+import DefaultPic from "@public/images/color-bars.jpg"
+import hashtag from "linkifyjs/plugins/hashtag"
+import Linkify from "linkifyjs/react"
 import Moment from "react-moment"
 import PropTypes from "prop-types"
 import React, { Fragment, useEffect, useState } from "react"
 import Router from "next/router"
-
-const s3BaseUrl = `https://brandywine22.s3-us-west-2.amazonaws.com/`
 
 const MemeCard = ({ loading, title, subtitle, description }) => {
 	if (loading) {
@@ -24,9 +26,21 @@ const MemeCard = ({ loading, title, subtitle, description }) => {
 
 	return (
 		<Fragment>
+			{/*
 			<Card.Header>{title}</Card.Header>
 			<Card.Meta>{subtitle}</Card.Meta>
-			<Card.Description>{description}</Card.Description>
+			*/}
+			<Card.Description>
+				<Linkify
+					options={{
+						formatHref: {
+							hashtag: (val) => `${baseUrl}explore/memes?q=${val.substr(1)}`
+						}
+					}}
+				>
+					{description}
+				</Linkify>
+			</Card.Description>
 		</Fragment>
 	)
 }
@@ -34,7 +48,9 @@ const MemeCard = ({ loading, title, subtitle, description }) => {
 const SearchResults: React.FunctionComponent = (props) => {
 	const { justImages, loading, results, type } = props
 
-	useEffect(() => {}, [])
+	useEffect(() => {
+		hashtag(linkify)
+	}, [])
 
 	const getCardData = (type, result) => {
 		if (type === "memes") {
@@ -62,7 +78,7 @@ const SearchResults: React.FunctionComponent = (props) => {
 	}
 
 	return (
-		<div className="searchResults">
+		<div className={`searchResults ${type}`}>
 			<Card.Group itemsPerRow={3} stackable>
 				{results.map((result, i) => {
 					const { description, link, subtitle, title } = getCardData(type, result)
@@ -129,6 +145,7 @@ SearchResults.propTypes = {
 				views: PropTypes.number
 			}),
 			PropTypes.shape({
+				createdAt: PropTypes.string,
 				img: PropTypes.string,
 				name: PropTypes.string,
 				username: PropTypes.string

@@ -11,21 +11,9 @@ module.exports = (sequelize, Sequelize) => {
 			},
 			memeId: {
 				type: Sequelize.INTEGER
-				/*
-				references: {
-					key: "id",
-					model: "memes",
-				}
-				*/
 			},
 			templateId: {
 				type: Sequelize.INTEGER
-				/*
-				references: {
-					key: "id",
-					model: "templates"
-				}
-				*/
 			},
 			textId: {
 				type: Sequelize.INTEGER

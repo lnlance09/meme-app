@@ -1,9 +1,24 @@
 .searchResults {
     .card {
-        box-shadow: none;
+        box-shadow: none !important;
         cursor: pointer;
-        height: min-content;
-        max-height: 300px;
         overflow: hidden;
+
+        .content {
+            padding: 8px 5px !important;
+
+            .description {
+                color: $lightBlack !important;
+                font-size: 15px;
+            }
+        }
+
+        img {
+            height: min-content;
+        }
+    }
+
+    &.templates {
+        
     }
 }

@@ -1,5 +1,5 @@
 import * as linkify from "linkifyjs"
-import { getMeme, updateMeme, updateViews } from "@actions/meme"
+import { getMeme, updateImg, updateMeme, updateViews } from "@actions/meme"
 import {
 	Button,
 	Divider,
@@ -25,7 +25,7 @@ import PropTypes from "prop-types"
 import React, { Fragment, useEffect, useRef, useState } from "react"
 import store from "@store"
 
-const Meme: React.FunctionComponent = ({ getMeme, meme, updateMeme, updateViews }) => {
+const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, updateViews }) => {
 	const node = useRef(null)
 	const router = useRouter()
 	const { slug } = router.query
@@ -54,6 +54,7 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateMeme, updateViews 
 		if (typeof slug !== "undefined") {
 			getMeme({ id: slug })
 			updateViews({ id: slug })
+			// downloadMeme()
 		}
 	}, [slug])
 
@@ -76,13 +77,16 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateMeme, updateViews 
 		html2canvas(document.getElementById("memeContainer"), {
 			allowTaint: true,
 			scale: 1,
+			scrollX: -7,
 			scrollY: -window.scrollY,
 			useCORS: true
 		}).then((canvas) => {
 			let ctx = canvas.getContext("2d")
 			ctx.globalAlpha = 1
-
 			const img = canvas.toDataURL("image/png")
+
+			updateImg({ file: img, id })
+
 			let link = document.createElement("a")
 			link.download = `brandyMeme.png`
 			link.href = img
@@ -221,7 +225,7 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateMeme, updateViews 
 					) : (
 						<Grid stackable>
 							<Grid.Row>
-								<Grid.Column width={11}>
+								<Grid.Column width={10}>
 									{loading ? (
 										<Placeholder fluid>
 											<Placeholder.Image square />
@@ -230,7 +234,7 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateMeme, updateViews 
 										<MemeImages editable={false} images={templates} />
 									)}
 								</Grid.Column>
-								<Grid.Column width={5}>{!loading && rightColumn}</Grid.Column>
+								<Grid.Column width={6}>{!loading && rightColumn}</Grid.Column>
 							</Grid.Row>
 						</Grid>
 					)}
@@ -255,9 +259,10 @@ Meme.propTypes = {
 					templateId: PropTypes.number,
 					texts: PropTypes.arrayOf(
 						PropTypes.shape({
+							backgroundColor: PropTypes.string,
 							color: PropTypes.string,
 							font: PropTypes.string,
-							size: PropTypes.number,
+							size: PropTypes.string,
 							text: PropTypes.string,
 							x: PropTypes.number,
 							y: PropTypes.number
@@ -277,13 +282,17 @@ Meme.propTypes = {
 		errorMsg: PropTypes.string,
 		loading: PropTypes.bool
 	}),
+	updateImg: PropTypes.func,
 	updateMeme: PropTypes.func,
 	updateViews: PropTypes.func
 }
 
 Meme.defaultProps = {
 	getMeme,
-	meme: {}
+	meme: {},
+	updateImg,
+	updateMeme,
+	updateViews
 }
 
 const mapStateToProps = (state: any, ownProps: any) => ({
@@ -293,6 +302,7 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 
 export default connect(mapStateToProps, {
 	getMeme,
+	updateImg,
 	updateMeme,
 	updateViews
 })(Meme)
