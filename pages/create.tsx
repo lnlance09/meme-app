@@ -242,6 +242,7 @@ const Create: React.FunctionComponent = (props) => {
 								color="green"
 								content="Add an image"
 								fluid
+								icon="image"
 								onClick={addMoreImage}
 								style={{ marginTop: "16px" }}
 							/>
