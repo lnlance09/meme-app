@@ -1,8 +1,8 @@
 import { logout } from "@actions/authentication"
 import { parseJwt } from "@utils/tokenFunctions"
+import { Button, Container, Dropdown, Icon, Image, Menu } from "semantic-ui-react"
 import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
-import { Button, Container, Dropdown, Icon, Image, Menu } from "semantic-ui-react"
 import DefaultPic from "@public/images/avatar/small/chris.jpg"
 import Link from "next/link"
 import Logo from "@public/images/logos/jackie-chan.svg"
@@ -35,10 +35,8 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 				<Image
 					avatar
 					bordered
-					circular
 					onError={(i) => (i.target.src = DefaultPic)}
-					rounded
-					src={img ? img : DefaultPic}
+					src={DefaultPic}
 				/>
 			)
 

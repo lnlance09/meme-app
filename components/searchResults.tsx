@@ -1,5 +1,5 @@
 import * as linkify from "linkifyjs"
-import { Card, Image, Placeholder, Visibility } from "semantic-ui-react"
+import { Card, Container, Header, Image, Placeholder, Visibility } from "semantic-ui-react"
 import { baseUrl, s3BaseUrl } from "@options/config"
 import DefaultPic from "@public/images/color-bars.png"
 import hashtag from "linkifyjs/plugins/hashtag"
@@ -71,6 +71,8 @@ const SearchResults: React.FunctionComponent = (props) => {
 				link: `/template/${result.id}`
 			}
 		}
+
+		return null
 	}
 
 	const getCardImage = (s3Link) => {
@@ -79,44 +81,50 @@ const SearchResults: React.FunctionComponent = (props) => {
 
 	return (
 		<div className={`searchResults ${type}`}>
-			<Card.Group itemsPerRow={3} stackable>
-				{results.map((result, i) => {
-					const { description, link, subtitle, title } = getCardData(type, result)
-					const img = getCardImage(result.s3Link)
+			{results.length === 0 && !loading ? (
+				<Container textAlign="center">
+					<Header size="huge">No results...</Header>
+				</Container>
+			) : (
+				<Card.Group itemsPerRow={3} stackable>
+					{results.map((result, i) => {
+						const { description, link, subtitle, title } = getCardData(type, result)
+						const img = getCardImage(result.s3Link)
 
-					return (
-						<Card
-							className="searchCard"
-							key={`${type}_${i}`}
-							onClick={() => Router.push(link)}
-						>
-							{loading ? (
-								<Placeholder>
-									<Placeholder.Image square />
-								</Placeholder>
-							) : (
-								<Image
-									onError={(i) => (i.target.src = DefaultPic)}
-									src={img}
-									wrapped
-									ui={false}
-								/>
-							)}
-
-							{!justImages && (
-								<Card.Content>
-									<MemeCard
-										description={description}
-										loading={loading}
-										subtitle={subtitle}
-										title={title}
+						return (
+							<Card
+								className="searchCard"
+								key={`${type}_${i}`}
+								onClick={() => Router.push(link)}
+							>
+								{loading ? (
+									<Placeholder>
+										<Placeholder.Image square />
+									</Placeholder>
+								) : (
+									<Image
+										onError={(i) => (i.target.src = DefaultPic)}
+										src={img}
+										wrapped
+										ui={false}
 									/>
-								</Card.Content>
-							)}
-						</Card>
-					)
-				})}
-			</Card.Group>
+								)}
+
+								{!justImages && (
+									<Card.Content>
+										<MemeCard
+											description={description}
+											loading={loading}
+											subtitle={subtitle}
+											title={title}
+										/>
+									</Card.Content>
+								)}
+							</Card>
+						)
+					})}
+				</Card.Group>
+			)}
 		</div>
 	)
 }

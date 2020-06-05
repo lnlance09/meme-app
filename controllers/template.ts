@@ -5,6 +5,7 @@ const axios = require("axios")
 const randomize = require("randomatic")
 const sha1 = require("sha1")
 const validator = require("validator")
+const MemeTemplate = db.memeTemplate
 const Template = db.template
 const User = db.user
 const Op = db.Sequelize.Op
@@ -136,7 +137,7 @@ exports.findOne = (req, res) => {
 			}
 		]
 	})
-		.then((template) => {
+		.then(async (template) => {
 			if (template.length === 0) {
 				return res.status(404).send({
 					error: true,
@@ -144,10 +145,21 @@ exports.findOne = (req, res) => {
 				})
 			}
 
+			const count = await MemeTemplate.count({
+				where: {
+					templateId: id
+				},
+				distinct: true,
+				col: "memeTemplate.memeId"
+			}).then((count) => count)
+
+			let templateData = template[0]
+			templateData.memeCount = count
+
 			return res.status(200).send({
 				error: false,
 				msg: "Success",
-				template: template[0]
+				template: templateData
 			})
 		})
 		.catch((err) => {

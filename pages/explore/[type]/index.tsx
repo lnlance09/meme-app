@@ -46,15 +46,15 @@ const Explore: React.FunctionComponent = (props) => {
 		setActiveItem(name)
 
 		if (name === "artists") {
-			props.searchArtists({ q })
+			props.searchArtists({ q: searchVal })
 		}
 
 		if (name === "memes") {
-			props.searchMemes({ q })
+			props.searchMemes({ q: searchVal })
 		}
 
 		if (name === "templates") {
-			props.searchTemplates({ q })
+			props.searchTemplates({ q: searchVal })
 		}
 	}
 
@@ -131,7 +131,7 @@ const Explore: React.FunctionComponent = (props) => {
 					/>
 					<Button
 						className={activeItem === "artists" ? "active" : ""}
-						color="violet"
+						color="green"
 						content="Artists"
 						fluid
 						onClick={() => onClickItem("artists")}
