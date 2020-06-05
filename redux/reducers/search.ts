@@ -3,15 +3,15 @@ import * as constants from "../constants"
 const initial = () => ({
 	artists: {
 		loading: true,
-		results: [false, false, false, false, false]
+		results: [false, false, false, false, false, false]
 	},
 	memes: {
 		loading: true,
-		results: [false, false, false, false, false]
+		results: [false, false, false, false, false, false]
 	},
 	templates: {
 		loading: true,
-		results: [false, false, false, false, false]
+		results: [false, false, false, false, false, false]
 	}
 })
 

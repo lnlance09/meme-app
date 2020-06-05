@@ -1,7 +1,7 @@
 import * as linkify from "linkifyjs"
 import { Card, Image, Placeholder, Visibility } from "semantic-ui-react"
 import { baseUrl, s3BaseUrl } from "@options/config"
-import DefaultPic from "@public/images/color-bars.jpg"
+import DefaultPic from "@public/images/color-bars.png"
 import hashtag from "linkifyjs/plugins/hashtag"
 import Linkify from "linkifyjs/react"
 import Moment from "react-moment"

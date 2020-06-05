@@ -70,15 +70,17 @@
             .headerMenuItem {
                 margin-right: 0 !important;
 
-                &.create, &.explore, &.signInLink button {
-                    @media only screen and (max-width: 600px) {
-                        display: none;
-                    }
-                }
+                @media only screen and (max-width: 767px) {
+                    &.create, &.explore {
+                        padding: 4px;
 
-                &.signInLink > .icon.sidebar {
-                    @media only screen and (min-width: 600px) {
-                        display: none !important;
+                        a {
+                            margin-left: 8px;
+                        }
+                    }
+
+                    &.home {
+                        padding-right: 0;
                     }
                 }
 
@@ -103,6 +105,10 @@
                         font-size: 36px !important;
                         margin: 0;
                         position: relative;
+
+                        @media only screen and (max-width: 767px) {
+                            display: none;
+                        }
                     }
                 }
             }
@@ -113,15 +119,6 @@
                     z-index: 1001;
                 }
             }
-        }
-    }
-
-    .sidebar.menu {
-        padding-top: 135px;
-        z-index: 999;
-
-        .item a {
-            color: $black !important;
         }
     }
 }

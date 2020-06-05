@@ -22,6 +22,10 @@ const MemeImages: React.FunctionComponent = ({
 					<div className="draggableWrapper" key={`draggableWrapper${i}`}>
 						{texts.map((text, x) => {
 							console.log("text", text)
+							if (text.text === "") {
+								return
+							}
+
 							const textBlock = (
 								<div
 									className={`memeText ${editable ? "" : "disabled"}`}
@@ -59,6 +63,7 @@ const MemeImages: React.FunctionComponent = ({
 						<Image
 							className={`memeImg ${active && editable ? "active" : ""}`}
 							crossOrigin={editable ? null : "anonymous"}
+							id={`memeConfigImg${i}`}
 							inline
 							onClick={() => {
 								if (editable) {

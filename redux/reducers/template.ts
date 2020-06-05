@@ -1,10 +1,15 @@
 import * as constants from "../constants"
 
 const initial = () => ({
-	template: {
-		data: {
-			user: {}
-		}
+	data: {
+		user: {}
+	},
+	error: false,
+	errorMsg: "",
+	loading: true,
+	memes: {
+		loading: true,
+		results: [false, false, false, false, false, false]
 	}
 })
 
@@ -15,21 +20,28 @@ const template = (state = initial(), action) => {
 		case constants.GET_TEMPLATE:
 			return {
 				...state,
-				tempalate: {
-					data: {
-						createdAt: payload.template.createdAt,
-						name: payload.template.templateName,
-						s3Link: payload.template.s3Link,
-						user: {
-							id: payload.template.id,
-							img: payload.template.img,
-							name: payload.template.name,
-							username: payload.template.username
-						}
-					},
-					error: false,
-					errorMsg: "",
-					loading: false
+				data: {
+					createdAt: payload.template.createdAt,
+					name: payload.template.templateName,
+					s3Link: payload.template.s3Link,
+					user: {
+						id: payload.template.id,
+						img: payload.template.img,
+						name: payload.template.name,
+						username: payload.template.username
+					}
+				},
+				error: false,
+				errorMsg: "",
+				loading: false
+			}
+
+		case constants.SEARCH_MEMES:
+			return {
+				...state,
+				memes: {
+					loading: false,
+					results: payload.memes
 				}
 			}
 

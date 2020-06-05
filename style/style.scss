@@ -96,6 +96,13 @@ body {
 	margin-top: 5.5em;
 	padding: 20px 15px;
 
+	@media only screen and (max-width: 767px) {
+		&.ui.container {
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+		}
+	}
+
 	&.homePage {
 		width: 100%;
 		padding: 0;
@@ -122,11 +129,6 @@ body {
 		}
 
 		@media only screen and (max-width: 767px) {
-			&.ui.container {
-				margin-left: 0 !important;
-				margin-right: 0 !important;
-			}
-
 			.heroHeader {
 				font-size: 42px;
 			}
@@ -138,8 +140,8 @@ body {
 		width: 100%;
 
 		.templatePageHero {
-			background: $lightGrey;
-			min-height: 450px;
+			background: $darkWhite;
+			padding: 30px 15px;
 			position: relative;
 			width: 100%;
 		}

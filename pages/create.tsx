@@ -195,6 +195,13 @@ const Create: React.FunctionComponent = (props) => {
 		let newImages = [...images]
 		newImages[imgIndex].img = url
 		setImages(newImages)
+
+		const pic = document.getElementById(`memeConfigImg${imgIndex}`)
+		var positionInfo = pic.getBoundingClientRect()
+		var height = positionInfo.height
+		var width = positionInfo.width
+
+		console.log("width", width)
 	}
 
 	console.log("images", images)
@@ -238,14 +245,9 @@ const Create: React.FunctionComponent = (props) => {
 								onKeyUp={onKeyUp}
 								onPaste={onPaste}
 							/>
-							<Button
-								color="green"
-								content="Add an image"
-								fluid
-								icon="image"
-								onClick={addMoreImage}
-								style={{ marginTop: "16px" }}
-							/>
+							<p className="addAnotherImage">
+								<span onClick={addMoreImage}>Add another image</span>
+							</p>
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>

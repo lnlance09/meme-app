@@ -2,7 +2,7 @@ import { logout } from "@actions/authentication"
 import { parseJwt } from "@utils/tokenFunctions"
 import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
-import { Button, Container, Dropdown, Icon, Image, Menu, Sidebar } from "semantic-ui-react"
+import { Button, Container, Dropdown, Icon, Image, Menu } from "semantic-ui-react"
 import DefaultPic from "@public/images/avatar/small/chris.jpg"
 import Link from "next/link"
 import Logo from "@public/images/logos/jackie-chan.svg"
@@ -16,7 +16,6 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 
 	const [authenticated, setAuthenticated] = useState(null)
 	const [user, setUser] = useState({})
-	const [visible, toggleVisibility] = useState(false)
 
 	useEffect(() => {
 		const userData = parseJwt()
@@ -28,7 +27,7 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 		}
 	}, [])
 
-	const { img, name, username } = user
+	const { img, username } = user
 
 	const LoginButton = () => {
 		if (authenticated === true) {
@@ -78,7 +77,6 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 						content="Sign In"
 						onClick={() => router.push("/signin?type=join")}
 					/>
-					<Icon name="sidebar" onClick={() => toggleVisibility(!visible)} size="big" />
 				</Menu.Item>
 			)
 		}
@@ -111,7 +109,7 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 					<Fragment>
 						<Menu borderless className="globalHeader" fitted="vertically" fixed="top">
 							<Container className="headerContainer">
-								<Menu.Item className="headerMenuItem">
+								<Menu.Item className="headerMenuItem home">
 									<Image className="headerLogo" src={Logo} />
 									<Link href="/">
 										<a className="logoText">Brandy</a>
@@ -130,28 +128,6 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 								{LoginButton()}
 							</Container>
 						</Menu>
-
-						<Sidebar
-							as={Menu}
-							animation="overlay"
-							borderless
-							icon="labeled"
-							vertical
-							visible={visible}
-							width="wide"
-						>
-							{authenticated && <Menu.Item onClick={logout}>Sign Out</Menu.Item>}
-							<Menu.Item>
-								<Link href="/create">
-									<a>Create</a>
-								</Link>
-							</Menu.Item>
-							<Menu.Item>
-								<Link href="/create">
-									<a>Explore</a>
-								</Link>
-							</Menu.Item>
-						</Sidebar>
 					</Fragment>
 				)}
 			</div>

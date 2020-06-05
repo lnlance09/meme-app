@@ -48,10 +48,13 @@ const Home: React.FunctionComponent = (props) => {
 						</Header.Subheader>
 					</Header>
 				</div>
+
 				<Divider hidden section />
+
 				<Container>
 					<SearchResults loading={memes.loading} results={memes.results} type="memes" />
 				</Container>
+
 				<Divider hidden section />
 			</DefaultLayout>
 		</Provider>
