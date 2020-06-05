@@ -98,7 +98,7 @@ const Template: React.FunctionComponent = (props) => {
 
 							<div style={{ marginBottom: "24px" }}>
 								<Statistic>
-									<Statistic.Value>2,204</Statistic.Value>
+									<Statistic.Value>{data.memeCount}</Statistic.Value>
 									<Statistic.Label>Memes Made</Statistic.Label>
 								</Statistic>
 							</div>
@@ -129,6 +129,7 @@ Template.propTypes = {
 	getTemplate: PropTypes.func,
 	data: PropTypes.shape({
 		createdAt: PropTypes.string,
+		memeCount: PropTypes.number,
 		name: PropTypes.string,
 		s3Link: PropTypes.string,
 		user: PropTypes.shape({

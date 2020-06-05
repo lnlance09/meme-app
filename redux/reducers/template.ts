@@ -22,6 +22,7 @@ const template = (state = initial(), action) => {
 				...state,
 				data: {
 					createdAt: payload.template.createdAt,
+					memeCount: payload.template.memeCount,
 					name: payload.template.templateName,
 					s3Link: payload.template.s3Link,
 					user: {
