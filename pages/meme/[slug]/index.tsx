@@ -98,7 +98,6 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 		if (node.current.contains(e.target)) {
 			return
 		}
-
 		setEditMode(false)
 	}
 
@@ -106,7 +105,7 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 		router.push(`/template/${templateId}`)
 	}
 
-	const rightColumn = (
+	const RightColumn = (
 		<Fragment>
 			{!editMode && (
 				<Header as="h1">
@@ -231,10 +230,14 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 											<Placeholder.Image square />
 										</Placeholder>
 									) : (
-										<MemeImages editable={false} images={templates} />
+										<MemeImages
+											editable={false}
+											images={templates}
+											isInitialRender={false}
+										/>
 									)}
 								</Grid.Column>
-								<Grid.Column width={6}>{!loading && rightColumn}</Grid.Column>
+								<Grid.Column width={6}>{!loading && RightColumn}</Grid.Column>
 							</Grid.Row>
 						</Grid>
 					)}

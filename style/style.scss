@@ -151,6 +151,13 @@ body {
 .draggableWrapper {
 	position: relative;
 
+	.dragWrapper {
+		display: block;
+    	height: 100%;
+    	position: absolute;
+    	width: 100%;
+	}
+
 	.memeImg {
 		cursor: pointer;
 		width: 100%;
@@ -165,7 +172,6 @@ body {
 		cursor: move;
 		left: 20px;
 		line-height: 0.8;
-		padding: 10px;
 		position: absolute;
 		max-width: 94%;
 		word-wrap: break-word;
@@ -211,7 +217,7 @@ body {
 	text-align: center;
 
 	span {
-		color: $grey;
+		color: $blue;
 		cursor: pointer;
 
 		&:hover {

@@ -53,6 +53,21 @@
         animation: decrease 2s 0.5s infinite;
     }
 
+    .headerLogo {
+        cursor: pointer;
+        height: 50px;
+        line-height: 4;
+        margin-right: 12px;
+        width: 50px;
+
+        &.basic {
+            height: 64px;
+            line-height: 64px;
+            margin-right: 0;
+            width: 64px;
+        }
+    }
+
     .menu.globalHeader {
         background: $white;
         border-bottom: none;
@@ -60,64 +75,61 @@
         height: 72px;
         margin-top: 5px;
         z-index: 1001 !important;
+    }
 
-        .headerContainer {
-            .responsive {
-                display: flex;
-                width: 100%;
+    .headerContainer {
+        &.basic {
+            padding-bottom: 10px;
+            padding-top: 16px;
+        }
+
+        .responsive {
+            display: flex;
+            width: 100%;
+        }
+
+        .headerMenuItem {
+            margin-right: 0 !important;
+
+            @media only screen and (max-width: 767px) {
+                &.create, &.explore {
+                    padding: 4px;
+
+                    a {
+                        margin-left: 8px;
+                    }
+                }
+
+                &.home {
+                    padding-right: 0;
+                }
             }
 
-            .headerMenuItem {
-                margin-right: 0 !important;
+            a {
+                color: $black;
+                font-size: 15px !important;
+                font-weight: bold !important;
+                margin-left: 18px;
 
-                @media only screen and (max-width: 767px) {
-                    &.create, &.explore {
-                        padding: 4px;
-
-                        a {
-                            margin-left: 8px;
-                        }
-                    }
-
-                    &.home {
-                        padding-right: 0;
-                    }
-                }
-
-                .headerLogo {
-                    cursor: pointer;
-                    height: 64px;
-                    line-height: 4;
-                    margin-right: 12px;
-                    width: 64px;
-                }
-
-                a {
+                &.logoText {
                     color: $black;
-                    font-size: 15px !important;
-                    font-weight: bold !important;
-                    margin-left: 18px;
+                    font-weight: normal;
+                    font-family: "Ubuntu Condensed", sans-serif;
+                    font-size: 36px !important;
+                    margin: 0;
+                    position: relative;
 
-                    &.logoText {
-                        color: $black;
-                        font-weight: normal;
-                        font-family: "Ubuntu Condensed", sans-serif;
-                        font-size: 36px !important;
-                        margin: 0;
-                        position: relative;
-
-                        @media only screen and (max-width: 767px) {
-                            display: none;
-                        }
+                    @media only screen and (max-width: 767px) {
+                        display: none;
                     }
                 }
             }
+        }
 
-            .dropDownMenu {
-                .menu.visible {
-                    min-width: 150px;
-                    z-index: 1001;
-                }
+        .dropDownMenu {
+            .menu.visible {
+                min-width: 150px;
+                z-index: 1001;
             }
         }
     }

@@ -9,7 +9,6 @@ const ImgBox: React.FunctionComponent = (props) => {
 	const onDrop = useCallback((files) => {
 		const file = files[0]
 		const reader = new FileReader()
-		const base64 = reader.readAsDataURL(file)
 		reader.onload = () => {
 			const img = reader.result
 			onFileUpload(file.path, img, imgIndex)
@@ -28,7 +27,7 @@ const ImgBox: React.FunctionComponent = (props) => {
 						onKeyUp={(e) => onKeyUp(e, imgIndex)}
 						onPaste={(e) => onPaste(e, imgIndex)}
 						placeholder="Image URL"
-						value={imgUrl}
+						value={imgUrl === "/images/blank.png" ? "" : imgUrl}
 					/>
 				</Grid.Column>
 				<Grid.Column width={4}>

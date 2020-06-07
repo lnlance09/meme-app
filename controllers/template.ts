@@ -78,7 +78,7 @@ exports.create = async (req, res) => {
 exports.delete = (req, res) => {}
 
 exports.findAll = (req, res) => {
-	const { q } = req.query
+	const { page, q } = req.query
 
 	let where = {
 		name: {
@@ -94,6 +94,8 @@ exports.findAll = (req, res) => {
 		required: true,
 		attributes: ["id", "name", "s3Link"],
 		where,
+		offset: page,
+		limit: 10,
 		raw: true
 	})
 		.then((templates) => {

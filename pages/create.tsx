@@ -15,9 +15,11 @@ const Create: React.FunctionComponent = (props) => {
 	const { id } = router.query
 
 	const [bearer, setBearer] = useState("")
+	const [canSubmit, setCanSubmit] = useState(false)
 	const [caption, setCaption] = useState("")
 	const [formVisible, setFormVisible] = useState(false)
 	const [images, setImages] = useState(props.images)
+	const [isInitialRender, setInitialRender] = useState(true)
 	const [processing, setProcessing] = useState(false)
 
 	useEffect(() => {
@@ -26,8 +28,34 @@ const Create: React.FunctionComponent = (props) => {
 			setBearer(token)
 		}
 
-		if (typeof id !== "undefined") {
+		if (typeof id === "undefined") {
+			setImages([
+				{
+					active: true,
+					img: "/images/blank.png",
+					path: null,
+					texts: [
+						{
+							activeDrags: 0,
+							backgroundColor: "transparent",
+							color: "#0c243c",
+							font: "OswaldRegular",
+							height: 0,
+							size: "32",
+							text: "",
+							width: 0,
+							x: 0,
+							y: 10
+						}
+					]
+				}
+			])
+			setInitialRender(true)
+			setCanSubmit(false)
+		} else {
 			props.getMeme({ callback: (data) => setImages(data), setImages, id })
+			setInitialRender(false)
+			setCanSubmit(true)
 		}
 	}, [id])
 
@@ -47,8 +75,10 @@ const Create: React.FunctionComponent = (props) => {
 						backgroundColor: "transparent",
 						color: "#0c243c",
 						font: "OswaldRegular",
+						height: 0,
 						size: "32",
 						text: "",
+						width: 0,
 						x: 0,
 						y: 10
 					}
@@ -74,8 +104,10 @@ const Create: React.FunctionComponent = (props) => {
 				backgroundColor: "transparent",
 				color: "#0c243c",
 				font: "OswaldRegular",
+				hright: 0,
 				size: "32",
 				text: "",
+				width: 0,
 				x: 0,
 				y: lastY + 35
 			}
@@ -144,6 +176,7 @@ const Create: React.FunctionComponent = (props) => {
 					let newImages = [...images]
 					newImages[imgIndex].templateId = data.id
 					setImages(newImages)
+					setCanSubmit(true)
 				}
 			})
 			.catch((error) => {
@@ -195,16 +228,19 @@ const Create: React.FunctionComponent = (props) => {
 		let newImages = [...images]
 		newImages[imgIndex].img = url
 		setImages(newImages)
-
-		const pic = document.getElementById(`memeConfigImg${imgIndex}`)
-		var positionInfo = pic.getBoundingClientRect()
-		var height = positionInfo.height
-		var width = positionInfo.width
-
-		console.log("width", width)
 	}
 
-	console.log("images", images)
+	const setDimensions = (imgIndex, height, width) => {
+		const image = images[imgIndex]
+		if (height === image.height && width === image.width) {
+			return
+		}
+
+		let newImages = [...images]
+		newImages[imgIndex].height = height
+		newImages[imgIndex].width = width
+		setImages(newImages)
+	}
 
 	return (
 		<Provider store={store}>
@@ -230,6 +266,8 @@ const Create: React.FunctionComponent = (props) => {
 								handleDragStart={handleDragStart}
 								handleDragStop={handleDragStop}
 								images={images}
+								isInitialRender={isInitialRender}
+								setDimensions={setDimensions}
 							/>
 						</Grid.Column>
 						<Grid.Column width={6}>
@@ -252,7 +290,7 @@ const Create: React.FunctionComponent = (props) => {
 					</Grid.Row>
 				</Grid>
 
-				<Divider hidden />
+				<Divider hidden section />
 
 				{formVisible && (
 					<Form size="big">
@@ -262,17 +300,18 @@ const Create: React.FunctionComponent = (props) => {
 							row={3}
 							value={caption}
 						/>
-						<Divider hidden />
 					</Form>
 				)}
 
 				<Button
 					color="blue"
 					content="Create"
+					disabled={!canSubmit}
 					fluid
 					loading={processing}
 					onClick={createMeme}
 					size="big"
+					style={{ marginTop: "16px" }}
 				/>
 			</DefaultLayout>
 		</Provider>
@@ -293,8 +332,10 @@ Create.propTypes = {
 					backgroundColor: PropTypes.string,
 					color: PropTypes.string,
 					font: PropTypes.string,
+					height: PropTypes.number,
 					size: PropTypes.string,
 					text: PropTypes.string,
+					width: PropTypes.number,
 					x: PropTypes.number,
 					y: PropTypes.number
 				})

@@ -21,8 +21,14 @@ module.exports = (sequelize, Sequelize) => {
 			fontSize: {
 				type: Sequelize.CHAR
 			},
+			height: {
+				type: Sequelize.INTEGER
+			},
 			text: {
 				type: Sequelize.TEXT
+			},
+			width: {
+				type: Sequelize.INTEGER
 			},
 			x: {
 				type: Sequelize.INTEGER

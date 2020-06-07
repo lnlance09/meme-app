@@ -161,7 +161,7 @@ exports.create = async (req, res) => {
 }
 
 exports.findAll = async (req, res) => {
-	const { q } = req.query
+	const { page, q } = req.query
 
 	let where = {
 		[Op.or]: [
@@ -214,6 +214,8 @@ exports.findAll = async (req, res) => {
 		where,
 		group: ["id"],
 		distinct: true,
+		offset: page,
+		limit: 10,
 		raw: true
 	})
 		.then((users) => {

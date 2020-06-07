@@ -46,6 +46,12 @@ export const getMeme = ({ callback = () => null, id }) => (dispatch) => {
 		})
 }
 
+export const resetToInitial = () => (dispatch) => {
+	dispatch({
+		type: constants.RESET_MEME_TO_INITIAL
+	})
+}
+
 export const updateImg = ({ file, id }) => (dispatch) => {
 	axios
 		.post(`/api/meme/${id}/updateImg`, {

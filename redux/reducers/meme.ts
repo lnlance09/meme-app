@@ -4,7 +4,7 @@ const initial = () => ({
 	images: [
 		{
 			active: true,
-			img: "",
+			img: "/images/blank.png",
 			path: null,
 			texts: [
 				{
@@ -12,8 +12,10 @@ const initial = () => ({
 					backgroundColor: "transparent",
 					color: "#0c243c",
 					font: "OswaldRegular",
+					height: 0,
 					size: "32",
 					text: "",
+					width: 0,
 					x: 0,
 					y: 10
 				}
@@ -45,6 +47,9 @@ const meme = (state = initial(), action) => {
 					loading: false
 				}
 			}
+
+		case constants.RESET_MEME_TO_INITIAL:
+			return initial()
 
 		case constants.SET_MEME_FETCH_ERROR:
 			return {

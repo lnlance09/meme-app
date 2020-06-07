@@ -2,7 +2,8 @@ import { Image } from "semantic-ui-react"
 import BlankImg from "@public/images/blank.png"
 import Draggable from "react-draggable"
 import PropTypes from "prop-types"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
+import ReactDOM from "react-dom"
 
 const MemeImages: React.FunctionComponent = ({
 	clickImg,
@@ -10,7 +11,9 @@ const MemeImages: React.FunctionComponent = ({
 	handleDrag,
 	handleDragStart,
 	handleDragStop,
-	images
+	images,
+	isInitialRender,
+	setDimensions
 }) => {
 	useEffect(() => {}, [images])
 
@@ -18,48 +21,13 @@ const MemeImages: React.FunctionComponent = ({
 		<div id="memeContainer">
 			{images.map((_img, i) => {
 				const { active, img, texts } = _img
+
 				return (
 					<div className="draggableWrapper" key={`draggableWrapper${i}`}>
-						{texts.map((text, x) => {
-							console.log("text", text)
-							if (text.text === "") {
-								return
-							}
+						{texts.map((text, t) => (
+							<div className="dragWrapper" id={`draggableWrapper${i}${t}`} />
+						))}
 
-							const textBlock = (
-								<div
-									className={`memeText ${editable ? "" : "disabled"}`}
-									key={`textBlock${x}${i}`}
-									style={{
-										backgroundColor: text.backgroundColor,
-										color: text.color,
-										fontFamily: text.font,
-										fontSize: `${text.size}px`
-									}}
-								>
-									{text.text}
-								</div>
-							)
-
-							return (
-								<Draggable
-									bounds="parent"
-									defaultPosition={{ x: text.x, y: text.y }}
-									handle=".memeText"
-									key={`draggable${x}`}
-									onDrag={(e, ui) => handleDrag(i, x, e, ui)}
-									onStart={() => {
-										if (!editable) {
-											return false
-										}
-										handleDragStart(i, x)
-									}}
-									onStop={() => handleDragStop(i, x)}
-								>
-									{textBlock}
-								</Draggable>
-							)
-						})}
 						<Image
 							className={`memeImg ${active && editable ? "active" : ""}`}
 							crossOrigin={editable ? null : "anonymous"}
@@ -70,12 +38,92 @@ const MemeImages: React.FunctionComponent = ({
 									clickImg(i)
 								}
 							}}
-							onError={(i) => (i.target.src = BlankImg)}
-							src={
-								img === ""
-									? "/images/blank.png"
-									: `${img}?timestamp=${new Date().getTime()}`
-							}
+							onError={(image) => (image.target.src = BlankImg)}
+							onLoad={async (image) => {
+								const { height, width } = image.target
+
+								if (
+									images[i].img !== image.target.src &&
+									width !== 0 &&
+									height !== 0
+								) {
+									if (isInitialRender) {
+										await setDimensions(i, height, width)
+									}
+
+									texts.map((text, t) => {
+										if (text.text === "") {
+											return
+										}
+
+										let { x, y } = text
+										let heightRatio = 1
+										let widthRatio = 1
+										if (!isInitialRender) {
+											heightRatio = height / _img.height
+											widthRatio = width / _img.width
+											y = y * heightRatio
+											x = x * widthRatio - (1 - widthRatio) * 16
+										}
+
+										if (isNaN(y) || isNaN(x)) {
+											return
+										}
+
+										const textBlock = (
+											<div
+												className={`memeText ${editable ? "" : "disabled"}`}
+												key={`textBlock${t}${i}`}
+												style={{
+													backgroundColor: text.backgroundColor,
+													color: text.color,
+													fontFamily: text.font,
+													fontSize: `${Math.ceil(
+														text.size * widthRatio
+													)}px`,
+													padding: `${Math.ceil(10 * widthRatio)}px`
+												}}
+											>
+												{text.text}
+											</div>
+										)
+
+										let content = (
+											<Draggable
+												bounds="parent"
+												defaultPosition={{ x, y }}
+												handle=".memeText"
+												key={`draggable${t}`}
+												onStart={() => false}
+											>
+												{textBlock}
+											</Draggable>
+										)
+
+										if (editable) {
+											content = (
+												<Draggable
+													bounds="parent"
+													defaultPosition={{ x, y }}
+													handle=".memeText"
+													key={`draggable${t}`}
+													onDrag={(e, ui) => handleDrag(i, t, e, ui)}
+													onStart={() => handleDragStart(i, t)}
+													onStop={() => handleDragStop(i, t)}
+												>
+													{textBlock}
+												</Draggable>
+											)
+										}
+
+										ReactDOM.render(
+											content,
+											document.getElementById(`draggableWrapper${i}${t}`)
+										)
+									})
+								}
+							}}
+							src={`${img}?t=${new Date().getTime()}`}
 						/>
 					</div>
 				)
@@ -93,6 +141,7 @@ MemeImages.propTypes = {
 	images: PropTypes.arrayOf(
 		PropTypes.shape({
 			active: PropTypes.bool,
+			height: PropTypes.number,
 			img: PropTypes.string,
 			name: PropTypes.string,
 			path: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
@@ -108,9 +157,12 @@ MemeImages.propTypes = {
 					x: PropTypes.number,
 					y: PropTypes.number
 				})
-			)
+			),
+			width: PropTypes.number
 		})
-	)
+	),
+	isInitalRender: PropTypes.bool,
+	setDimensions: PropTypes.func
 }
 
 MemeImages.defaultProps = {

@@ -5,10 +5,20 @@ module.exports = {
 		return queryInterface.sequelize.transaction((t) => {
 			return Promise.all([
 				queryInterface.addColumn(
-					"templates",
-					"hash",
+					"templateTexts",
+					"height",
 					{
-						type: Sequelize.STRING
+						type: Sequelize.INTEGER
+					},
+					{
+						transaction: t
+					}
+				),
+				queryInterface.addColumn(
+					"templateTexts",
+					"width",
+					{
+						type: Sequelize.INTEGER
 					},
 					{
 						transaction: t
@@ -21,7 +31,8 @@ module.exports = {
 	down: (queryInterface, Sequelize) => {
 		return queryInterface.sequelize.transaction((t) => {
 			return Promise.all([
-				queryInterface.removeColumn("templates", "hash", { transaction: t })
+				queryInterface.removeColumn("templateTexts", "height", { transaction: t }),
+				queryInterface.removeColumn("templateTexts", "width", { transaction: t })
 			])
 		})
 	}

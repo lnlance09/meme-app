@@ -94,13 +94,12 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 				)}
 
 				{basic ? (
-					<Container className="headerContainer" textAlign="center">
+					<Container className="headerContainer basic" textAlign="center">
 						<Image
-							className="headerLogo"
+							className="headerLogo basic"
 							inline
 							onClick={() => router.push("/")}
 							src={Logo}
-							style={{ cursor: "pointer" }}
 						/>
 					</Container>
 				) : (
@@ -108,7 +107,11 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 						<Menu borderless className="globalHeader" fitted="vertically" fixed="top">
 							<Container className="headerContainer">
 								<Menu.Item className="headerMenuItem home">
-									<Image className="headerLogo" src={Logo} />
+									<Image
+										className="headerLogo"
+										onClick={() => router.push("/")}
+										src={Logo}
+									/>
 									<Link href="/">
 										<a className="logoText">Brandy</a>
 									</Link>

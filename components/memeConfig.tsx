@@ -32,7 +32,7 @@ const MemeConfig: React.FunctionComponent = (props) => {
 								onKeyUp={onKeyUp}
 								onPaste={onPaste}
 							/>
-							<Divider />
+							<Divider horizontal>Text 1</Divider>
 							{texts.map((text, x) => (
 								<Fragment key={`textFragment${x}`}>
 									<TextBox
@@ -49,13 +49,17 @@ const MemeConfig: React.FunctionComponent = (props) => {
 										text={text.text}
 										textIndex={x}
 									/>
-									<Divider />
+									{x !== texts.length - 1 && (
+										<Divider horizontal>text {x + 2}</Divider>
+									)}
 								</Fragment>
 							))}
+							<Divider />
 							<Button
-								color="blue"
-								content="Add more text"
+								color="black"
+								content="More text"
 								fluid
+								icon="font"
 								onClick={() => addMoreText(i)}
 							/>
 						</Segment>
@@ -86,8 +90,10 @@ MemeConfig.propTypes = {
 					backgroundColor: PropTypes.string,
 					color: PropTypes.string,
 					font: PropTypes.string,
+					height: PropTypes.number,
 					size: PropTypes.string,
 					text: PropTypes.string,
+					width: PropTypes.number,
 					x: PropTypes.number,
 					y: PropTypes.number
 				})

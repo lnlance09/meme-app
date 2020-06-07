@@ -14,13 +14,26 @@ exports.create = async (req, res) => {
 	const { caption, images } = req.body
 	const { authenticated, user } = Auth.parseAuthentication(req)
 
-	console.log("user", user)
-
 	if (typeof images === "undefined") {
 		return res.status(422).send({ error: true, msg: "You must include at least one image" })
 	}
 
 	if (images.length === 0) {
+		return res.status(422).send({ error: true, msg: "You must include at least one image" })
+	}
+
+	let containsImg = false
+	await images.map((img) => {
+		if (typeof img.img !== "undefined" && img.img !== "") {
+			containsImg = true
+		}
+
+		if (typeof img.path !== "undefined" && img.path !== "") {
+			containsImg = true
+		}
+	})
+
+	if (!containsImg) {
 		return res.status(422).send({ error: true, msg: "You must include at least one image" })
 	}
 
@@ -53,7 +66,9 @@ exports.create = async (req, res) => {
 					fontColor: text.color,
 					fontFamily: text.font,
 					fontSize: text.size,
+					height: _img.height,
 					text: text.text,
+					width: _img.width,
 					x: text.x,
 					y: text.y
 				})
@@ -92,7 +107,7 @@ exports.create = async (req, res) => {
 exports.delete = (req, res) => {}
 
 exports.findAll = async (req, res) => {
-	const { q } = req.query
+	const { page, q } = req.query
 
 	let where = {
 		[Op.or]: [
@@ -137,6 +152,8 @@ exports.findAll = async (req, res) => {
 			}
 		],
 		where,
+		offset: page,
+		limit: 10,
 		raw: true
 	})
 		.then((memes) => {
@@ -240,7 +257,8 @@ exports.findOne = async (req, res) => {
 				} else {
 					templateIds.push(templateId)
 					meme.templates.push({
-						active: i === 0 ? true : false,
+						active: i === 0,
+						height: _meme["text.height"],
 						img: `https://brandywine22.s3-us-west-2.amazonaws.com/${_meme["template.templateSrc"]}`,
 						name: _meme["template.templateName"],
 						templateId,
@@ -255,7 +273,8 @@ exports.findOne = async (req, res) => {
 								x: _meme["text.x"],
 								y: _meme["text.y"]
 							}
-						]
+						],
+						width: _meme["text.width"]
 					})
 				}
 			})
