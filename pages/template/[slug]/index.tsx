@@ -87,9 +87,7 @@ const Template: React.FunctionComponent = (props) => {
 							<Header as="h1">
 								{data.name === null ? "Untitled Template" : data.name}
 								<Header.Subheader>
-									Created <Moment date={data.createdAt} fromNow />
-								</Header.Subheader>
-								<Header.Subheader>
+									<Moment date={data.createdAt} fromNow /> •{" "}
 									<Link href={`/artists/${data.user.username}`}>
 										<a>@{data.user.username}</a>
 									</Link>

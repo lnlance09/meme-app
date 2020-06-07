@@ -245,6 +245,7 @@ const Create: React.FunctionComponent = (props) => {
 	return (
 		<Provider store={store}>
 			<DefaultLayout
+				containerClassName="createPage"
 				seo={{
 					description: "Creating a meme was never so quick and easy",
 					image: {

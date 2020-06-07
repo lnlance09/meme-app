@@ -177,13 +177,21 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 				</Image.Group>
 			</div>
 
-			<Button color="green" content="Download" fluid icon="download" onClick={downloadMeme} />
 			<Button
-				color="violet"
+				color="green"
+				content="Download"
+				fluid
+				icon="download"
+				onClick={downloadMeme}
+				size="big"
+			/>
+			<Button
+				color="blue"
 				content="Fork"
 				fluid
 				icon="fork"
 				onClick={() => router.push(`/create?id=${slug}`)}
+				size="big"
 				style={{ marginTop: "15px" }}
 			/>
 		</Fragment>

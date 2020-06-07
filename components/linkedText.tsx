@@ -2,12 +2,10 @@ import * as linkify from "linkifyjs"
 import { baseUrl } from "@options/config"
 import hashtag from "linkifyjs/plugins/hashtag"
 import Linkify from "linkifyjs/react"
-import React, { useEffect } from "react"
+import React from "react"
 
 const LinkedText: React.FunctionComponent = ({ text }) => {
-	useEffect(() => {
-		hashtag(linkify)
-	}, [])
+	hashtag(linkify)
 
 	return (
 		<Linkify
