@@ -40,13 +40,12 @@ const MemeImages: React.FunctionComponent = ({
 							}}
 							onError={(image) => (image.target.src = BlankImg)}
 							onLoad={async (image) => {
-								const { height, width } = image.target
+								if (images[i].img !== image.target.src) {
+									const { height, width } = image.target
+									if (width === 0 || height === 0) {
+										return
+									}
 
-								if (
-									images[i].img !== image.target.src &&
-									width !== 0 &&
-									height !== 0
-								) {
 									if (isInitialRender) {
 										await setDimensions(i, height, width)
 									}

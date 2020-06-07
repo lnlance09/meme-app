@@ -1,4 +1,3 @@
-import * as linkify from "linkifyjs"
 import { getMeme, updateImg, updateMeme, updateViews } from "@actions/meme"
 import {
 	Button,
@@ -15,10 +14,9 @@ import { parseJwt } from "@utils/tokenFunctions"
 import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
 import DefaultLayout from "@layouts/default"
-import hashtag from "linkifyjs/plugins/hashtag"
 import html2canvas from "html2canvas"
 import Link from "next/link"
-import Linkify from "linkifyjs/react"
+import LinkedText from "@components/linkedText"
 import MemeImages from "@components/memeImages"
 import Moment from "react-moment"
 import PropTypes from "prop-types"
@@ -43,8 +41,6 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 	const [title, setTitle] = useState(name)
 
 	useEffect(() => {
-		hashtag(linkify)
-
 		const userData = parseJwt()
 		if (userData) {
 			setBearer(localStorage.getItem("jwtToken"))
@@ -164,16 +160,7 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 				</div>
 			) : (
 				<Header as="p" className="memeCaption">
-					<Linkify
-						options={{
-							formatHref: {
-								hashtag: (val) =>
-									`http://localhost:3000/explore/memes?q=${val.substr(1)}`
-							}
-						}}
-					>
-						{data.caption}
-					</Linkify>
+					<LinkedText text={data.caption} />
 				</Header>
 			)}
 

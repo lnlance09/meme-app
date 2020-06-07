@@ -214,8 +214,8 @@ exports.findAll = async (req, res) => {
 		where,
 		group: ["id"],
 		distinct: true,
-		offset: page,
-		limit: 10,
+		// offset: page,
+		// limit: 10,
 		raw: true
 	})
 		.then((users) => {

@@ -1,12 +1,10 @@
-import * as linkify from "linkifyjs"
 import { Card, Container, Header, Image, Placeholder, Visibility } from "semantic-ui-react"
-import { baseUrl, s3BaseUrl } from "@options/config"
+import { s3BaseUrl } from "@options/config"
 import DefaultPic from "@public/images/color-bars.png"
-import hashtag from "linkifyjs/plugins/hashtag"
-import Linkify from "linkifyjs/react"
+import LinkedText from "@components/linkedText"
 import Moment from "react-moment"
 import PropTypes from "prop-types"
-import React, { Fragment, useEffect, useState } from "react"
+import React, { Fragment, useEffect } from "react"
 import Router from "next/router"
 
 const MemeCard = ({ loading, title, subtitle, description }) => {
@@ -31,26 +29,14 @@ const MemeCard = ({ loading, title, subtitle, description }) => {
 			<Card.Meta>{subtitle}</Card.Meta>
 			*/}
 			<Card.Description>
-				<Linkify
-					options={{
-						formatHref: {
-							hashtag: (val) => `${baseUrl}explore/memes?q=${val.substr(1)}`
-						}
-					}}
-				>
-					{description}
-				</Linkify>
+				<LinkedText text={description} />
 			</Card.Description>
 		</Fragment>
 	)
 }
 
 const SearchResults: React.FunctionComponent = (props) => {
-	const { justImages, loading, results, type } = props
-
-	useEffect(() => {
-		hashtag(linkify)
-	}, [])
+	const { justImages, loading, loadMore, page, q, results, type } = props
 
 	const getCardData = (type, result) => {
 		if (type === "memes") {
@@ -86,44 +72,51 @@ const SearchResults: React.FunctionComponent = (props) => {
 					<Header size="huge">No results...</Header>
 				</Container>
 			) : (
-				<Card.Group itemsPerRow={3} stackable>
-					{results.map((result, i) => {
-						const { description, link, subtitle, title } = getCardData(type, result)
-						const img = getCardImage(result.s3Link)
+				<Visibility
+					continuous
+					onBottomVisible={() => {
+						loadMore(page, q)
+					}}
+				>
+					<Card.Group itemsPerRow={3} stackable>
+						{results.map((result, i) => {
+							const { description, link, subtitle, title } = getCardData(type, result)
+							const img = getCardImage(result.s3Link)
 
-						return (
-							<Card
-								className="searchCard"
-								key={`${type}_${i}`}
-								onClick={() => Router.push(link)}
-							>
-								{loading ? (
-									<Placeholder>
-										<Placeholder.Image square />
-									</Placeholder>
-								) : (
-									<Image
-										onError={(i) => (i.target.src = DefaultPic)}
-										src={img}
-										wrapped
-										ui={false}
-									/>
-								)}
-
-								{!justImages && (
-									<Card.Content>
-										<MemeCard
-											description={description}
-											loading={loading}
-											subtitle={subtitle}
-											title={title}
+							return (
+								<Card
+									className="searchCard"
+									key={`${type}_${i}`}
+									onClick={() => Router.push(link)}
+								>
+									{loading ? (
+										<Placeholder>
+											<Placeholder.Image square />
+										</Placeholder>
+									) : (
+										<Image
+											onError={(i) => (i.target.src = DefaultPic)}
+											src={img}
+											wrapped
+											ui={false}
 										/>
-									</Card.Content>
-								)}
-							</Card>
-						)
-					})}
-				</Card.Group>
+									)}
+
+									{!justImages && !loading ? (
+										<Card.Content>
+											<MemeCard
+												description={description}
+												loading={loading}
+												subtitle={subtitle}
+												title={title}
+											/>
+										</Card.Content>
+									) : null}
+								</Card>
+							)
+						})}
+					</Card.Group>
+				</Visibility>
 			)}
 		</div>
 	)
@@ -132,6 +125,8 @@ const SearchResults: React.FunctionComponent = (props) => {
 SearchResults.propTypes = {
 	justImages: PropTypes.bool,
 	loading: PropTypes.bool,
+	page: PropTypes.number,
+	q: PropTypes.string,
 	results: PropTypes.arrayOf(
 		PropTypes.oneOfType([
 			PropTypes.bool,

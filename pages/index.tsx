@@ -1,5 +1,5 @@
 import { searchMemes } from "@actions/search"
-import { Button, Container, Divider, Header } from "semantic-ui-react"
+import { Button, Container, Divider, Header, Icon } from "semantic-ui-react"
 import { Provider, connect } from "react-redux"
 import DefaultLayout from "@layouts/default"
 import Link from "next/link"
@@ -38,11 +38,16 @@ const Home: React.FunctionComponent = (props) => {
 							<Link href="/create">
 								<a>
 									<Button
+										animated="fade"
 										color="blue"
-										content="Create"
 										size="big"
 										style={{ marginTop: "14px" }}
-									/>
+									>
+										<Button.Content visible>Get Started</Button.Content>
+										<Button.Content hidden>
+											<Icon name="arrow right" /> Create
+										</Button.Content>
+									</Button>
 								</a>
 							</Link>
 						</Header.Subheader>

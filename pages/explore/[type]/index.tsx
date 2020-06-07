@@ -14,7 +14,7 @@ const Explore: React.FunctionComponent = (props) => {
 	const router = useRouter()
 	const { q, type } = router.query
 
-	const { artists, memes, templates } = props
+	const { artists, memes, searchArtists, searchMemes, searchTemplates, templates } = props
 
 	const types = ["artists", "memes", "templates"]
 	const defaultType = types.includes(type) ? type : "memes"
@@ -27,15 +27,15 @@ const Explore: React.FunctionComponent = (props) => {
 			setActiveItem(type)
 
 			if (type === "artists") {
-				props.searchArtists({ q })
+				searchArtists({ q })
 			}
 
 			if (type === "memes") {
-				props.searchMemes({ q })
+				searchMemes({ q })
 			}
 
 			if (type === "templates") {
-				props.searchTemplates({ q })
+				searchTemplates({ q })
 			}
 		}
 
@@ -46,15 +46,15 @@ const Explore: React.FunctionComponent = (props) => {
 		setActiveItem(name)
 
 		if (name === "artists") {
-			props.searchArtists({ q: searchVal })
+			searchArtists({ q: searchVal })
 		}
 
 		if (name === "memes") {
-			props.searchMemes({ q: searchVal })
+			searchMemes({ q: searchVal })
 		}
 
 		if (name === "templates") {
-			props.searchTemplates({ q: searchVal })
+			searchTemplates({ q: searchVal })
 		}
 	}
 
@@ -63,15 +63,15 @@ const Explore: React.FunctionComponent = (props) => {
 		setSearchVal(q)
 
 		if (activeItem === "artists") {
-			props.searchArtists({ q })
+			searchArtists({ q })
 		}
 
 		if (activeItem === "memes") {
-			props.searchMemes({ q })
+			searchMemes({ q })
 		}
 
 		if (activeItem === "templates") {
-			props.searchTemplates({ q })
+			searchTemplates({ q })
 		}
 	}
 
@@ -147,6 +147,20 @@ const Explore: React.FunctionComponent = (props) => {
 					<SearchResults
 						justImages={activeItem === "templates"}
 						loading={results.loading}
+						loadMore={(page, q) => {
+							if (activeItem === "artists") {
+								searchArtists({ page, q })
+							}
+
+							if (activeItem === "memes") {
+								searchMemes({ page, q })
+							}
+
+							if (activeItem === "templates") {
+								searchTemplates({ page, q })
+							}
+						}}
+						q={searchVal}
 						results={results.results}
 						type={activeItem}
 					/>
@@ -159,6 +173,7 @@ const Explore: React.FunctionComponent = (props) => {
 Explore.propTypes = {
 	artists: PropTypes.shape({
 		loading: PropTypes.bool,
+		page: PropTypes.number,
 		results: PropTypes.arrayOf(
 			PropTypes.oneOfType([
 				PropTypes.bool,
@@ -175,6 +190,7 @@ Explore.propTypes = {
 	}),
 	memes: PropTypes.shape({
 		loading: PropTypes.bool,
+		page: PropTypes.number,
 		results: PropTypes.arrayOf(
 			PropTypes.oneOfType([
 				PropTypes.bool,
@@ -199,6 +215,7 @@ Explore.propTypes = {
 	searchTemplates: PropTypes.func,
 	templates: PropTypes.shape({
 		loading: PropTypes.bool,
+		page: PropTypes.number,
 		results: PropTypes.arrayOf(
 			PropTypes.oneOfType([
 				PropTypes.bool,

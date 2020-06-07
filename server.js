@@ -4,6 +4,7 @@ const bodyParser = require("body-parser")
 const fileupload = require("express-fileupload")
 const db = require("./models/index.ts")
 const memes = require("./controllers/meme.ts")
+const sitemap = require("./controllers/sitemap.ts")
 const templates = require("./controllers/template.ts")
 const users = require("./controllers/user.ts")
 
@@ -41,6 +42,8 @@ app.prepare().then(() => {
 	server.post("/api/user/update", users.update)
 	server.post("/api/user/verify", users.verify)
 	server.get("/api/user/:username", users.findOne)
+
+	server.get("/sitemap.xml", sitemap.sitemap)
 
 	server.all("*", (req, res) => {
 		return handle(req, res)
