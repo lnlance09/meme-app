@@ -109,6 +109,7 @@ exports.delete = (req, res) => {}
 exports.findAll = async (req, res) => {
 	const { page, q } = req.query
 
+	const limit = 10
 	let where = {
 		[Op.or]: [
 			{
@@ -130,7 +131,6 @@ exports.findAll = async (req, res) => {
 
 	Meme.findAll({
 		model: Meme,
-		as: "meme",
 		required: true,
 		attributes: [
 			"caption",
@@ -152,15 +152,19 @@ exports.findAll = async (req, res) => {
 			}
 		],
 		where,
-		offset: page,
-		limit: 10,
+		offset: page * limit,
+		limit,
+		order: [["createdAt", "DESC"]],
 		raw: true
 	})
 		.then((memes) => {
+			const hasMore = memes.length === limit
 			return res.status(200).send({
 				error: false,
+				hasMore,
 				memes,
-				msg: "Success"
+				msg: "Success",
+				page: parseInt(page) + 1
 			})
 		})
 		.catch((err) => {

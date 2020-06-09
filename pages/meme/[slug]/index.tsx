@@ -15,6 +15,7 @@ import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
 import DefaultLayout from "@layouts/default"
 import html2canvas from "html2canvas"
+import LazyLoad from "react-lazyload"
 import Link from "next/link"
 import LinkedText from "@components/linkedText"
 import MemeImages from "@components/memeImages"
@@ -225,11 +226,13 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 											<Placeholder.Image square />
 										</Placeholder>
 									) : (
-										<MemeImages
-											editable={false}
-											images={templates}
-											isInitialRender={false}
-										/>
+										<LazyLoad height={200}>
+											<MemeImages
+												editable={false}
+												images={templates}
+												isInitialRender={false}
+											/>
+										</LazyLoad>
 									)}
 								</Grid.Column>
 								<Grid.Column width={6}>{!loading && RightColumn}</Grid.Column>

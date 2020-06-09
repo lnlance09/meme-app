@@ -86,7 +86,7 @@ const Create: React.FunctionComponent = (props) => {
 			}
 		]
 		setImages(newImages)
-	}, [images])
+	}, [])
 
 	const addMoreText = (imgIndex) => {
 		let newImages = [...images]

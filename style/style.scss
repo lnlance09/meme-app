@@ -77,6 +77,16 @@
 	src: url("../public/fonts/oswald/OswaldSemiBoldItalic.ttf");
 }
 
+@keyframes fadeInOpacity {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+
 * {
 	border-radius: 0 !important;
 }
@@ -159,9 +169,18 @@ body {
 	}
 
 	.memeImg {
+		animation-name: fadeInOpacity;
+		animation-iteration-count: 1;
+		animation-timing-function: ease-in;
+		animation-duration: 1.2s;
 		cursor: pointer;
+		opacity: 1;
 		width: 100%;
 		z-index: 998;
+
+		&.editable {
+			animation: none;
+		}
 	
 		&.active {
 			border: solid 4px $blue;
@@ -266,9 +285,14 @@ body {
 .memePage {
 	.templateImages {
 		.image {
+			animation-name: fadeInOpacity;
+	        animation-iteration-count: 1;
+	        animation-timing-function: ease-in;
+	        animation-duration: 0.85s;
 			cursor: pointer;
 			margin-bottom: 0;
 			margin-top: 0;
+			opacity: 1;
 		}
 	}
 

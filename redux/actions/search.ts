@@ -1,7 +1,7 @@
 import * as constants from "../constants"
 import axios from "axios"
 
-export const searchArtists = ({ page, q }) => (dispatch) => {
+export const searchArtists = ({ page = 0, q }) => (dispatch) => {
 	axios
 		.get("/api/user/search", {
 			params: {
@@ -21,7 +21,7 @@ export const searchArtists = ({ page, q }) => (dispatch) => {
 		})
 }
 
-export const searchMemes = ({ page, q }) => (dispatch) => {
+export const searchMemes = ({ page = 0, q }) => (dispatch) => {
 	axios
 		.get("/api/meme/search", {
 			params: {
@@ -41,7 +41,7 @@ export const searchMemes = ({ page, q }) => (dispatch) => {
 		})
 }
 
-export const searchTemplates = ({ page, q }) => (dispatch) => {
+export const searchTemplates = ({ page = 0, q }) => (dispatch) => {
 	axios
 		.get("/api/template/search", {
 			params: {

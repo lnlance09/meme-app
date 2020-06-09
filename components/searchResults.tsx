@@ -1,10 +1,11 @@
-import { Card, Container, Header, Image, Placeholder, Visibility } from "semantic-ui-react"
+import { Container, Header, Image, Placeholder, Visibility } from "semantic-ui-react"
 import { s3BaseUrl } from "@options/config"
-import DefaultPic from "@public/images/color-bars.png"
+import DefaultPic from "@public/images/grey-background.jpg"
 import LinkedText from "@components/linkedText"
+import Masonry from "react-masonry-css"
 import Moment from "react-moment"
 import PropTypes from "prop-types"
-import React, { Fragment, useEffect } from "react"
+import React, { Fragment, useState } from "react"
 import Router from "next/router"
 
 const MemeCard = ({ loading, title, subtitle, description }) => {
@@ -23,20 +24,21 @@ const MemeCard = ({ loading, title, subtitle, description }) => {
 	}
 
 	return (
-		<Fragment>
+		<div className="gridElementText">
 			{/*
 			<Card.Header>{title}</Card.Header>
 			<Card.Meta>{subtitle}</Card.Meta>
 			*/}
-			<Card.Description>
+			<div>
 				<LinkedText text={description} />
-			</Card.Description>
-		</Fragment>
+			</div>
+		</div>
 	)
 }
 
 const SearchResults: React.FunctionComponent = (props) => {
-	const { justImages, loading, loadMore, page, q, results, type } = props
+	const { hasMore, justImages, loading, loadMore, page, q, results, type } = props
+	const [fetching, setFetching] = useState(false)
 
 	const getCardData = (type, result) => {
 		if (type === "memes") {
@@ -74,18 +76,30 @@ const SearchResults: React.FunctionComponent = (props) => {
 			) : (
 				<Visibility
 					continuous
-					onBottomVisible={() => {
-						loadMore(page, q)
+					onBottomVisible={async () => {
+						if (hasMore && !fetching) {
+							setFetching(true)
+							await loadMore(page, q)
+							setFetching(false)
+						}
 					}}
 				>
-					<Card.Group itemsPerRow={3} stackable>
+					<Masonry
+						breakpointCols={3}
+						className="searchResultsMasonryGrid"
+						columnClassName="searchResultsMasonryGridColumn"
+					>
 						{results.map((result, i) => {
 							const { description, link, subtitle, title } = getCardData(type, result)
 							const img = getCardImage(result.s3Link)
 
+							if (typeof result.id === "undefined") {
+								return
+							}
+
 							return (
-								<Card
-									className="searchCard"
+								<div
+									className="gridElement"
 									key={`${type}_${i}`}
 									onClick={() => Router.push(link)}
 								>
@@ -97,25 +111,21 @@ const SearchResults: React.FunctionComponent = (props) => {
 										<Image
 											onError={(i) => (i.target.src = DefaultPic)}
 											src={img}
-											wrapped
-											ui={false}
 										/>
 									)}
 
 									{!justImages && !loading ? (
-										<Card.Content>
-											<MemeCard
-												description={description}
-												loading={loading}
-												subtitle={subtitle}
-												title={title}
-											/>
-										</Card.Content>
+										<MemeCard
+											description={description}
+											loading={loading}
+											subtitle={subtitle}
+											title={title}
+										/>
 									) : null}
-								</Card>
+								</div>
 							)
 						})}
-					</Card.Group>
+					</Masonry>
 				</Visibility>
 			)}
 		</div>
@@ -125,6 +135,7 @@ const SearchResults: React.FunctionComponent = (props) => {
 SearchResults.propTypes = {
 	justImages: PropTypes.bool,
 	loading: PropTypes.bool,
+	loadMore: PropTypes.func,
 	page: PropTypes.number,
 	q: PropTypes.string,
 	results: PropTypes.arrayOf(

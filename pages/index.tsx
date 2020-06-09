@@ -9,11 +9,15 @@ import SearchResults from "@components/searchResults"
 import store from "@store"
 
 const Home: React.FunctionComponent = (props) => {
-	const { memes } = props
+	const { memes, searchMemes } = props
 
 	useEffect(() => {
-		props.searchMemes({})
+		searchMemes({ page: 0 })
 	}, [])
+
+	const loadMore = (page) => {
+		return searchMemes({ page })
+	}
 
 	return (
 		<Provider store={store}>
@@ -57,7 +61,15 @@ const Home: React.FunctionComponent = (props) => {
 				<Divider hidden section />
 
 				<Container>
-					<SearchResults loading={memes.loading} results={memes.results} type="memes" />
+					<SearchResults
+						hasMore={memes.hasMore}
+						justImages={false}
+						loading={memes.loading}
+						loadMore={(page) => loadMore(page)}
+						page={memes.page}
+						results={memes.results}
+						type="memes"
+					/>
 				</Container>
 
 				<Divider hidden section />

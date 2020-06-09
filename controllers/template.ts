@@ -80,6 +80,7 @@ exports.delete = (req, res) => {}
 exports.findAll = (req, res) => {
 	const { page, q } = req.query
 
+	const limit = 10
 	let where = {
 		name: {
 			[Op.like]: `%${q}%`
@@ -94,15 +95,19 @@ exports.findAll = (req, res) => {
 		required: true,
 		attributes: ["id", "name", "s3Link"],
 		where,
-		offset: page,
-		limit: 10,
+		offset: page * limit,
+		limit,
+		order: [["createdAt", "DESC"]],
 		raw: true
 	})
 		.then((templates) => {
+			const hasMore = templates.length === limit
 			return res.status(200).send({
 				error: false,
+				hasMore,
 				templates,
-				msg: "Success"
+				msg: "Success",
+				page: parseInt(page) + 1
 			})
 		})
 		.catch((err) => {

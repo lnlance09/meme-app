@@ -1,6 +1,7 @@
 const Auth = require("../utils/authFunctions.ts")
 const Aws = require("../utils/awsFunctions.ts")
 const db = require("../models/index.ts")
+const Mail = require("../utils/mailFunctions.ts")
 const validator = require("validator")
 const randomize = require("randomatic")
 const sha1 = require("sha1")
@@ -321,6 +322,13 @@ exports.login = async (req, res) => {
 	})
 		.then((data) => {
 			if (data.length === 1) {
+				Mail.sendEmail(
+					"lnlance09@gmail.com",
+					"Sample Email",
+					"Hello world?",
+					"<b>Hello world?</b>"
+				)
+
 				const userData = data[0]
 				return res.status(200).send({
 					error: false,

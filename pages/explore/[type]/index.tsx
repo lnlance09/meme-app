@@ -42,6 +42,20 @@ const Explore: React.FunctionComponent = (props) => {
 		setSearchVal(q)
 	}, [q, type])
 
+	const loadMore = (page, q) => {
+		if (activeItem === "artists") {
+			return searchArtists({ page, q })
+		}
+
+		if (activeItem === "memes") {
+			return searchMemes({ page, q })
+		}
+
+		if (activeItem === "templates") {
+			return searchTemplates({ page, q })
+		}
+	}
+
 	const onClickItem = (name) => {
 		setActiveItem(name)
 
@@ -145,21 +159,11 @@ const Explore: React.FunctionComponent = (props) => {
 					<UsersList loading={results.loading} results={results.results} />
 				) : (
 					<SearchResults
+						hasMore={results.hasMore}
 						justImages={activeItem === "templates"}
 						loading={results.loading}
-						loadMore={(page, q) => {
-							if (activeItem === "artists") {
-								searchArtists({ page, q })
-							}
-
-							if (activeItem === "memes") {
-								searchMemes({ page, q })
-							}
-
-							if (activeItem === "templates") {
-								searchTemplates({ page, q })
-							}
-						}}
+						loadMore={(page, q) => loadMore(page, q)}
+						page={results.page}
 						q={searchVal}
 						results={results.results}
 						type={activeItem}
@@ -172,6 +176,7 @@ const Explore: React.FunctionComponent = (props) => {
 
 Explore.propTypes = {
 	artists: PropTypes.shape({
+		hasMore: PropTypes.bool,
 		loading: PropTypes.bool,
 		page: PropTypes.number,
 		results: PropTypes.arrayOf(
@@ -189,6 +194,7 @@ Explore.propTypes = {
 		)
 	}),
 	memes: PropTypes.shape({
+		hasMore: PropTypes.bool,
 		loading: PropTypes.bool,
 		page: PropTypes.number,
 		results: PropTypes.arrayOf(
@@ -214,6 +220,7 @@ Explore.propTypes = {
 	searchMemes: PropTypes.func,
 	searchTemplates: PropTypes.func,
 	templates: PropTypes.shape({
+		hasMore: PropTypes.bool,
 		loading: PropTypes.bool,
 		page: PropTypes.number,
 		results: PropTypes.arrayOf(
@@ -230,18 +237,24 @@ Explore.propTypes = {
 
 Explore.defaultProps = {
 	artists: {
+		hasMore: true,
 		loading: true,
+		page: 0,
 		results: [false, false, false, false, false, false]
 	},
 	memes: {
+		hasMore: true,
 		loading: true,
+		page: 0,
 		results: [false, false, false, false, false, false]
 	},
 	searchArtists,
 	searchMemes,
 	searchTemplates,
 	templates: {
+		hasMore: true,
 		loading: true,
+		page: 0,
 		results: [false, false, false, false, false, false]
 	}
 }
