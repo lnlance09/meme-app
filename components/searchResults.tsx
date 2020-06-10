@@ -25,10 +25,6 @@ const MemeCard = ({ loading, title, subtitle, description }) => {
 
 	return (
 		<div className="gridElementText">
-			{/*
-			<Card.Header>{title}</Card.Header>
-			<Card.Meta>{subtitle}</Card.Meta>
-			*/}
 			<div>
 				<LinkedText text={description} />
 			</div>
@@ -36,8 +32,17 @@ const MemeCard = ({ loading, title, subtitle, description }) => {
 	)
 }
 
-const SearchResults: React.FunctionComponent = (props) => {
-	const { hasMore, justImages, loading, loadMore, page, q, results, type } = props
+const SearchResults: React.FunctionComponent = ({
+	hasMore,
+	justImages,
+	loading,
+	loadMore,
+	page,
+	q,
+	results,
+	templateId,
+	type
+}) => {
 	const [fetching, setFetching] = useState(false)
 
 	const getCardData = (type, result) => {
@@ -79,7 +84,7 @@ const SearchResults: React.FunctionComponent = (props) => {
 					onBottomVisible={async () => {
 						if (hasMore && !fetching) {
 							setFetching(true)
-							await loadMore(page, q)
+							await loadMore({ page, q, templateId })
 							setFetching(false)
 						}
 					}}
@@ -166,6 +171,7 @@ SearchResults.propTypes = {
 			})
 		])
 	),
+	templateId: PropTypes.number,
 	type: PropTypes.oneOf(["artists", "memes", "templates"])
 }
 

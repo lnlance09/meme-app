@@ -8,7 +8,9 @@ const initial = () => ({
 	errorMsg: "",
 	loading: true,
 	memes: {
+		hasMore: true,
 		loading: true,
+		page: 0,
 		results: [false, false, false, false, false, false]
 	}
 })
@@ -38,11 +40,18 @@ const template = (state = initial(), action) => {
 			}
 
 		case constants.SEARCH_MEMES:
+			let memeResults = payload.memes
+			if (payload.page > 1) {
+				memeResults = [...state.memes.results, ...payload.memes]
+			}
+
 			return {
 				...state,
 				memes: {
+					hasMore: payload.hasMore,
 					loading: false,
-					results: payload.memes
+					page: payload.page,
+					results: memeResults
 				}
 			}
 

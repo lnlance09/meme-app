@@ -13,60 +13,28 @@
     display: flex;
     margin-left: -30px;
     width: auto;
-}
 
-.searchResultsMasonryGridColumn {
-	background-clip: padding-box;
-    padding-left: 30px;
-}
+	.searchResultsMasonryGridColumn {
+		background-clip: padding-box;
+		padding-left: 30px;
 
-.searchResultsMasonryGridColumn {
-	.gridElementText {
-		font-size: 16px;
-		padding: 6px 8px 0 8px;
-	}
+		.gridElementText {
+			font-size: 16px;
+			padding: 6px 8px 0 8px;
+		}
 
- 	> div {
-		background: #offWhite;
-		cursor: pointer;
-		margin-bottom: 25px;
+		> div {
+			background: #offWhite;
+			cursor: pointer;
+			margin-bottom: 25px;
 
-		img {
-			animation-name: fadeInOpacity;
-			animation-iteration-count: 1;
-			animation-timing-function: ease-in;
-			animation-duration: 0.85s;
-			opacity: 1;
+			img {
+				animation-name: fadeInOpacity;
+				animation-iteration-count: 1;
+				animation-timing-function: ease-in;
+				animation-duration: 0.85s;
+				opacity: 1;
+			}
 		}
 	}
-}
-
-.searchResults {
-    .card {
-        box-shadow: none !important;
-        cursor: pointer;
-        overflow: hidden;
-
-        .content {
-            padding: 8px 5px !important;
-
-            .description {
-                color: $lightBlack !important;
-                font-size: 15px;
-            }
-        }
-
-        img {
-            animation-name: fadeInOpacity;
-	        animation-iteration-count: 1;
-	        animation-timing-function: ease-in;
-	        animation-duration: 0.85s;
-            height: min-content;
-            opacity: 1;
-        }
-    }
-
-    &.templates {
-        
-    }
 }

@@ -22,11 +22,17 @@ import React, { Fragment, useEffect, useState } from "react"
 import SearchResults from "@components/searchResults"
 import store from "@store"
 
-const Template: React.FunctionComponent = (props) => {
+const Template: React.FunctionComponent = ({
+	data,
+	error,
+	errorMsg,
+	getTemplate,
+	loading,
+	memes,
+	searchMemes
+}) => {
 	const router = useRouter()
 	const { slug } = router.query
-
-	const { data, error, errorMsg, getTemplate, loading, memes, searchMemes } = props
 
 	const getImage = () => {
 		const img = data.s3Link
@@ -43,9 +49,13 @@ const Template: React.FunctionComponent = (props) => {
 
 		if (typeof slug !== "undefined") {
 			getTemplate({ id: slug })
-			searchMemes({})
+			searchMemes({ templateId: slug })
 		}
 	}, [slug])
+
+	const loadMore = (page, templateId) => {
+		return searchMemes({ page, templateId })
+	}
 
 	return (
 		<Provider store={store}>
@@ -110,10 +120,14 @@ const Template: React.FunctionComponent = (props) => {
 					</Divider>
 
 					<SearchResults
+						hasMore={memes.hasMore}
 						justImages
 						loading={memes.loading}
+						loadMore={({ page, templateId }) => loadMore(page, templateId)}
+						page={memes.page}
 						results={memes.results}
 						type="memes"
+						templateId={slug}
 					/>
 				</Container>
 
@@ -141,7 +155,9 @@ Template.propTypes = {
 	errorMsg: PropTypes.string,
 	loading: PropTypes.bool,
 	memes: PropTypes.shape({
+		hasMore: PropTypes.bool,
 		loading: PropTypes.bool,
+		page: PropTypes.number,
 		results: PropTypes.arrayOf(
 			PropTypes.oneOfType([
 				PropTypes.bool,

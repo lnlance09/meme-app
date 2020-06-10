@@ -107,7 +107,7 @@ exports.create = async (req, res) => {
 exports.delete = (req, res) => {}
 
 exports.findAll = async (req, res) => {
-	const { page, q } = req.query
+	const { page, q, templateId } = req.query
 
 	const limit = 10
 	let where = {
@@ -129,32 +129,44 @@ exports.findAll = async (req, res) => {
 		where = {}
 	}
 
-	Meme.findAll({
-		model: Meme,
-		required: true,
+	if (typeof templateId !== "undefined" && templateId !== "") {
+		where.templateId = templateId
+	}
+
+	MemeTemplate.findAll({
 		attributes: [
-			"caption",
-			"createdAt",
-			"createdBy",
-			"id",
-			["name", "templateName"],
-			"s3Link",
-			"views",
-			"user.img",
-			"user.name",
-			"user.username"
+			[db.Sequelize.col("meme.caption"), "caption"],
+			[db.Sequelize.col("meme.createdAt"), "createdAt"],
+			[db.Sequelize.col("meme.createdBy"), "createdBy"],
+			[db.Sequelize.col("meme.id"), "id"],
+			[db.Sequelize.col("meme.name"), "name"],
+			[db.Sequelize.col("meme.s3Link"), "s3Link"],
+			[db.Sequelize.col("meme.views"), "views"],
+			[db.Sequelize.col("meme.user.img"), "userImg"],
+			[db.Sequelize.col("meme.user.img"), "userName"],
+			[db.Sequelize.col("meme.user.username"), "userUsername"]
 		],
 		include: [
 			{
-				model: User,
+				model: Meme,
+				attributes: [],
+				as: "meme",
 				required: true,
-				attributes: []
+				include: [
+					{
+						model: User,
+						attributes: [],
+						as: "user",
+						required: true
+					}
+				]
 			}
 		],
 		where,
 		offset: page * limit,
 		limit,
-		order: [["createdAt", "DESC"]],
+		group: ["meme.id"],
+		order: [["id", "DESC"]],
 		raw: true
 	})
 		.then((memes) => {

@@ -26,9 +26,9 @@ const search = (state = initial(), action) => {
 
 	switch (action.type) {
 		case constants.SEARCH_ARTISTS:
-			let artistResults = payload.artists
-			if (payload.page > 0) {
-				artistResults = [...state.memes.artistResults, ...payload.artists]
+			let artistResults = payload.users
+			if (payload.page > 1) {
+				artistResults = [...state.artists.results, ...payload.users]
 			}
 
 			return {
@@ -43,7 +43,7 @@ const search = (state = initial(), action) => {
 
 		case constants.SEARCH_MEMES:
 			let memeResults = payload.memes
-			if (payload.page > 0) {
+			if (payload.page > 1) {
 				memeResults = [...state.memes.results, ...payload.memes]
 			}
 
@@ -59,7 +59,7 @@ const search = (state = initial(), action) => {
 
 		case constants.SEARCH_TEMPLATES:
 			let templateResults = payload.templates
-			if (payload.page > 0) {
+			if (payload.page > 1) {
 				templateResults = [...state.templates.results, ...payload.templates]
 			}
 

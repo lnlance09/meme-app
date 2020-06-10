@@ -1,5 +1,5 @@
 import { searchArtists, searchMemes, searchTemplates } from "@actions/search"
-import { Button, Divider, Image, Item } from "semantic-ui-react"
+import { Button, Divider } from "semantic-ui-react"
 import { useRouter } from "next/router"
 import { DebounceInput } from "react-debounce-input"
 import { Provider, connect } from "react-redux"
@@ -156,13 +156,20 @@ const Explore: React.FunctionComponent = (props) => {
 				<Divider section />
 
 				{activeItem === "artists" ? (
-					<UsersList loading={results.loading} results={results.results} />
+					<UsersList
+						hasMore={results.hasMore}
+						loading={results.loading}
+						loadMore={(page, q) => loadMore(page, q)}
+						page={results.page}
+						q={searchVal}
+						results={results.results}
+					/>
 				) : (
 					<SearchResults
 						hasMore={results.hasMore}
 						justImages={activeItem === "templates"}
 						loading={results.loading}
-						loadMore={(page, q) => loadMore(page, q)}
+						loadMore={({ page, q }) => loadMore(page, q)}
 						page={results.page}
 						q={searchVal}
 						results={results.results}

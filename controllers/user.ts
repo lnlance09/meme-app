@@ -164,6 +164,7 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
 	const { page, q } = req.query
 
+	const limit = 10
 	let where = {
 		[Op.or]: [
 			{
@@ -213,16 +214,20 @@ exports.findAll = async (req, res) => {
 			}
 		],
 		where,
+		offset: page * limit,
+		limit: 10,
+		order: [["name", "DESC"]],
 		group: ["id"],
-		distinct: true,
-		// offset: page,
-		// limit: 10,
-		raw: true
+		raw: true,
+		subQuery: false
 	})
 		.then((users) => {
+			const hasMore = users.length === limit
 			return res.status(200).send({
 				error: false,
+				hasMore,
 				msg: "Success",
+				page: parseInt(page) + 1,
 				users
 			})
 		})

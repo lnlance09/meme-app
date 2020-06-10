@@ -2,11 +2,12 @@ import { Container, Header, Item, List, Placeholder, Visibility } from "semantic
 import { s3BaseUrl } from "@options/config"
 import DefaultPic from "@public/images/placeholders/image.png"
 import PropTypes from "prop-types"
-import React, { Fragment, useEffect } from "react"
+import React, { useState } from "react"
 import Router from "next/router"
 
 const UsersList: React.FunctionComponent = (props) => {
-	const { loading, results } = props
+	const { hasMore, loading, loadMore, page, q, results } = props
+	const [fetching, setFetching] = useState(false)
 
 	const getUserImage = (img) => {
 		return img === null || img === "" ? DefaultPic : `${s3BaseUrl}${img}`
@@ -19,49 +20,62 @@ const UsersList: React.FunctionComponent = (props) => {
 					<Header size="huge">No results...</Header>
 				</Container>
 			) : (
-				<Item.Group divided relaxed>
-					{results.map((user, i) => {
-						if (loading) {
+				<Visibility
+					continuous
+					onBottomVisible={async () => {
+						if (hasMore && !fetching) {
+							setFetching(true)
+							await loadMore(page, q)
+							setFetching(false)
+						}
+					}}
+				>
+					<Item.Group divided relaxed>
+						{results.map((user, i) => {
+							if (loading) {
+								return (
+									<Item key={`user${i}`}>
+										<Placeholder>
+											<Placeholder.Image />
+										</Placeholder>
+										<Item.Content>
+											<Placeholder.Paragraph>
+												<Placeholder.Line />
+												<Placeholder.Line />
+												<Placeholder.Line />
+											</Placeholder.Paragraph>
+										</Item.Content>
+									</Item>
+								)
+							}
+
+							const img = getUserImage(user.img)
 							return (
-								<Item key={`user${i}`}>
-									<Placeholder>
-										<Placeholder.Image />
-									</Placeholder>
+								<Item
+									key={`user${i}`}
+									onClick={() => Router.push(`/artists/${user.username}`)}
+								>
+									<Item.Image
+										onError={(i) => (i.target.src = DefaultPic)}
+										src={img}
+									/>
 									<Item.Content>
-										<Placeholder.Paragraph>
-											<Placeholder.Line />
-											<Placeholder.Line />
-											<Placeholder.Line />
-										</Placeholder.Paragraph>
+										<Item.Header as="a">{user.name}</Item.Header>
+										<Item.Meta>@{user.username}</Item.Meta>
+										<Item.Description>
+											<List>
+												<List.Item>{user.memeCount} memes</List.Item>
+												<List.Item>
+													{user.templateCount} templates
+												</List.Item>
+											</List>
+										</Item.Description>
 									</Item.Content>
 								</Item>
 							)
-						}
-
-						const img = getUserImage(user.img)
-						return (
-							<Item
-								key={`user${i}`}
-								onClick={() => Router.push(`/artists/${user.username}`)}
-							>
-								<Item.Image
-									onError={(i) => (i.target.src = DefaultPic)}
-									src={img}
-								/>
-								<Item.Content>
-									<Item.Header as="a">{user.name}</Item.Header>
-									<Item.Meta>@{user.username}</Item.Meta>
-									<Item.Description>
-										<List>
-											<List.Item>{user.memeCount} memes</List.Item>
-											<List.Item>{user.templateCount} templates</List.Item>
-										</List>
-									</Item.Description>
-								</Item.Content>
-							</Item>
-						)
-					})}
-				</Item.Group>
+						})}
+					</Item.Group>
+				</Visibility>
 			)}
 		</div>
 	)

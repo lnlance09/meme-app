@@ -105,9 +105,9 @@ exports.findAll = (req, res) => {
 			return res.status(200).send({
 				error: false,
 				hasMore,
-				templates,
 				msg: "Success",
-				page: parseInt(page) + 1
+				page: parseInt(page) + 1,
+				templates
 			})
 		})
 		.catch((err) => {

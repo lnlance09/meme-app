@@ -21,12 +21,13 @@ export const searchArtists = ({ page = 0, q }) => (dispatch) => {
 		})
 }
 
-export const searchMemes = ({ page = 0, q }) => (dispatch) => {
+export const searchMemes = ({ page = 0, q = null, templateId = null }) => (dispatch) => {
 	axios
 		.get("/api/meme/search", {
 			params: {
 				page,
-				q
+				q,
+				templateId
 			}
 		})
 		.then((response) => {
