@@ -2,6 +2,8 @@ import { createMeme, getMeme } from "@actions/meme"
 import { Button, Divider, Form, Grid, TextArea } from "semantic-ui-react"
 import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
+import { withTheme } from "@redux/ThemeProvider"
+import { compose } from "redux"
 import axios from "axios"
 import DefaultLayout from "@layouts/default"
 import MemeConfig from "@components/memeConfig"
@@ -86,7 +88,7 @@ const Create: React.FunctionComponent = (props) => {
 			}
 		]
 		setImages(newImages)
-	}, [])
+	}, [images])
 
 	const addMoreText = (imgIndex) => {
 		let newImages = [...images]
@@ -242,6 +244,8 @@ const Create: React.FunctionComponent = (props) => {
 		setImages(newImages)
 	}
 
+	console.log("images", images)
+
 	return (
 		<Provider store={store}>
 			<DefaultLayout
@@ -280,6 +284,7 @@ const Create: React.FunctionComponent = (props) => {
 								changeFontSize={changeFontSize}
 								changeText={changeText}
 								images={images}
+								inverted={props.inverted}
 								onFileUpload={onFileUpload}
 								onKeyUp={onKeyUp}
 								onPaste={onPaste}
@@ -291,16 +296,18 @@ const Create: React.FunctionComponent = (props) => {
 					</Grid.Row>
 				</Grid>
 
-				<Divider hidden section />
+				<Divider hidden inverted={props.inverted} section />
 
 				{formVisible && (
 					<Form size="big">
 						<TextArea
+							inverted={props.inverted}
 							placeholder="Caption (Optional)"
 							onChange={(e, { value }) => setCaption(value)}
 							row={3}
 							value={caption}
 						/>
+						<Divider inverted={props.inverted} />
 					</Form>
 				)}
 
@@ -309,6 +316,7 @@ const Create: React.FunctionComponent = (props) => {
 					content="Create"
 					disabled={!canSubmit}
 					fluid
+					inverted={props.inverted}
 					loading={processing}
 					onClick={createMeme}
 					size="big"
@@ -355,7 +363,10 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 	...ownProps
 })
 
-export default connect(mapStateToProps, {
-	createMeme,
-	getMeme
-})(Create)
+export default compose(
+	connect(mapStateToProps, {
+		createMeme,
+		getMeme
+	}),
+	withTheme("dark")
+)(Create)

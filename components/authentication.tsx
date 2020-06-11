@@ -86,12 +86,12 @@ const Authentication: React.FunctionComponent = (props) => {
 	const InfoBox = () => {
 		if (!props.verify) {
 			return (
-				<p className="registerText">
+				<Header as="p" className="registerText" inverted={props.inverted}>
 					{registerText}{" "}
 					<span className="registerLink" onClick={() => toggleLogin()}>
 						{buttonText}
 					</span>
-				</p>
+				</Header>
 			)
 		}
 
@@ -101,9 +101,10 @@ const Authentication: React.FunctionComponent = (props) => {
 	const MainForm = () => {
 		if (props.verify) {
 			return (
-				<Form onSubmit={submitVerificationForm} size="big">
+				<Form inverted={props.inverted} onSubmit={submitVerificationForm} size="big">
 					<Form.Field>
 						<Input
+							inverted={props.inverted}
 							onChange={(e, { value }) => setVerificationCode(value)}
 							placeholder="Verification code"
 							value={verificationCode}
@@ -114,6 +115,7 @@ const Authentication: React.FunctionComponent = (props) => {
 						content="Verify"
 						disabled={verificationCode.length !== 10}
 						fluid
+						inverted={props.inverted}
 						size="big"
 						type="submit"
 					/>
@@ -123,9 +125,10 @@ const Authentication: React.FunctionComponent = (props) => {
 
 		if (login) {
 			return (
-				<Form loading={loadingLogin && !props.loginError} size="big">
+				<Form inverted={props.inverted} size="big">
 					<Form.Field>
 						<Input
+							inverted={props.inverted}
 							onChange={(e, { value }) => {
 								setEmail(value)
 							}}
@@ -135,6 +138,7 @@ const Authentication: React.FunctionComponent = (props) => {
 					</Form.Field>
 					<Form.Field>
 						<Input
+							inverted={props.inverted}
 							onChange={(e, { value }) => {
 								setPassword(value)
 							}}
@@ -148,6 +152,8 @@ const Authentication: React.FunctionComponent = (props) => {
 							color="blue"
 							content="Sign in"
 							fluid
+							inverted={props.inverted}
+							loading={loadingLogin && !props.loginError}
 							onClick={submitLoginForm}
 							size="big"
 							type="submit"
@@ -158,9 +164,10 @@ const Authentication: React.FunctionComponent = (props) => {
 		}
 
 		return (
-			<Form loading={loadingRegistration && !props.registerError} size="big">
+			<Form inverted={props.inverted} size="big">
 				<Form.Field>
 					<Input
+						inverted={props.inverted}
 						onChange={(e, { value }) => {
 							setRegEmail(value)
 						}}
@@ -170,6 +177,7 @@ const Authentication: React.FunctionComponent = (props) => {
 				</Form.Field>
 				<Form.Field>
 					<Input
+						inverted={props.inverted}
 						onChange={(e, { value }) => {
 							setRegPassword(value)
 						}}
@@ -181,6 +189,7 @@ const Authentication: React.FunctionComponent = (props) => {
 				<Form.Field>
 					<Input
 						autoComplete="off"
+						inverted={props.inverted}
 						onChange={(e, { value }) => {
 							setName(value)
 						}}
@@ -190,6 +199,7 @@ const Authentication: React.FunctionComponent = (props) => {
 				</Form.Field>
 				<Form.Field>
 					<Input
+						inverted={props.inverted}
 						onChange={(e, { value }) => {
 							setUsername(value)
 						}}
@@ -202,6 +212,8 @@ const Authentication: React.FunctionComponent = (props) => {
 						color="blue"
 						content="Create an account"
 						fluid
+						inverted={props.inverted}
+						loading={loadingRegistration && !props.registerError}
 						onClick={submitRegistrationForm}
 						size="big"
 						type="submit"
@@ -214,10 +226,10 @@ const Authentication: React.FunctionComponent = (props) => {
 	return (
 		<Provider store={store}>
 			<div className="authComponent">
-				<Header as="h1" size="huge">
+				<Header as="h1" inverted={props.inverted} size="huge">
 					{props.verify ? "Verify your email" : headerText}
 				</Header>
-				<Segment basic className="authSegment">
+				<Segment basic className="authSegment" inverted={props.inverted}>
 					{MainForm()}
 					{ErrorMsg()}
 				</Segment>
@@ -229,6 +241,7 @@ const Authentication: React.FunctionComponent = (props) => {
 
 Authentication.propTypes = {
 	bearer: PropTypes.string,
+	inverted: PropTypes.bool,
 	loginError: PropTypes.bool,
 	loginErrorMsg: PropTypes.string,
 	registerError: PropTypes.bool,
@@ -242,6 +255,7 @@ Authentication.propTypes = {
 }
 
 Authentication.defaultProps = {
+	inverted: false,
 	login: true,
 	submitLoginForm,
 	submitRegistrationForm,

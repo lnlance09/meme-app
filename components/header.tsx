@@ -5,13 +5,13 @@ import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
 import DefaultPic from "@public/images/avatar/small/chris.jpg"
 import Link from "next/link"
-import Logo from "@public/images/logos/jackie-chan.svg"
+import Logo from "@public/images/logos/jackie-chan-light-blue.svg"
 import PropTypes from "prop-types"
 import React, { Fragment, useEffect, useState } from "react"
 import Router from "next/router"
 import store from "@store"
 
-const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
+const Header: React.FunctionComponent = ({ basic, inverted, loading, logout }) => {
 	const router = useRouter()
 
 	const [authenticated, setAuthenticated] = useState(null)
@@ -43,7 +43,7 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 			return (
 				<Menu.Item position="right">
 					<Dropdown
-						className="dropDownMenu"
+						className={`dropDownMenu ${inverted ? "inverted" : ""}`}
 						icon={false}
 						pointing="top right"
 						trigger={trigger}
@@ -71,8 +71,9 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 			return (
 				<Menu.Item className="headerMenuItem signInLink" direction="right" position="right">
 					<Button
-						color="violet"
+						color="blue"
 						content="Sign In"
+						inverted={inverted}
 						onClick={() => router.push("/signin?type=join")}
 					/>
 				</Menu.Item>
@@ -104,7 +105,13 @@ const Header: React.FunctionComponent = ({ basic, loading, logout }) => {
 					</Container>
 				) : (
 					<Fragment>
-						<Menu borderless className="globalHeader" fitted="vertically" fixed="top">
+						<Menu
+							borderless
+							className="globalHeader"
+							fitted="vertically"
+							fixed="top"
+							inverted={inverted}
+						>
 							<Container className="headerContainer">
 								<Menu.Item className="headerMenuItem home">
 									<Image

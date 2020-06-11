@@ -18,6 +18,7 @@ const TextBox: React.FunctionComponent = (props) => {
 		font,
 		fontSize,
 		imgIndex,
+		inverted,
 		text,
 		textIndex
 	} = props
@@ -55,9 +56,10 @@ const TextBox: React.FunctionComponent = (props) => {
 
 	return (
 		<div className="textBox">
-			<Form>
+			<Form inverted={inverted}>
 				<Form.Field>
 					<TextArea
+						inverted={inverted}
 						placeholder="Text"
 						onChange={(e, { value }) => changeText(imgIndex, textIndex, value)}
 						rows={2}
@@ -68,6 +70,7 @@ const TextBox: React.FunctionComponent = (props) => {
 					<Form.Field width={11}>
 						<Select
 							className="fontSelection"
+							inverted={inverted}
 							onChange={(e, { value }) => changeFont(imgIndex, textIndex, value)}
 							options={fontOptions}
 							search
@@ -76,6 +79,7 @@ const TextBox: React.FunctionComponent = (props) => {
 					</Form.Field>
 					<Form.Field width={5}>
 						<Input
+							inverted={inverted}
 							maxLength={3}
 							onChange={(e, { value }) => changeFontSize(imgIndex, textIndex, value)}
 							type="text"
@@ -96,7 +100,7 @@ const TextBox: React.FunctionComponent = (props) => {
 						</div>
 						{colorPickerOpen && (
 							<div className="colorPickerWrapper" ref={node}>
-								<Segment>
+								<Segment inverted={inverted}>
 									<CirclePicker
 										colors={colorOptions}
 										onChange={(color) => {
@@ -123,7 +127,7 @@ const TextBox: React.FunctionComponent = (props) => {
 						</div>
 						{backgroundColorPickerOpen && (
 							<div className="colorPickerWrapper" ref={node}>
-								<Segment>
+								<Segment inverted={inverted}>
 									<CirclePicker
 										colors={colorOptions}
 										onChange={(color) => {
@@ -151,6 +155,7 @@ TextBox.propTypes = {
 	font: PropTypes.string,
 	fontSize: PropTypes.string,
 	imgIndex: PropTypes.number,
+	inverted: PropTypes.bool,
 	text: PropTypes.string,
 	textIndex: PropTypes.number
 }

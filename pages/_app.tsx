@@ -2,12 +2,15 @@ import "semantic-ui-css/semantic.min.css"
 import "@style/style.scss"
 import { AppProps } from "next/app"
 import { Provider } from "react-redux"
+import { ThemeProvider } from "@redux/ThemeProvider"
 import store from "@store"
 
 const App = ({ Component, pageProps }: AppProps) => {
 	return (
 		<Provider store={store}>
-			<Component {...pageProps} />
+			<ThemeProvider>
+				<Component {...pageProps} />
+			</ThemeProvider>
 		</Provider>
 	)
 }

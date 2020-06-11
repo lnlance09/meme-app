@@ -1,10 +1,12 @@
 import { parseJwt } from "@utils/tokenFunctions"
+import { withTheme } from "@redux/ThemeProvider"
+import { compose } from "redux"
 import Authentication from "@components/authentication"
 import DefaultLayout from "@layouts/default"
 import React, { useEffect } from "react"
 import Router from "next/router"
 
-const SignIn: React.FunctionComponent = () => {
+const SignIn: React.FunctionComponent = ({ inverted }) => {
 	useEffect(() => {
 		const userData = parseJwt()
 		if (userData ? userData.emailVerified : false) {
@@ -30,9 +32,9 @@ const SignIn: React.FunctionComponent = () => {
 			showFooter={false}
 			textAlign="center"
 		>
-			<Authentication />
+			<Authentication inverted={inverted} />
 		</DefaultLayout>
 	)
 }
 
-export default SignIn
+export default withTheme("dark")(SignIn)

@@ -3,6 +3,8 @@ import { Button, Divider } from "semantic-ui-react"
 import { useRouter } from "next/router"
 import { DebounceInput } from "react-debounce-input"
 import { Provider, connect } from "react-redux"
+import { withTheme } from "@redux/ThemeProvider"
+import { compose } from "redux"
 import DefaultLayout from "@layouts/default"
 import PropTypes from "prop-types"
 import React, { useEffect, useState } from "react"
@@ -14,7 +16,15 @@ const Explore: React.FunctionComponent = (props) => {
 	const router = useRouter()
 	const { q, type } = router.query
 
-	const { artists, memes, searchArtists, searchMemes, searchTemplates, templates } = props
+	const {
+		artists,
+		inverted,
+		memes,
+		searchArtists,
+		searchMemes,
+		searchTemplates,
+		templates
+	} = props
 
 	const types = ["artists", "memes", "templates"]
 	const defaultType = types.includes(type) ? type : "memes"
@@ -113,7 +123,7 @@ const Explore: React.FunctionComponent = (props) => {
 				}}
 				showFooter={false}
 			>
-				<div className="ui icon input fluid big">
+				<div className={`ui icon input fluid big ${inverted ? "inverted" : ""}`}>
 					<DebounceInput
 						debounceTimeout={300}
 						minLength={2}
@@ -124,7 +134,7 @@ const Explore: React.FunctionComponent = (props) => {
 					<i aria-hidden="true" className="search icon" />
 				</div>
 
-				<Divider hidden />
+				<Divider hidden inverted={inverted} />
 
 				<Button.Group className="exploreFilterBtnGroup" widths={3}>
 					<Button
@@ -132,22 +142,25 @@ const Explore: React.FunctionComponent = (props) => {
 						color="blue"
 						content="Memes"
 						fluid
+						inverted={inverted}
 						onClick={() => onClickItem("memes")}
 						size="big"
 					/>
 					<Button
 						className={activeItem === "templates" ? "active" : ""}
-						color="yellow"
+						color="blue"
 						content="Templates"
 						fluid
+						inverted={inverted}
 						onClick={() => onClickItem("templates")}
 						size="big"
 					/>
 					<Button
 						className={activeItem === "artists" ? "active" : ""}
-						color="green"
+						color="blue"
 						content="Artists"
 						fluid
+						inverted={inverted}
 						onClick={() => onClickItem("artists")}
 						size="big"
 					/>
@@ -158,6 +171,7 @@ const Explore: React.FunctionComponent = (props) => {
 				{activeItem === "artists" ? (
 					<UsersList
 						hasMore={results.hasMore}
+						inverted={inverted}
 						loading={results.loading}
 						loadMore={(page, q) => loadMore(page, q)}
 						page={results.page}
@@ -167,6 +181,7 @@ const Explore: React.FunctionComponent = (props) => {
 				) : (
 					<SearchResults
 						hasMore={results.hasMore}
+						inverted={inverted}
 						justImages={activeItem === "templates"}
 						loading={results.loading}
 						loadMore={({ page, q }) => loadMore(page, q)}
@@ -271,8 +286,11 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 	...ownProps
 })
 
-export default connect(mapStateToProps, {
-	searchArtists,
-	searchMemes,
-	searchTemplates
-})(Explore)
+export default compose(
+	connect(mapStateToProps, {
+		searchArtists,
+		searchMemes,
+		searchTemplates
+	}),
+	withTheme("dark")
+)(Explore)

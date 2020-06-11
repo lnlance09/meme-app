@@ -1,12 +1,19 @@
-import { Container, Header, Item, List, Placeholder, Visibility } from "semantic-ui-react"
+import { Container, Header, Item, Placeholder, Visibility } from "semantic-ui-react"
 import { s3BaseUrl } from "@options/config"
 import DefaultPic from "@public/images/placeholders/image.png"
 import PropTypes from "prop-types"
 import React, { useState } from "react"
 import Router from "next/router"
 
-const UsersList: React.FunctionComponent = (props) => {
-	const { hasMore, loading, loadMore, page, q, results } = props
+const UsersList: React.FunctionComponent = ({
+	hasMore,
+	inverted,
+	loading,
+	loadMore,
+	page,
+	q,
+	results
+}) => {
 	const [fetching, setFetching] = useState(false)
 
 	const getUserImage = (img) => {
@@ -17,7 +24,9 @@ const UsersList: React.FunctionComponent = (props) => {
 		<div className="usersList">
 			{results.length === 0 && !loading ? (
 				<Container textAlign="center">
-					<Header size="huge">No results...</Header>
+					<Header inverted={inverted} size="huge">
+						No results...
+					</Header>
 				</Container>
 			) : (
 				<Visibility
@@ -30,16 +39,16 @@ const UsersList: React.FunctionComponent = (props) => {
 						}
 					}}
 				>
-					<Item.Group divided relaxed>
+					<Item.Group className={inverted ? "inverted" : ""} relaxed>
 						{results.map((user, i) => {
 							if (loading) {
 								return (
 									<Item key={`user${i}`}>
-										<Placeholder>
+										<Placeholder inverted={inverted}>
 											<Placeholder.Image />
 										</Placeholder>
 										<Item.Content>
-											<Placeholder.Paragraph>
+											<Placeholder.Paragraph inverted={inverted}>
 												<Placeholder.Line />
 												<Placeholder.Line />
 												<Placeholder.Line />
@@ -62,14 +71,7 @@ const UsersList: React.FunctionComponent = (props) => {
 									<Item.Content>
 										<Item.Header as="a">{user.name}</Item.Header>
 										<Item.Meta>@{user.username}</Item.Meta>
-										<Item.Description>
-											<List>
-												<List.Item>{user.memeCount} memes</List.Item>
-												<List.Item>
-													{user.templateCount} templates
-												</List.Item>
-											</List>
-										</Item.Description>
+										<Item.Description>{user.memeCount} memes</Item.Description>
 									</Item.Content>
 								</Item>
 							)
@@ -82,6 +84,7 @@ const UsersList: React.FunctionComponent = (props) => {
 }
 
 UsersList.propTypes = {
+	inverted: PropTypes.bool,
 	loading: PropTypes.bool,
 	results: PropTypes.arrayOf(
 		PropTypes.oneOfType([

@@ -25,6 +25,7 @@
 					"@options": "./options",
 					"@public": "./public",
 					"@reducers": "./redux/reducers",
+					"@redux": "./redux",
 					"@static": "./static",
 					"@style": "./style",
 					"@store": "./store",

@@ -107,10 +107,11 @@ exports.create = async (req, res) => {
 exports.delete = (req, res) => {}
 
 exports.findAll = async (req, res) => {
-	const { page, q, templateId } = req.query
+	const { page, q, templateId, userId } = req.query
 
 	const limit = 10
-	let where = {
+	let where = {}
+	let memeWhere = {
 		[Op.or]: [
 			{
 				caption: {
@@ -126,7 +127,11 @@ exports.findAll = async (req, res) => {
 	}
 
 	if (typeof q === "undefined" || q === "") {
-		where = {}
+		memeWhere = {}
+	}
+
+	if (typeof userId !== "undefined" && userId !== "") {
+		memeWhere.createdBy = userId
 	}
 
 	if (typeof templateId !== "undefined" && templateId !== "") {
@@ -152,6 +157,7 @@ exports.findAll = async (req, res) => {
 				attributes: [],
 				as: "meme",
 				required: true,
+				where: memeWhere,
 				include: [
 					{
 						model: User,

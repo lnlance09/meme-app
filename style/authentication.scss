@@ -1,4 +1,8 @@
 .authComponent {
+    .header.huge {
+        font-size: 40px;
+    }
+
     @media only screen and (max-width: 767px) {
         .header.huge {
             margin-bottom: 0;
@@ -6,6 +10,7 @@
     }
 
     .authSegment {
+        border: none !important;
         margin: 0 auto;
 
         .error.message {
@@ -14,15 +19,11 @@
     }
 
     .registerText {
-        font-size: 18px;
+        margin-top: 4px;
 
         .registerLink {
-            color: $blue;
+            border-bottom: solid 1px $white;
             cursor: pointer;
-
-            &:hover {
-                text-decoration: underline;
-            }
         }
     }
 }

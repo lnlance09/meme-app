@@ -1,6 +1,6 @@
-import { Container, Header, Image, Placeholder, Visibility } from "semantic-ui-react"
+import { Container, Header, Icon, Image, Placeholder, Segment, Visibility } from "semantic-ui-react"
 import { s3BaseUrl } from "@options/config"
-import DefaultPic from "@public/images/grey-background.jpg"
+import DefaultPic from "@public/images/placeholders/placeholder-dark.jpg"
 import LinkedText from "@components/linkedText"
 import Masonry from "react-masonry-css"
 import Moment from "react-moment"
@@ -8,7 +8,7 @@ import PropTypes from "prop-types"
 import React, { Fragment, useState } from "react"
 import Router from "next/router"
 
-const MemeCard = ({ loading, title, subtitle, description }) => {
+const MemeCard = ({ loading, inverted, description }) => {
 	if (loading) {
 		return (
 			<Placeholder>
@@ -24,16 +24,15 @@ const MemeCard = ({ loading, title, subtitle, description }) => {
 	}
 
 	return (
-		<div className="gridElementText">
-			<div>
-				<LinkedText text={description} />
-			</div>
+		<div className={`gridElementText ${inverted ? "inverted" : ""}`}>
+			<LinkedText text={description} />
 		</div>
 	)
 }
 
 const SearchResults: React.FunctionComponent = ({
 	hasMore,
+	inverted,
 	justImages,
 	loading,
 	loadMore,
@@ -41,7 +40,8 @@ const SearchResults: React.FunctionComponent = ({
 	q,
 	results,
 	templateId,
-	type
+	type,
+	userId
 }) => {
 	const [fetching, setFetching] = useState(false)
 
@@ -76,7 +76,11 @@ const SearchResults: React.FunctionComponent = ({
 		<div className={`searchResults ${type}`}>
 			{results.length === 0 && !loading ? (
 				<Container textAlign="center">
-					<Header size="huge">No results...</Header>
+					<Segment inverted={inverted} placeholder>
+						<Header icon size="huge">
+							No results...
+						</Header>
+					</Segment>
 				</Container>
 			) : (
 				<Visibility
@@ -84,7 +88,7 @@ const SearchResults: React.FunctionComponent = ({
 					onBottomVisible={async () => {
 						if (hasMore && !fetching) {
 							setFetching(true)
-							await loadMore({ page, q, templateId })
+							await loadMore({ page, q, templateId, userId })
 							setFetching(false)
 						}
 					}}
@@ -109,7 +113,7 @@ const SearchResults: React.FunctionComponent = ({
 									onClick={() => Router.push(link)}
 								>
 									{loading ? (
-										<Placeholder>
+										<Placeholder inverted={inverted}>
 											<Placeholder.Image square />
 										</Placeholder>
 									) : (
@@ -122,9 +126,8 @@ const SearchResults: React.FunctionComponent = ({
 									{!justImages && !loading ? (
 										<MemeCard
 											description={description}
+											inverted={inverted}
 											loading={loading}
-											subtitle={subtitle}
-											title={title}
 										/>
 									) : null}
 								</div>
@@ -139,6 +142,7 @@ const SearchResults: React.FunctionComponent = ({
 
 SearchResults.propTypes = {
 	justImages: PropTypes.bool,
+	inverted: PropTypes.bool,
 	loading: PropTypes.bool,
 	loadMore: PropTypes.func,
 	page: PropTypes.number,
@@ -172,7 +176,8 @@ SearchResults.propTypes = {
 		])
 	),
 	templateId: PropTypes.number,
-	type: PropTypes.oneOf(["artists", "memes", "templates"])
+	type: PropTypes.oneOf(["artists", "memes", "templates"]),
+	userId: PropTypes.number
 }
 
 SearchResults.defaultProps = {}

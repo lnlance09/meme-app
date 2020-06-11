@@ -5,11 +5,15 @@ const initial = () => ({
 	user: {
 		img: "",
 		memes: {
+			hasMore: true,
 			loading: true,
+			page: 0,
 			results: [false, false, false, false, false, false]
 		},
 		templates: {
+			hasMore: true,
 			loading: true,
+			page: 0,
 			results: [false, false, false, false, false, false]
 		}
 	}
@@ -46,25 +50,39 @@ const user = (state = initial(), action) => {
 			}
 
 		case constants.GET_USER_MEMES:
+			let userMemes = payload.memes
+			if (payload.page > 1) {
+				userMemes = [...state.user.memes.results, ...payload.memes]
+			}
+
 			return {
 				...state,
 				user: {
 					...state.user,
 					memes: {
+						hasMore: payload.hasMore,
 						loading: false,
-						results: payload.memes
+						page: payload.page,
+						results: userMemes
 					}
 				}
 			}
 
 		case constants.GET_USER_TEMPLATES:
+			let userTemplates = payload.templates
+			if (payload.page > 1) {
+				userTemplates = [...state.user.templates.results, ...payload.templates]
+			}
+
 			return {
 				...state,
 				user: {
 					...state.user,
 					templates: {
+						hasMore: payload.hasMore,
 						loading: false,
-						results: payload.templates
+						page: payload.page,
+						results: userTemplates
 					}
 				}
 			}

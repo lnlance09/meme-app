@@ -1,5 +1,6 @@
 import { Container } from "semantic-ui-react"
 import { baseUrl } from "@options/config"
+import { withTheme } from "@redux/ThemeProvider"
 import Footer from "@components/footer"
 import Head from "next/head"
 import Header from "@components/header"
@@ -10,6 +11,7 @@ const DefaultLayout: React.FunctionComponent = ({
 	basicHeader,
 	children,
 	containerClassName,
+	inverted,
 	isText,
 	seo,
 	showFooter,
@@ -19,7 +21,7 @@ const DefaultLayout: React.FunctionComponent = ({
 	const fullUrl = `${baseUrl}${url}`
 
 	return (
-		<div>
+		<div className={`body ${inverted ? "inverted" : ""}`}>
 			<Head>
 				<meta charset="utf8mb4" />
 				<meta
@@ -61,10 +63,10 @@ const DefaultLayout: React.FunctionComponent = ({
 				<title>{title} - Brandy</title>
 			</Head>
 
-			<Header basic={basicHeader} />
+			<Header basic={basicHeader} inverted={inverted} />
 
 			<Container
-				className={`mainContainer ${containerClassName}`}
+				className={`mainContainer ${containerClassName} ${inverted ? "inverted" : ""}`}
 				text={isText}
 				textAlign={textAlign}
 			>
@@ -79,6 +81,7 @@ const DefaultLayout: React.FunctionComponent = ({
 DefaultLayout.propTypes = {
 	basicHeader: PropTypes.bool,
 	containerClassName: PropTypes.string,
+	inverted: PropTypes.bool,
 	isText: PropTypes.bool,
 	seo: PropTypes.shape({
 		description: PropTypes.string,
@@ -97,6 +100,7 @@ DefaultLayout.propTypes = {
 DefaultLayout.defaultProps = {
 	basicHeader: false,
 	containerClassName: "",
+	inverted: true,
 	isText: false,
 	seo: {
 		image: {}
@@ -105,4 +109,4 @@ DefaultLayout.defaultProps = {
 	textAlign: "left"
 }
 
-export default DefaultLayout
+export default withTheme("dark")(DefaultLayout)

@@ -46,10 +46,11 @@ export const getUser = ({ username }) => (dispatch) => {
 		})
 }
 
-export const getUserMemes = ({ id }) => (dispatch) => {
+export const getUserMemes = ({ id, page = 0 }) => (dispatch) => {
 	axios
 		.get("/api/meme/search", {
 			params: {
+				page,
 				userId: id
 			}
 		})
@@ -67,10 +68,13 @@ export const getUserMemes = ({ id }) => (dispatch) => {
 		})
 }
 
-export const getUserTemplates = ({ id }) => (dispatch) => {
+export const getUserTemplates = ({ id, page = 0 }) => (dispatch) => {
 	axios
 		.get("/api/template/search", {
-			userId: id
+			params: {
+				page,
+				userId: id
+			}
 		})
 		.then((response) => {
 			const { data } = response

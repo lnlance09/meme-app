@@ -13,6 +13,8 @@ import {
 import { parseJwt } from "@utils/tokenFunctions"
 import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
+import { withTheme } from "@redux/ThemeProvider"
+import { compose } from "redux"
 import DefaultLayout from "@layouts/default"
 import html2canvas from "html2canvas"
 import LazyLoad from "react-lazyload"
@@ -24,7 +26,14 @@ import PropTypes from "prop-types"
 import React, { Fragment, useEffect, useRef, useState } from "react"
 import store from "@store"
 
-const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, updateViews }) => {
+const Meme: React.FunctionComponent = ({
+	getMeme,
+	inverted,
+	meme,
+	updateImg,
+	updateMeme,
+	updateViews
+}) => {
 	const node = useRef(null)
 	const router = useRouter()
 	const { slug } = router.query
@@ -82,7 +91,7 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 			ctx.globalAlpha = 1
 			const img = canvas.toDataURL("image/png")
 
-			updateImg({ file: img, id })
+			// updateImg({ file: img, id })
 
 			let link = document.createElement("a")
 			link.download = `brandyMeme.png`
@@ -105,7 +114,7 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 	const RightColumn = (
 		<Fragment>
 			{!editMode && (
-				<Header as="h1">
+				<Header as="h1" inverted={inverted}>
 					{name}
 					<Header.Subheader>
 						<Moment date={createdAt} fromNow /> •{" "}
@@ -131,12 +140,14 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 					<Form>
 						<Input
 							fluid
+							inverted={inverted}
 							onChange={(e, { value }) => setTitle(value)}
 							placeholder="Title"
 							value={title}
 						/>
 						<Divider />
 						<TextArea
+							inverted={inverted}
 							onChange={(e, { value }) => setCaption(value)}
 							onClick={() => setEditMode(true)}
 							placeholder="Caption"
@@ -148,6 +159,7 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 							color="blue"
 							content="Update"
 							fluid
+							inverted={inverted}
 							onClick={() =>
 								updateMeme({
 									bearer,
@@ -160,7 +172,7 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 					</Form>
 				</div>
 			) : (
-				<Header as="p" className="memeCaption">
+				<Header as="p" className="memeCaption" inverted={inverted}>
 					<LinkedText text={data.caption} />
 				</Header>
 			)}
@@ -183,16 +195,16 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 				content="Download"
 				fluid
 				icon="download"
+				inverted={inverted}
 				onClick={downloadMeme}
-				size="big"
 			/>
 			<Button
 				color="blue"
 				content="Fork"
 				fluid
 				icon="fork"
+				inverted={inverted}
 				onClick={() => router.push(`/create?id=${slug}`)}
-				size="big"
 				style={{ marginTop: "15px" }}
 			/>
 		</Fragment>
@@ -218,11 +230,11 @@ const Meme: React.FunctionComponent = ({ getMeme, meme, updateImg, updateMeme, u
 					{error ? (
 						<div>This meme does not exist</div>
 					) : (
-						<Grid stackable>
+						<Grid inverted stackable>
 							<Grid.Row>
 								<Grid.Column width={10}>
 									{loading ? (
-										<Placeholder fluid>
+										<Placeholder fluid inverted={inverted}>
 											<Placeholder.Image square />
 										</Placeholder>
 									) : (
@@ -301,9 +313,12 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 	...ownProps
 })
 
-export default connect(mapStateToProps, {
-	getMeme,
-	updateImg,
-	updateMeme,
-	updateViews
-})(Meme)
+export default compose(
+	connect(mapStateToProps, {
+		getMeme,
+		updateImg,
+		updateMeme,
+		updateViews
+	}),
+	withTheme("dark")
+)(Meme)

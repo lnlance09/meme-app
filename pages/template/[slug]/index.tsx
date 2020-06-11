@@ -13,6 +13,8 @@ import { s3BaseUrl } from "@options/config"
 import { parseJwt } from "@utils/tokenFunctions"
 import { Provider, connect } from "react-redux"
 import { useRouter } from "next/router"
+import { withTheme } from "@redux/ThemeProvider"
+import { compose } from "redux"
 import DefaultImg from "@public/images/color-bars.png"
 import DefaultLayout from "@layouts/default"
 import Link from "next/link"
@@ -27,6 +29,7 @@ const Template: React.FunctionComponent = ({
 	error,
 	errorMsg,
 	getTemplate,
+	inverted,
 	loading,
 	memes,
 	searchMemes
@@ -73,10 +76,10 @@ const Template: React.FunctionComponent = ({
 				}}
 				showFooter={false}
 			>
-				<div className="templatePageHero">
+				<div className={`templatePageHero ${inverted ? "inverted" : ""}`}>
 					<Container>
 						{loading ? (
-							<Placeholder fluid>
+							<Placeholder fluid inverted={inverted}>
 								<Placeholder.Image square />
 							</Placeholder>
 						) : (
@@ -89,12 +92,10 @@ const Template: React.FunctionComponent = ({
 					</Container>
 				</div>
 
-				<Divider hidden />
-
 				<Container textAlign="center">
 					{!loading && (
 						<Fragment>
-							<Header as="h1">
+							<Header as="h1" inverted={inverted}>
 								{data.name === null ? "Untitled Template" : data.name}
 								<Header.Subheader>
 									<Moment date={data.createdAt} fromNow /> •{" "}
@@ -105,23 +106,29 @@ const Template: React.FunctionComponent = ({
 							</Header>
 
 							<div style={{ marginBottom: "24px" }}>
-								<Statistic>
+								<Statistic inverted={inverted}>
 									<Statistic.Value>{data.memeCount}</Statistic.Value>
 									<Statistic.Label>Memes Made</Statistic.Label>
 								</Statistic>
 							</div>
 
-							<Button color="blue" content="Use this template" size="big" />
+							<Button
+								color="blue"
+								content="Use this template"
+								inverted={inverted}
+								size="big"
+							/>
 						</Fragment>
 					)}
 
-					<Divider horizontal section>
+					<Divider horizontal inverted={inverted} section>
 						Featured in
 					</Divider>
 
 					<SearchResults
 						hasMore={memes.hasMore}
 						justImages
+						inverted={inverted}
 						loading={memes.loading}
 						loadMore={({ page, templateId }) => loadMore(page, templateId)}
 						page={memes.page}
@@ -130,8 +137,6 @@ const Template: React.FunctionComponent = ({
 						templateId={slug}
 					/>
 				</Container>
-
-				<Divider hidden section />
 			</DefaultLayout>
 		</Provider>
 	)
@@ -197,7 +202,10 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 	...ownProps
 })
 
-export default connect(mapStateToProps, {
-	getTemplate,
-	searchMemes
-})(Template)
+export default compose(
+	connect(mapStateToProps, {
+		getTemplate,
+		searchMemes
+	}),
+	withTheme("dark")
+)(Template)

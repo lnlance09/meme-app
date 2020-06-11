@@ -49,6 +49,9 @@
     "@reducers/*": [
       "redux/reducers/*"
     ],
+    "@redux/*": [
+      "redux/*"
+    ],
     "@static/*": [
       "static/*"
     ],

@@ -70,11 +70,16 @@
 
     .menu.globalHeader {
         background: $white;
-        border-bottom: none;
+        // border-bottom: dotted 1px $grey;
         box-shadow: none;
         height: 72px;
         margin-top: 5px;
         z-index: 1001 !important;
+
+        &.inverted {
+            background: $invertedBackgroundColor;
+            // border-bottom: solid 2px $white;
+        }
     }
 
     .headerContainer {
@@ -127,6 +132,25 @@
         }
 
         .dropDownMenu {
+            &.inverted {
+                .menu {
+                    background: lighten($invertedBackgroundColor, 4%);
+
+                    &:before, &:after {
+                        background: lighten($invertedBackgroundColor, 4%);
+                    }
+
+                    .item {
+                        color: $white !important;
+
+                        &:hover {
+                            background: lighten($invertedBackgroundColor, 8%);
+                            color: $offWhite !important;
+                        }
+                    }
+                }
+            }
+
             .menu.visible {
                 min-width: 150px;
                 z-index: 1001;

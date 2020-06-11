@@ -21,6 +21,10 @@
 		.gridElementText {
 			font-size: 16px;
 			padding: 6px 8px 0 8px;
+
+			&.inverted {
+				color: $white !important;
+			}
 		}
 
 		> div {

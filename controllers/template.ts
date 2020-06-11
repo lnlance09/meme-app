@@ -78,7 +78,7 @@ exports.create = async (req, res) => {
 exports.delete = (req, res) => {}
 
 exports.findAll = (req, res) => {
-	const { page, q } = req.query
+	const { page, q, userId } = req.query
 
 	const limit = 10
 	let where = {
@@ -89,6 +89,10 @@ exports.findAll = (req, res) => {
 
 	if (typeof q === "undefined" || q === "") {
 		where = {}
+	}
+
+	if (typeof userId !== "undefined" && userId !== "") {
+		where.createdBy = userId
 	}
 
 	Template.findAll({

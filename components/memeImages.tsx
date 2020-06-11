@@ -2,7 +2,7 @@ import { Image } from "semantic-ui-react"
 import BlankImg from "@public/images/blank.png"
 import Draggable from "react-draggable"
 import PropTypes from "prop-types"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 
 const MemeImages: React.FunctionComponent = ({
 	clickImg,
@@ -106,6 +106,7 @@ const MemeImages: React.FunctionComponent = ({
 							}}
 							onError={(image) => (image.target.src = BlankImg)}
 							onLoad={async (image) => {
+								console.log("onload")
 								const { height, width } = image.target
 								if (width === 0 || height === 0) {
 									return
@@ -119,7 +120,9 @@ const MemeImages: React.FunctionComponent = ({
 								setWidth(width)
 							}}
 							src={`${img}${
-								img === "/images/blank.png" ? "" : `?t=${new Date().getTime()}`
+								img === "/images/blank.png" || editable
+									? ""
+									: `?t=${new Date().getTime()}`
 							}`}
 						/>
 					</div>

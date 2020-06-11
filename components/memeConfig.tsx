@@ -13,6 +13,7 @@ const MemeConfig: React.FunctionComponent = (props) => {
 		changeFontSize,
 		changeText,
 		images,
+		inverted,
 		onFileUpload,
 		onKeyUp,
 		onPaste
@@ -24,15 +25,18 @@ const MemeConfig: React.FunctionComponent = (props) => {
 				const { active, img, path, texts } = _img
 				if (active) {
 					return (
-						<Segment key={`textSegment${i}`}>
+						<Segment inverted={inverted} key={`textSegment${i}`}>
 							<ImgBox
 								imgIndex={i}
 								imgUrl={path ? path : img}
+								inverted={inverted}
 								onFileUpload={onFileUpload}
 								onKeyUp={onKeyUp}
 								onPaste={onPaste}
 							/>
-							<Divider horizontal>Text 1</Divider>
+							<Divider horizontal inverted={inverted}>
+								Text 1
+							</Divider>
 							{texts.map((text, x) => (
 								<Fragment key={`textFragment${x}`}>
 									<TextBox
@@ -46,20 +50,24 @@ const MemeConfig: React.FunctionComponent = (props) => {
 										font={text.font}
 										fontSize={text.size}
 										imgIndex={i}
+										inverted={inverted}
 										text={text.text}
 										textIndex={x}
 									/>
 									{x !== texts.length - 1 && (
-										<Divider horizontal>text {x + 2}</Divider>
+										<Divider horizontal inverted={inverted}>
+											text {x + 2}
+										</Divider>
 									)}
 								</Fragment>
 							))}
-							<Divider />
+							<Divider inverted={inverted} />
 							<Button
-								color="black"
+								color="white"
 								content="More text"
 								fluid
 								icon="font"
+								inverted={inverted}
 								onClick={() => addMoreText(i)}
 							/>
 						</Segment>
@@ -100,6 +108,7 @@ MemeConfig.propTypes = {
 			)
 		})
 	),
+	inverted: PropTypes.bool,
 	onFileUpload: PropTypes.func,
 	onKeyUp: PropTypes.func,
 	onPaste: PropTypes.func
