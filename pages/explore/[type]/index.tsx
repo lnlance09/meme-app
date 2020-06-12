@@ -215,6 +215,7 @@ Explore.propTypes = {
 			])
 		)
 	}),
+	inverted: PropTypes.bool,
 	memes: PropTypes.shape({
 		hasMore: PropTypes.bool,
 		loading: PropTypes.bool,

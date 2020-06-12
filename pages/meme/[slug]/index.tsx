@@ -39,8 +39,8 @@ const Meme: React.FunctionComponent = ({
 	const router = useRouter()
 	const { download, slug } = router.query
 
-	const { data, error, errorMsg, loading } = meme
-	let { createdAt, id, img, name, templates, user, views } = data
+	const { data, error, loading } = meme
+	const { createdAt, id, img, name, templates, user, views } = data
 
 	const [bearer, setBearer] = useState(null)
 	const [caption, setCaption] = useState(data.caption)
@@ -75,10 +75,6 @@ const Meme: React.FunctionComponent = ({
 			document.removeEventListener("mousedown", handleClick)
 		}
 	}, [editMode])
-
-	if (name === null) {
-		name = `Untitled Meme #${id}`
-	}
 
 	const downloadMeme = () => {
 		const el = document.getElementById("memeContainer")
@@ -277,10 +273,13 @@ const Meme: React.FunctionComponent = ({
 
 Meme.propTypes = {
 	getMeme: PropTypes.func,
+	inverted: PropTypes.bool,
 	meme: PropTypes.shape({
 		data: PropTypes.shape({
 			caption: PropTypes.string,
 			createdAt: PropTypes.string,
+			id: PropTypes.bool,
+			img: PropTypes.string,
 			name: PropTypes.string,
 			s3Link: PropTypes.string,
 			templates: PropTypes.arrayOf(

@@ -1,8 +1,8 @@
 import { parseJwt } from "@utils/tokenFunctions"
 import { withTheme } from "@redux/ThemeProvider"
-import { compose } from "redux"
 import Authentication from "@components/authentication"
 import DefaultLayout from "@layouts/default"
+import PropTypes from "prop-types"
 import React, { useEffect } from "react"
 import Router from "next/router"
 
@@ -35,6 +35,10 @@ const SignIn: React.FunctionComponent = ({ inverted }) => {
 			<Authentication inverted={inverted} />
 		</DefaultLayout>
 	)
+}
+
+SignIn.propTypes = {
+	inverted: PropTypes.bool
 }
 
 export default withTheme("dark")(SignIn)

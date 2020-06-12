@@ -1,4 +1,4 @@
-import { Container, Header, Icon, Image, Placeholder, Segment, Visibility } from "semantic-ui-react"
+import { Container, Header, Image, Placeholder, Segment, Visibility } from "semantic-ui-react"
 import { s3BaseUrl } from "@options/config"
 import DefaultPic from "@public/images/placeholders/placeholder-dark.jpg"
 import LinkedText from "@components/linkedText"
@@ -28,6 +28,12 @@ const MemeCard = ({ loading, inverted, description }) => {
 			<LinkedText text={description} />
 		</div>
 	)
+}
+
+MemeCard.propTypes = {
+	description: PropTypes.string,
+	inverted: PropTypes.bool,
+	loading: PropTypes.bool
 }
 
 const SearchResults: React.FunctionComponent = ({
@@ -99,7 +105,7 @@ const SearchResults: React.FunctionComponent = ({
 						columnClassName="searchResultsMasonryGridColumn"
 					>
 						{results.map((result, i) => {
-							const { description, link, subtitle, title } = getCardData(type, result)
+							const { description, link } = getCardData(type, result)
 							const img = getCardImage(result.s3Link)
 
 							if (typeof result.id === "undefined") {
@@ -141,8 +147,9 @@ const SearchResults: React.FunctionComponent = ({
 }
 
 SearchResults.propTypes = {
-	justImages: PropTypes.bool,
+	hasMore: PropTypes.bool,
 	inverted: PropTypes.bool,
+	justImages: PropTypes.bool,
 	loading: PropTypes.bool,
 	loadMore: PropTypes.func,
 	page: PropTypes.number,

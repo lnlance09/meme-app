@@ -38,10 +38,14 @@ const meme = (state = initial(), action) => {
 
 	switch (action.type) {
 		case constants.GET_MEME:
+			const { meme } = payload
+			if (meme.name === null) {
+				meme.name = `Untitled Meme #${meme.id}`
+			}
 			return {
 				...state,
 				meme: {
-					data: payload.meme,
+					data: meme,
 					error: false,
 					errorMsg: "",
 					loading: false

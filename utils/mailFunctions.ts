@@ -1,4 +1,6 @@
+/* eslint-disable */
 const nodemailer = require("nodemailer")
+/* eslint-enable */
 
 module.exports = {
 	sendEmail: async function (to, subject, text, html) {

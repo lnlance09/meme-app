@@ -1,12 +1,11 @@
 import { searchMemes } from "@actions/search"
-import { Button, Container, Divider, Header, Icon } from "semantic-ui-react"
+import { Container, Divider } from "semantic-ui-react"
 import { Provider, connect } from "react-redux"
 import { withTheme } from "@redux/ThemeProvider"
 import { compose } from "redux"
 import DefaultLayout from "@layouts/default"
-import Link from "next/link"
 import PropTypes from "prop-types"
-import React, { useContext, useEffect } from "react"
+import React, { useEffect } from "react"
 import SearchResults from "@components/searchResults"
 import store from "@store"
 
@@ -61,8 +60,11 @@ const Home: React.FunctionComponent = (props) => {
 }
 
 Home.propTypes = {
+	inverted: PropTypes.bool,
 	memes: PropTypes.shape({
+		hasMore: PropTypes.bool,
 		loading: PropTypes.bool,
+		page: PropTypes.number,
 		results: PropTypes.arrayOf(
 			PropTypes.oneOfType([
 				PropTypes.bool,

@@ -1,3 +1,4 @@
+/* eslint-disable */
 const Auth = require("../utils/authFunctions.ts")
 const Aws = require("../utils/awsFunctions.ts")
 const db = require("../models/index.ts")
@@ -5,6 +6,7 @@ const Mail = require("../utils/mailFunctions.ts")
 const validator = require("validator")
 const randomize = require("randomatic")
 const sha1 = require("sha1")
+/* eslint-enable */
 const Meme = db.meme
 const Template = db.template
 const User = db.user
@@ -355,8 +357,6 @@ exports.login = async (req, res) => {
 		})
 }
 
-exports.update = async (req, res) => {}
-
 exports.verify = async (req, res) => {
 	const { code } = req.body
 	const { authenticated, user } = Auth.parseAuthentication(req)
@@ -401,7 +401,7 @@ exports.verify = async (req, res) => {
 				})
 			}
 		})
-		.catch((err) => {
+		.catch(() => {
 			return res.status(500).send({
 				error: true,
 				msg: "There was an error"

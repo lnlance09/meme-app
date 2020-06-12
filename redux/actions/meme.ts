@@ -71,7 +71,7 @@ export const updateImg = ({ file, id }) => (dispatch) => {
 export const updateViews = ({ id }) => (dispatch) => {
 	axios
 		.post(`/api/meme/${id}/updateViews`)
-		.then(() => {})
+		.then(() => null)
 		.catch((error) => {
 			console.log(error)
 		})

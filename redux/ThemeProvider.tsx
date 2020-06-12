@@ -1,4 +1,5 @@
 import React from "react"
+import PropTypes from "prop-types"
 
 const themes = {
 	dark: {
@@ -15,7 +16,11 @@ export const ThemeProvider = ({ children }) => {
 	return <Provider value={themes}>{children}</Provider>
 }
 
-export const withTheme = (theme) => {
+ThemeProvider.propTypes = {
+	children: PropTypes.node
+}
+
+export const withTheme = (theme: string) => {
 	return (Component) => (props) => (
 		<Consumer>
 			{(themes) => {

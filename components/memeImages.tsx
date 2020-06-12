@@ -2,7 +2,7 @@ import { Image } from "semantic-ui-react"
 import BlankImg from "@public/images/blank.png"
 import Draggable from "react-draggable"
 import PropTypes from "prop-types"
-import React, { useEffect, useState, useCallback } from "react"
+import React, { useState } from "react"
 
 const MemeImages: React.FunctionComponent = ({
 	clickImg,
@@ -19,8 +19,6 @@ const MemeImages: React.FunctionComponent = ({
 	const [downloaded, setDownloaded] = useState(false)
 	const [height, setHeight] = useState(0)
 	const [width, setWidth] = useState(0)
-
-	useEffect(() => {}, [images])
 
 	return (
 		<div id="memeContainer">
@@ -171,7 +169,7 @@ MemeImages.propTypes = {
 			width: PropTypes.number
 		})
 	),
-	isInitalRender: PropTypes.bool,
+	isInitialRender: PropTypes.bool,
 	setDimensions: PropTypes.func
 }
 

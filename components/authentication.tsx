@@ -6,7 +6,7 @@ import {
 import { Button, Form, Header, Input, Message, Segment } from "semantic-ui-react"
 import { Provider, connect } from "react-redux"
 import PropTypes from "prop-types"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useState } from "react"
 import store from "@store"
 
 const Authentication: React.FunctionComponent = (props) => {
@@ -23,8 +23,6 @@ const Authentication: React.FunctionComponent = (props) => {
 	const [regPassword, setRegPassword] = useState("")
 	const [username, setUsername] = useState("")
 	const [verificationCode, setVerificationCode] = useState("")
-
-	useEffect(() => {}, [])
 
 	const toggleLogin = useCallback(() => {
 		const buttonText = login ? "Sign in" : "Create an account"

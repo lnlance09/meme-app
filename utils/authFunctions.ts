@@ -1,4 +1,6 @@
+/* eslint-disable */
 const jwt = require("jsonwebtoken")
+/* eslint-enable */
 const jwtSecret = "mysuperdupersecret"
 
 module.exports = {

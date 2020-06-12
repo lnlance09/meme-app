@@ -2,6 +2,7 @@ import * as linkify from "linkifyjs"
 import { baseUrl } from "@options/config"
 import hashtag from "linkifyjs/plugins/hashtag"
 import Linkify from "linkifyjs/react"
+import PropTypes from "prop-types"
 import React from "react"
 
 const LinkedText: React.FunctionComponent = ({ text }) => {
@@ -18,6 +19,10 @@ const LinkedText: React.FunctionComponent = ({ text }) => {
 			{text}
 		</Linkify>
 	)
+}
+
+LinkedText.propTypes = {
+	text: PropTypes.string
 }
 
 export default LinkedText

@@ -370,7 +370,8 @@ Create.propTypes = {
 				})
 			)
 		})
-	)
+	),
+	inverted: PropTypes.bool
 }
 
 Create.defaultProps = {

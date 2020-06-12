@@ -84,8 +84,12 @@ const UsersList: React.FunctionComponent = ({
 }
 
 UsersList.propTypes = {
+	hasMore: PropTypes.bool,
 	inverted: PropTypes.bool,
 	loading: PropTypes.bool,
+	loadMore: PropTypes.func,
+	page: PropTypes.number,
+	q: PropTypes.string,
 	results: PropTypes.arrayOf(
 		PropTypes.oneOfType([
 			PropTypes.bool,

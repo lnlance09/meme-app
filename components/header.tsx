@@ -1,6 +1,6 @@
 import { logout } from "@actions/authentication"
 import { parseJwt } from "@utils/tokenFunctions"
-import { Button, Container, Dropdown, Icon, Image, Menu } from "semantic-ui-react"
+import { Button, Container, Dropdown, Image, Menu } from "semantic-ui-react"
 import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
 import DefaultPic from "@public/images/avatar/small/chris.jpg"
@@ -27,7 +27,7 @@ const Header: React.FunctionComponent = ({ basic, inverted, loading, logout }) =
 		}
 	}, [])
 
-	const { img, username } = user
+	const { username } = user
 
 	const LoginButton = () => {
 		if (authenticated === true) {
@@ -145,6 +145,7 @@ const Header: React.FunctionComponent = ({ basic, inverted, loading, logout }) =
 
 Header.propTypes = {
 	basic: PropTypes.bool,
+	inverted: PropTypes.bool,
 	loading: PropTypes.bool,
 	logout: PropTypes.func
 }

@@ -144,6 +144,7 @@ const TextBox: React.FunctionComponent = (props) => {
 }
 
 TextBox.propTypes = {
+	backgroundColor: PropTypes.string,
 	changeBackgroundColor: PropTypes.func,
 	changeColor: PropTypes.func,
 	changeFont: PropTypes.func,

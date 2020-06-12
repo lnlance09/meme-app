@@ -28,7 +28,6 @@ import store from "@store"
 const Template: React.FunctionComponent = ({
 	data,
 	error,
-	errorMsg,
 	getTemplate,
 	inverted,
 	loading,
@@ -119,7 +118,7 @@ const Template: React.FunctionComponent = ({
 				{error ? (
 					<Container className="errorMsgContainer" textAlign="center">
 						<Header as="h1" inverted={inverted}>
-							This template doesn't exist
+							This template does not exist
 							<div />
 							<Button
 								color="blue"
@@ -228,7 +227,6 @@ const Template: React.FunctionComponent = ({
 }
 
 Template.propTypes = {
-	getTemplate: PropTypes.func,
 	data: PropTypes.shape({
 		createdAt: PropTypes.string,
 		id: PropTypes.number,
@@ -244,6 +242,8 @@ Template.propTypes = {
 	}),
 	error: PropTypes.bool,
 	errorMsg: PropTypes.string,
+	inverted: PropTypes.bool,
+	getTemplate: PropTypes.func,
 	loading: PropTypes.bool,
 	memes: PropTypes.shape({
 		hasMore: PropTypes.bool,

@@ -75,6 +75,7 @@ const DefaultLayout: React.FunctionComponent = ({
 
 DefaultLayout.propTypes = {
 	basicHeader: PropTypes.bool,
+	children: PropTypes.node,
 	containerClassName: PropTypes.string,
 	inverted: PropTypes.bool,
 	isText: PropTypes.bool,

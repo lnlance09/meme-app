@@ -1,3 +1,4 @@
+/* eslint-disable */
 const express = require("express")
 const next = require("next")
 const bodyParser = require("body-parser")
@@ -7,6 +8,7 @@ const memes = require("./controllers/meme.ts")
 const sitemap = require("./controllers/sitemap.ts")
 const templates = require("./controllers/template.ts")
 const users = require("./controllers/user.ts")
+/* eslint-enable */
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== "production"

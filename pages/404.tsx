@@ -1,11 +1,7 @@
-import { useCookies } from "react-cookie"
-import { Button, Header } from "semantic-ui-react"
 import DefaultLayout from "@layouts/default"
-import Link from "next/link"
-import PropTypes from "prop-types"
-import React, { useState } from "react"
+import React from "react"
 
-const NotFoundPage: React.FunctionComponent = (props) => {
+const NotFoundPage: React.FunctionComponent = () => {
 	return (
 		<DefaultLayout
 			containerClassName="404Page"
@@ -22,9 +18,5 @@ const NotFoundPage: React.FunctionComponent = (props) => {
 		></DefaultLayout>
 	)
 }
-
-NotFoundPage.propTypes = {}
-
-NotFoundPage.defaultProps = {}
 
 export default NotFoundPage

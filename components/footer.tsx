@@ -2,7 +2,7 @@ import { Container, List, Segment } from "semantic-ui-react"
 import Link from "next/link"
 import React from "react"
 
-function Footer() {
+const Footer: React.FunctionComponent = () => {
 	return (
 		<Segment attached="bottom" className="footerSegment">
 			<Container>

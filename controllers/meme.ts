@@ -1,8 +1,9 @@
+/* eslint-disable */
 const Auth = require("../utils/authFunctions.ts")
 const Aws = require("../utils/awsFunctions.ts")
 const db = require("../models/index.ts")
-const axios = require("axios")
 const randomize = require("randomatic")
+/* eslint-enable */
 const Meme = db.meme
 const MemeTemplate = db.memeTemplate
 const Template = db.template
@@ -79,7 +80,7 @@ exports.create = async (req, res) => {
 							templateId,
 							textId: id
 						})
-							.then((data) => {})
+							.then(() => null)
 							.catch((err) => {
 								return res.status(500).send({
 									error: true,
@@ -103,8 +104,6 @@ exports.create = async (req, res) => {
 		msg: "Success"
 	})
 }
-
-exports.delete = (req, res) => {}
 
 exports.findAll = async (req, res) => {
 	const { page, q, templateId, userId } = req.query
@@ -394,7 +393,7 @@ exports.update = async (req, res) => {
 				msg: "Success"
 			})
 		})
-		.catch((err) => {
+		.catch(() => {
 			return res.status(500).send({
 				error: true,
 				msg: "There was an error"

@@ -1,4 +1,6 @@
+/* eslint-disable */
 const AWS = require("aws-sdk")
+/* eslint-enable */
 
 const s3 = new AWS.S3({
 	accessKeyId: "AKIA3KB7ZZF26C4NLY6O",

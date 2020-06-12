@@ -43,7 +43,5 @@ module.exports = (sequelize, Sequelize) => {
 		}
 	)
 
-	TemplateText.associate = (models) => {}
-
 	return TemplateText
 }

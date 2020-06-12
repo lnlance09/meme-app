@@ -50,7 +50,7 @@ const Artist: React.FunctionComponent = ({
 		if (typeof username !== "undefined") {
 			getUser({ username })
 		}
-	}, [username])
+	}, [getUser, username])
 
 	useEffect(() => {
 		const userData = parseJwt()
@@ -69,7 +69,7 @@ const Artist: React.FunctionComponent = ({
 				})
 			}
 		},
-		[bearer]
+		[bearer, changeProfilePic]
 	)
 
 	const { getRootProps, getInputProps } = useDropzone({ onDrop })
@@ -139,7 +139,7 @@ const Artist: React.FunctionComponent = ({
 				{error ? (
 					<Container className="errorMsgContainer" textAlign="center">
 						<Header as="h1" inverted={inverted}>
-							This artist doesn't exist
+							This artist does not exist
 							<div />
 							<Button
 								color="blue"
@@ -225,6 +225,7 @@ Artist.propTypes = {
 	getUser: PropTypes.func,
 	getUserMemes: PropTypes.func,
 	getUserTemplates: PropTypes.func,
+	inverted: PropTypes.bool,
 	loading: PropTypes.bool,
 	user: PropTypes.shape({
 		createdAt: PropTypes.string,

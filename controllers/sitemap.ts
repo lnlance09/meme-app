@@ -1,10 +1,11 @@
+/* eslint-disable */
 const db = require("../models/index.ts")
 const { SitemapStream, streamToPromise } = require("sitemap")
 const { createGzip } = require("zlib")
+/* eslint-enable */
 const Meme = db.meme
 const Template = db.template
 const User = db.user
-const Op = db.Sequelize.Op
 
 exports.sitemap = async (req, res) => {
 	res.header("Content-Type", "application/xml")
