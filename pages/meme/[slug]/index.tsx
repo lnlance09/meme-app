@@ -91,14 +91,14 @@ const Meme: React.FunctionComponent = ({
 			scrollY: -window.scrollY,
 			useCORS: true
 		}).then((canvas) => {
-			let ctx = canvas.getContext("2d")
+			const ctx = canvas.getContext("2d")
 			ctx.globalAlpha = 0.5
 			const img = canvas.toDataURL("image/png")
 			el.classList.remove("downloading")
 
 			updateImg({ file: img, id })
 
-			let link = document.createElement("a")
+			const link = document.createElement("a")
 			link.download = `meme.png`
 			link.href = img
 			link.click()

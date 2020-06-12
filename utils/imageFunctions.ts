@@ -1,10 +1,10 @@
 export const toDataURL = (src, callback, outputFormat) => {
-	var img = new Image()
+	const img = new Image()
 	img.crossOrigin = "Anonymous"
 	img.onload = function () {
-		var canvas = document.createElement("CANVAS")
-		var ctx = canvas.getContext("2d")
-		var dataURL
+		const canvas = document.createElement("CANVAS")
+		const ctx = canvas.getContext("2d")
+		let dataURL
 		canvas.height = this.naturalHeight
 		canvas.width = this.naturalWidth
 		ctx.drawImage(this, 0, 0)

@@ -89,8 +89,8 @@ const Header: React.FunctionComponent = ({ basic, inverted, loading, logout }) =
 				<div className="rainbow" />
 				{loading && (
 					<Fragment>
-						<div class="subline inc" />
-						<div class="subline dec" />
+						<div className="subline inc" />
+						<div className="subline dec" />
 					</Fragment>
 				)}
 

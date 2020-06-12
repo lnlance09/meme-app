@@ -77,7 +77,7 @@ const Create: React.FunctionComponent = (props) => {
 		images.map((img, i) => {
 			images[i].active = false
 		})
-		let newImages = [
+		const newImages = [
 			...images,
 			{
 				active: true,
@@ -103,7 +103,7 @@ const Create: React.FunctionComponent = (props) => {
 	}, [images])
 
 	const addMoreText = (imgIndex) => {
-		let newImages = [...images]
+		const newImages = [...images]
 		const texts = images[imgIndex].texts
 		const textCount = texts.length
 		let lastY = texts[textCount - 1].y
@@ -111,7 +111,7 @@ const Create: React.FunctionComponent = (props) => {
 			lastY = 0
 		}
 
-		let newTexts = [
+		const newTexts = [
 			...images[imgIndex].texts,
 			{
 				activeDrags: 0,
@@ -131,37 +131,37 @@ const Create: React.FunctionComponent = (props) => {
 	}
 
 	const changeBackgroundColor = (imgIndex, textIndex, value) => {
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[imgIndex].texts[textIndex].backgroundColor = value.hex
 		setImages(newImages)
 	}
 
 	const changeColor = (imgIndex, textIndex, value) => {
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[imgIndex].texts[textIndex].color = value.hex
 		setImages(newImages)
 	}
 
 	const changeFont = (imgIndex, textIndex, value) => {
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[imgIndex].texts[textIndex].font = value
 		setImages(newImages)
 	}
 
 	const changeFontSize = (imgIndex, textIndex, value) => {
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[imgIndex].texts[textIndex].size = value
 		setImages(newImages)
 	}
 
 	const changeText = (imgIndex, textIndex, value) => {
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[imgIndex].texts[textIndex].text = value
 		setImages(newImages)
 	}
 
 	const clickImg = (imgIndex) => {
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages.map((img, i) => {
 			newImages[i].active = false
 		})
@@ -187,7 +187,7 @@ const Create: React.FunctionComponent = (props) => {
 			.then(async (response) => {
 				const { data } = response
 				if (!data.error) {
-					let newImages = [...images]
+					const newImages = [...images]
 					newImages[imgIndex].templateId = data.id
 					setImages(newImages)
 					setCanSubmit(true)
@@ -200,27 +200,27 @@ const Create: React.FunctionComponent = (props) => {
 
 	const handleDrag = (imgIndex, textIndex, e, ui) => {
 		const { x, y } = images[imgIndex].texts[textIndex]
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[imgIndex].texts[textIndex].x = x + ui.deltaX
 		newImages[imgIndex].texts[textIndex].y = y + ui.deltaY
 		setImages(newImages)
 	}
 
 	const handleDragStart = (imgIndex, textIndex) => {
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[imgIndex].texts[textIndex].activeDrags++
 		setImages(newImages)
 	}
 
 	const handleDragStop = (imgIndex, textIndex) => {
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[imgIndex].texts[textIndex].activeDrags--
 		setImages(newImages)
 	}
 
 	const onFileUpload = (path, img, imgIndex) => {
 		createTemplate(img, imgIndex, true)
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[imgIndex].img = img
 		newImages[imgIndex].path = path
 		setImages(newImages)
@@ -228,7 +228,7 @@ const Create: React.FunctionComponent = (props) => {
 
 	const onKeyUp = (e, imgIndex) => {
 		if (e.keyCode === 8) {
-			let newImages = [...images]
+			const newImages = [...images]
 			newImages[imgIndex].img = ""
 			newImages[imgIndex].path = null
 			setImages(newImages)
@@ -239,7 +239,7 @@ const Create: React.FunctionComponent = (props) => {
 		const url = e.clipboardData.getData("Text")
 		createTemplate(url, imgIndex, false)
 
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[imgIndex].img = url
 		setImages(newImages)
 	}
@@ -250,14 +250,14 @@ const Create: React.FunctionComponent = (props) => {
 			return
 		}
 
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[imgIndex].height = height
 		newImages[imgIndex].width = width
 		setImages(newImages)
 	}
 
 	const setTemplate = (id, img) => {
-		let newImages = [...images]
+		const newImages = [...images]
 		newImages[0].img = img
 		newImages[0].templateId = id
 		setImages(newImages)

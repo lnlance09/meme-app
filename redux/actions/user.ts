@@ -2,7 +2,7 @@ import * as constants from "../constants"
 import axios from "axios"
 
 export const changeProfilePic = ({ bearer, file }) => (dispatch) => {
-	let formData = new FormData()
+	const formData = new FormData()
 	formData.set("file", file)
 
 	axios

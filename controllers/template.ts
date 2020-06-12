@@ -165,7 +165,7 @@ exports.findOne = (req, res) => {
 				col: "memeTemplate.memeId"
 			}).then((count) => count)
 
-			let templateData = template[0]
+			const templateData = template[0]
 			templateData.memeCount = count
 
 			return res.status(200).send({
@@ -206,7 +206,7 @@ exports.update = async (req, res) => {
 			.send({ error: true, msg: "You don't have permission to edit this template" })
 	}
 
-	let updateData = {}
+	const updateData = {}
 	if (typeof name !== "undefined" && name !== "") {
 		updateData.name = name
 	}

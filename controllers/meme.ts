@@ -110,7 +110,7 @@ exports.findAll = async (req, res) => {
 	const { page, q, templateId, userId } = req.query
 
 	const limit = 10
-	let where = {}
+	const where = {}
 	let memeWhere = {
 		[Op.or]: [
 			{
@@ -243,7 +243,7 @@ exports.findOne = async (req, res) => {
 			}
 
 			const firstRow = memes[0]
-			let meme = {
+			const meme = {
 				caption: firstRow["meme.caption"],
 				createdAt: firstRow["meme.createdAt"],
 				id: firstRow["meme.id"],
@@ -261,7 +261,7 @@ exports.findOne = async (req, res) => {
 				views: firstRow["meme.views"]
 			}
 
-			let templateIds = []
+			const templateIds = []
 			memes.map((_meme, i) => {
 				const templateId = _meme.templateId
 				const index = templateIds.indexOf(templateId)
@@ -374,7 +374,7 @@ exports.update = async (req, res) => {
 			.send({ error: true, msg: "You don't have permission to edit this meme" })
 	}
 
-	let updateData = {}
+	const updateData = {}
 	if (typeof caption !== "undefined" && caption !== "") {
 		updateData.caption = caption
 	}

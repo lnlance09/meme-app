@@ -252,7 +252,7 @@ exports.findOne = async (req, res) => {
 	})
 		.then(async (data) => {
 			if (data.length === 1) {
-				let userData = data[0]
+				const userData = data[0]
 
 				const memeCount = await Meme.count({
 					where: {
