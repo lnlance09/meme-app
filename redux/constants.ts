@@ -19,6 +19,7 @@ export const SEARCH_TEMPLATES = "search:SEARCH_TEMPLATES"
 
 export const GET_TEMPLATE = "template:GET_TEMPLATE"
 export const SET_TEMPLATE_FETCH_ERROR = "template:SET_TEMPLATE_FETCH_ERROR"
+export const UPDATE_TEMPLATE = "template:UPDATE_TEMPLATE"
 
 export const CHANGE_PROFILE_PIC = "user:CHANGE_PROFILE_PIC"
 export const GET_USER = "user:GET_USER"

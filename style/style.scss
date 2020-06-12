@@ -178,49 +178,65 @@ body {
 				background: $invertedBackgroundColor;
 			}
 		}
+
+		.editTemplateNameInput {
+			margin-bottom: 10px;
+
+			input {
+				font-size: 24px;
+				padding: 14px;
+			}
+		}
 	}
 }
 
-.draggableWrapper {
-	position: relative;
+#memeContainer {
+	.draggableWrapper {
+		position: relative;
 
-	.dragWrapper {
-		display: block;
-    	height: 100%;
-    	position: absolute;
-    	width: 100%;
+		.dragWrapper {
+			display: block;
+			height: 100%;
+			position: absolute;
+			width: 100%;
+		}
+
+		.memeImg {
+			cursor: pointer;
+			width: 100%;
+			z-index: 998;
+			
+			&.editable {
+				animation: none;
+			}
+		
+			&.active {
+				border: solid 5px $lightBlue;
+			}
+		}
+		
+		.memeText {
+			cursor: move;
+			left: 20px;
+			line-height: 0.8;
+			position: absolute;
+			max-width: 94%;
+			word-wrap: break-word;
+			z-index: 999;
+
+			&.disabled {
+				cursor: default;
+			}
+		}
 	}
 
-	.memeImg {
-		animation-name: fadeInOpacity;
-		animation-iteration-count: 1;
-		animation-timing-function: ease-in;
-		animation-duration: 1.2s;
-		cursor: pointer;
-		opacity: 1;
-		width: 100%;
-		z-index: 998;
-
-		&.editable {
-			animation: none;
-		}
-	
-		&.active {
-			border: solid 5px $lightBlue;
-		}
-	}
-	
-	.memeText {
-		cursor: move;
-		left: 20px;
-		line-height: 0.8;
-		position: absolute;
-		max-width: 94%;
-		word-wrap: break-word;
-		z-index: 999;
-
-		&.disabled {
-			cursor: default;
+	&:not(.downloading) {
+		.memeImg {
+			animation-name: fadeInOpacity;
+			animation-iteration-count: 1;
+			animation-timing-function: ease-in;
+			animation-duration: 1.2s;
+			opacity: 1;
 		}
 	}
 }
@@ -340,11 +356,11 @@ body {
 	.memeUpdateButton {
 		margin-top: 15px;
 	}
+}
 
-	span.editMeme {
-		color: $blue;
-		cursor: pointer;
-	}
+span.editMeme, span.editTemplate {
+	color: $blue;
+	cursor: pointer;
 }
 
 .signInPage {

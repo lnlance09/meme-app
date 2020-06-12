@@ -6,6 +6,8 @@ import React, { useEffect, useState, useCallback } from "react"
 
 const MemeImages: React.FunctionComponent = ({
 	clickImg,
+	downloadMeme,
+	downloadOnLoad,
 	editable,
 	handleDrag,
 	handleDragStart,
@@ -14,6 +16,7 @@ const MemeImages: React.FunctionComponent = ({
 	isInitialRender,
 	setDimensions
 }) => {
+	const [downloaded, setDownloaded] = useState(false)
 	const [height, setHeight] = useState(0)
 	const [width, setWidth] = useState(0)
 
@@ -116,8 +119,13 @@ const MemeImages: React.FunctionComponent = ({
 									await setDimensions(i, height, width)
 								}
 
-								setHeight(height)
-								setWidth(width)
+								await setHeight(height)
+								await setWidth(width)
+
+								if (downloadOnLoad && !downloaded) {
+									downloadMeme()
+									setDownloaded(true)
+								}
 							}}
 							src={`${img}${
 								img === "/images/blank.png" || editable
@@ -134,6 +142,8 @@ const MemeImages: React.FunctionComponent = ({
 
 MemeImages.propTypes = {
 	clickImg: PropTypes.func,
+	downloadMeme: PropTypes.func,
+	downloadOnLoad: PropTypes.bool,
 	editable: PropTypes.bool,
 	handleDrag: PropTypes.func,
 	handleDragStart: PropTypes.func,
@@ -166,6 +176,7 @@ MemeImages.propTypes = {
 }
 
 MemeImages.defaultProps = {
+	downloadOnLoad: false,
 	editable: true
 }
 

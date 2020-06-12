@@ -1,4 +1,4 @@
-import { getTemplate } from "@actions/template"
+import { getTemplate, updateTemplate } from "@actions/template"
 import { searchMemes } from "@actions/search"
 import {
 	Button,
@@ -6,6 +6,7 @@ import {
 	Divider,
 	Header,
 	Image,
+	Input,
 	Placeholder,
 	Statistic
 } from "semantic-ui-react"
@@ -32,21 +33,25 @@ const Template: React.FunctionComponent = ({
 	inverted,
 	loading,
 	memes,
-	searchMemes
+	searchMemes,
+	updateTemplate
 }) => {
 	const router = useRouter()
 	const { slug } = router.query
 
-	const getImage = () => {
-		const img = data.s3Link
-		return typeof img === "undefined" ? DefaultImg : `${s3BaseUrl}${img}`
-	}
-
+	const [bearer, setBearer] = useState(null)
 	const [currentUser, setCurrentUser] = useState({})
+	const [editedTitle, setEditedTitle] = useState("")
+	const [editMode, setEditMode] = useState(false)
+
+	const { createdAt, id, memeCount, name, s3Link, user } = data
+	const title = name === null ? `Untitled Template #${id}` : name
+	const img = typeof s3Link === "undefined" ? DefaultImg : `${s3BaseUrl}${s3Link}`
 
 	useEffect(() => {
 		const userData = parseJwt()
 		if (userData) {
+			setBearer(localStorage.getItem("jwtToken"))
 			setCurrentUser(userData)
 		}
 
@@ -60,6 +65,23 @@ const Template: React.FunctionComponent = ({
 		return searchMemes({ page, templateId })
 	}
 
+	const onChangeTitle = (e, { value }) => {
+		setEditedTitle(value)
+	}
+
+	const onClickTemplate = (templateId) => {
+		router.push(`/create?templateId=${templateId}`)
+	}
+
+	const saveTemplate = () => {
+		updateTemplate({
+			bearer,
+			callback: () => setEditMode(false),
+			data: { name: editedTitle },
+			id
+		})
+	}
+
 	return (
 		<Provider store={store}>
 			<DefaultLayout
@@ -68,10 +90,10 @@ const Template: React.FunctionComponent = ({
 					description: "",
 					image: {
 						height: 200,
-						src: "",
+						src: img,
 						width: 200
 					},
-					title: "Template",
+					title,
 					url: `templates/${slug}`
 				}}
 				showFooter={false}
@@ -86,7 +108,7 @@ const Template: React.FunctionComponent = ({
 							<Image
 								centered
 								onError={(i) => (i.target.src = DefaultImg)}
-								src={getImage()}
+								src={img}
 							/>
 						)}
 					</Container>
@@ -96,28 +118,74 @@ const Template: React.FunctionComponent = ({
 					{!loading && (
 						<Fragment>
 							<Header as="h1" inverted={inverted}>
-								{data.name === null ? "Untitled Template" : data.name}
+								{editMode ? (
+									<Input
+										className="editTemplateNameInput"
+										fluid
+										inverted={inverted}
+										onChange={onChangeTitle}
+										placeholder="Title"
+										value={editedTitle}
+									/>
+								) : (
+									title
+								)}
 								<Header.Subheader>
-									<Moment date={data.createdAt} fromNow /> •{" "}
-									<Link href={`/artists/${data.user.username}`}>
-										<a>@{data.user.username}</a>
+									<Moment date={createdAt} fromNow /> •{" "}
+									<Link href={`/artists/${user.username}`}>
+										<a>@{user.username}</a>
 									</Link>
+									{currentUser.id === user.id && (
+										<Fragment>
+											{" "}
+											•{" "}
+											{editMode ? (
+												<span
+													className="editTemplate"
+													onClick={() => setEditMode(false)}
+												>
+													cancel
+												</span>
+											) : (
+												<span
+													className="editTemplate"
+													onClick={() => {
+														setEditedTitle(title)
+														setEditMode(true)
+													}}
+												>
+													edit
+												</span>
+											)}
+										</Fragment>
+									)}
 								</Header.Subheader>
 							</Header>
 
 							<div style={{ marginBottom: "24px" }}>
 								<Statistic inverted={inverted}>
-									<Statistic.Value>{data.memeCount}</Statistic.Value>
+									<Statistic.Value>{memeCount}</Statistic.Value>
 									<Statistic.Label>Memes Made</Statistic.Label>
 								</Statistic>
 							</div>
 
-							<Button
-								color="blue"
-								content="Use this template"
-								inverted={inverted}
-								size="big"
-							/>
+							{editMode ? (
+								<Button
+									color="blue"
+									content="Save"
+									inverted={inverted}
+									onClick={saveTemplate}
+									size="big"
+								/>
+							) : (
+								<Button
+									color="blue"
+									content="Use this template"
+									inverted={inverted}
+									onClick={onClickTemplate}
+									size="big"
+								/>
+							)}
 						</Fragment>
 					)}
 
@@ -146,6 +214,7 @@ Template.propTypes = {
 	getTemplate: PropTypes.func,
 	data: PropTypes.shape({
 		createdAt: PropTypes.string,
+		id: PropTypes.number,
 		memeCount: PropTypes.number,
 		name: PropTypes.string,
 		s3Link: PropTypes.string,
@@ -182,7 +251,8 @@ Template.propTypes = {
 			])
 		)
 	}),
-	searchMemes: PropTypes.func
+	searchMemes: PropTypes.func,
+	updateTemplate: PropTypes.func
 }
 
 Template.defaultProps = {
@@ -194,7 +264,8 @@ Template.defaultProps = {
 		loading: true,
 		results: [false, false, false, false, false, false]
 	},
-	searchMemes
+	searchMemes,
+	updateTemplate
 }
 
 const mapStateToProps = (state: any, ownProps: any) => ({
@@ -205,7 +276,8 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 export default compose(
 	connect(mapStateToProps, {
 		getTemplate,
-		searchMemes
+		searchMemes,
+		updateTemplate
 	}),
 	withTheme("dark")
 )(Template)

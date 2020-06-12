@@ -59,7 +59,6 @@ const TextBox: React.FunctionComponent = (props) => {
 			<Form inverted={inverted}>
 				<Form.Field>
 					<TextArea
-						inverted={inverted}
 						placeholder="Text"
 						onChange={(e, { value }) => changeText(imgIndex, textIndex, value)}
 						rows={2}
@@ -70,7 +69,6 @@ const TextBox: React.FunctionComponent = (props) => {
 					<Form.Field width={11}>
 						<Select
 							className="fontSelection"
-							inverted={inverted}
 							onChange={(e, { value }) => changeFont(imgIndex, textIndex, value)}
 							options={fontOptions}
 							search

@@ -128,6 +128,7 @@ exports.findOne = (req, res) => {
 	Template.findAll({
 		required: true,
 		attributes: [
+			["id", "templateId"],
 			"createdAt",
 			["name", "templateName"],
 			"s3Link",
@@ -177,6 +178,54 @@ exports.findOne = (req, res) => {
 			return res.status(500).send({
 				error: true,
 				msg: err.message || "An error occurred"
+			})
+		})
+}
+
+exports.update = async (req, res) => {
+	const { id } = req.params
+	const { name } = req.body
+	const { authenticated, user } = Auth.parseAuthentication(req)
+
+	if (!authenticated) {
+		return res.status(401).send({ error: true, msg: "You must be logged in" })
+	}
+
+	const count = await Template.count({
+		where: {
+			createdBy: user.data.id,
+			id
+		},
+		distinct: true,
+		col: "template.id"
+	}).then((count) => count)
+
+	if (count === 0) {
+		return res
+			.status(401)
+			.send({ error: true, msg: "You don't have permission to edit this template" })
+	}
+
+	let updateData = {}
+	if (typeof name !== "undefined" && name !== "") {
+		updateData.name = name
+	}
+
+	Template.update(updateData, {
+		where: { id }
+	})
+		.then(async () => {
+			const template = await Template.findByPk(id, { raw: true })
+			return res.status(200).send({
+				error: false,
+				msg: "Success",
+				template
+			})
+		})
+		.catch((err) => {
+			return res.status(500).send({
+				error: true,
+				msg: "There was an error"
 			})
 		})
 }

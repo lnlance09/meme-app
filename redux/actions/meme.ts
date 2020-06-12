@@ -19,7 +19,7 @@ export const createMeme = ({ bearer, caption, images }) => (dispatch) => {
 		.then(async (response) => {
 			const { data } = response
 			if (!data.error) {
-				Router.push(`/meme/${data.id}`)
+				Router.push(`/meme/${data.id}?download=1`)
 			}
 		})
 		.catch((error) => {
@@ -32,7 +32,6 @@ export const getMeme = ({ callback = () => null, id }) => (dispatch) => {
 		.get(`/api/meme/${id}`)
 		.then(async (response) => {
 			const { data } = response
-			console.log("templates", data)
 			dispatch({
 				payload: data,
 				type: constants.GET_MEME

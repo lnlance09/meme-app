@@ -24,6 +24,7 @@ const template = (state = initial(), action) => {
 				...state,
 				data: {
 					createdAt: payload.template.createdAt,
+					id: payload.template.templateId,
 					memeCount: payload.template.memeCount,
 					name: payload.template.templateName,
 					s3Link: payload.template.s3Link,
@@ -58,13 +59,20 @@ const template = (state = initial(), action) => {
 		case constants.SET_TEMPLATE_FETCH_ERROR:
 			return {
 				...state,
-				teamplate: {
-					data: {
-						user: {}
-					},
-					error: true,
-					errorMsg: "This template does not exist",
-					loading: false
+				data: {
+					user: {}
+				},
+				error: true,
+				errorMsg: "This template does not exist",
+				loading: false
+			}
+
+		case constants.UPDATE_TEMPLATE:
+			return {
+				...state,
+				data: {
+					...state.data,
+					name: payload.template.name
 				}
 			}
 

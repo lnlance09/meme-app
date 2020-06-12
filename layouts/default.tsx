@@ -24,11 +24,6 @@ const DefaultLayout: React.FunctionComponent = ({
 		<div className={`body ${inverted ? "inverted" : ""}`}>
 			<Head>
 				<meta charset="utf8mb4" />
-				<meta
-					name="google-site-verification"
-					content="bTDbvvxwQikYB9zsfufDiaqgVHMRi4DZ0311nJpngi8"
-				/>
-				<meta name="msvalidate.01" content="66D65FA622461FB6866BB3F58EBD4CE9" />
 				<meta name="viewport" content="width=device-width, user-scalable=0" />
 				<meta name="theme-color" content="#000000" />
 
@@ -38,20 +33,20 @@ const DefaultLayout: React.FunctionComponent = ({
 				<meta property="og:image:height" content={image.height} />
 				<meta property="og:image:width" content={image.width} />
 				<meta property="og:site_name" content="Blather" />
-				<meta property="og:title" content={title} />
+				<meta property="og:title" content={`${title} - Brandy`} />
 				<meta property="og:type" content="website" />
 				<meta property="og:url" content={fullUrl} />
 
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@blatherio" />
 				<meta name="twitter:creator" content="@blatherio" />
-				<meta name="twitter:title" content={title} />
+				<meta name="twitter:title" content={`${title} - Brandy`} />
 				<meta name="twitter:description" content={description} />
 				<meta name="twitter:image" content={image.src} />
 
 				<meta name="description" content={description} />
 				<meta name="keywords" content="" />
-				<meta name="title" content={title} />
+				<meta name="title" content={`${title} - Brandy`} />
 
 				<link rel="canonical" href={fullUrl} />
 				<link rel="home" href="" />

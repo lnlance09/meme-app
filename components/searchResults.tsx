@@ -175,7 +175,7 @@ SearchResults.propTypes = {
 			})
 		])
 	),
-	templateId: PropTypes.number,
+	templateId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 	type: PropTypes.oneOf(["artists", "memes", "templates"]),
 	userId: PropTypes.number
 }

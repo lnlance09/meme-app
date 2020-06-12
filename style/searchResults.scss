@@ -20,7 +20,7 @@
 
 		.gridElementText {
 			font-size: 16px;
-			padding: 6px 8px 0 8px;
+			padding: 6px 8px 0 6px;
 
 			&.inverted {
 				color: $white !important;
@@ -37,6 +37,7 @@
 				animation-iteration-count: 1;
 				animation-timing-function: ease-in;
 				animation-duration: 0.85s;
+				border: solid 2px $lightGrey;
 				opacity: 1;
 			}
 		}

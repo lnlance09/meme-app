@@ -33,6 +33,7 @@ app.prepare().then(() => {
 	server.post("/api/template/create", templates.create)
 	server.get("/api/template/search", templates.findAll)
 	server.get("/api/template/:id", templates.findOne)
+	server.post("/api/template/:id/update", templates.update)
 
 	// Users
 	server.post("/api/user/changeProfilePic", users.changeProfilePic)

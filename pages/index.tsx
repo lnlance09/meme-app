@@ -28,11 +28,11 @@ const Home: React.FunctionComponent = (props) => {
 			<DefaultLayout
 				containerClassName="homePage"
 				seo={{
-					description: "",
+					description: "Browse the latest memes and create your own memes too",
 					image: {
-						height: 200,
-						src: "",
-						width: 200
+						height: 512,
+						src: "/public/images/logos/default-logo.png",
+						width: 512
 					},
 					title: "Home",
 					url: ""

@@ -18,3 +18,23 @@ export const getTemplate = ({ id }) => (dispatch) => {
 			})
 		})
 }
+
+export const updateTemplate = ({ bearer, callback = () => null, data, id }) => (dispatch) => {
+	axios
+		.post(`/api/template/${id}/update`, data, {
+			headers: {
+				Authorization: bearer
+			}
+		})
+		.then(async (response) => {
+			const { data } = response
+			dispatch({
+				payload: data,
+				type: constants.UPDATE_TEMPLATE
+			})
+			callback()
+		})
+		.catch((error) => {
+			console.log(error)
+		})
+}

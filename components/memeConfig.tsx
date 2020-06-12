@@ -63,7 +63,7 @@ const MemeConfig: React.FunctionComponent = (props) => {
 							))}
 							<Divider inverted={inverted} />
 							<Button
-								color="white"
+								color="grey"
 								content="More text"
 								fluid
 								icon="font"

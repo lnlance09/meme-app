@@ -114,12 +114,12 @@ const Explore: React.FunctionComponent = (props) => {
 				seo={{
 					description: "Find memes, templates, and artists on Brandy",
 					image: {
-						height: 200,
-						src: "",
-						width: 200
+						height: 512,
+						src: "/public/images/logos/default-logo.png",
+						width: 512
 					},
 					title: `Search for ${activeItem}`,
-					url: ""
+					url: `explore/${activeItem}`
 				}}
 				showFooter={false}
 			>

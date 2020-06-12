@@ -36,13 +36,10 @@ const Meme: React.FunctionComponent = ({
 }) => {
 	const node = useRef(null)
 	const router = useRouter()
-	const { slug } = router.query
+	const { download, slug } = router.query
 
 	const { data, error, errorMsg, loading } = meme
 	let { createdAt, id, img, name, templates, user, views } = data
-	if (name === null) {
-		name = `Untitled Meme #${id}`
-	}
 
 	const [bearer, setBearer] = useState(null)
 	const [caption, setCaption] = useState(data.caption)
@@ -60,7 +57,6 @@ const Meme: React.FunctionComponent = ({
 		if (typeof slug !== "undefined") {
 			getMeme({ id: slug })
 			updateViews({ id: slug })
-			// downloadMeme()
 		}
 	}, [slug])
 
@@ -79,8 +75,15 @@ const Meme: React.FunctionComponent = ({
 		}
 	}, [editMode])
 
+	if (name === null) {
+		name = `Untitled Meme #${id}`
+	}
+
 	const downloadMeme = () => {
-		html2canvas(document.getElementById("memeContainer"), {
+		const el = document.getElementById("memeContainer")
+		el.classList.add("downloading")
+
+		html2canvas(el, {
 			allowTaint: true,
 			scale: 1,
 			scrollX: -7,
@@ -88,13 +91,14 @@ const Meme: React.FunctionComponent = ({
 			useCORS: true
 		}).then((canvas) => {
 			let ctx = canvas.getContext("2d")
-			ctx.globalAlpha = 1
+			ctx.globalAlpha = 0.5
 			const img = canvas.toDataURL("image/png")
+			el.classList.remove("downloading")
 
-			// updateImg({ file: img, id })
+			updateImg({ file: img, id })
 
 			let link = document.createElement("a")
-			link.download = `brandyMeme.png`
+			link.download = `meme.png`
 			link.href = img
 			link.click()
 		})
@@ -217,12 +221,12 @@ const Meme: React.FunctionComponent = ({
 				seo={{
 					description: caption,
 					image: {
-						height: 200,
+						height: 512,
 						src: img,
-						width: 200
+						width: 512
 					},
 					title: name,
-					url: ""
+					url: `meme/${slug}`
 				}}
 				showFooter={false}
 			>
@@ -240,6 +244,8 @@ const Meme: React.FunctionComponent = ({
 									) : (
 										<LazyLoad height={200}>
 											<MemeImages
+												downloadMeme={downloadMeme}
+												downloadOnLoad={download === "1"}
 												editable={false}
 												images={templates}
 												isInitialRender={false}
