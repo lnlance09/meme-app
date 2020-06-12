@@ -1,6 +1,7 @@
 import { changeProfilePic, getUser, getUserMemes, getUserTemplates } from "@actions/user"
 import {
 	Button,
+	Container,
 	Dimmer,
 	Divider,
 	Grid,
@@ -88,8 +89,9 @@ const Artist: React.FunctionComponent = ({
 		results = templates
 	}
 
+	const imgSrc = img === null || img === "" ? DefaultPic : `${s3BaseUrl}${img}`
+
 	const ProfilePic = () => {
-		const src = img === null || img === "" ? DefaultPic : `${s3BaseUrl}${img}`
 		const content = (
 			<div {...getRootProps()}>
 				<input {...getInputProps()} />
@@ -110,12 +112,12 @@ const Artist: React.FunctionComponent = ({
 					onError={(i) => (i.target.src = DefaultPic)}
 					onMouseEnter={() => setActive(true)}
 					onMouseLeave={() => setActive(false)}
-					src={src}
+					src={imgSrc}
 				/>
 			)
 		}
 
-		return <Image fluid onError={(i) => (i.target.src = DefaultPic)} src={src} />
+		return <Image fluid onError={(i) => (i.target.src = DefaultPic)} src={imgSrc} />
 	}
 
 	return (
@@ -126,7 +128,7 @@ const Artist: React.FunctionComponent = ({
 					description: `${name}'s profile on Brandy`,
 					image: {
 						height: 200,
-						src: "",
+						src: imgSrc,
 						width: 200
 					},
 					title: name,
@@ -134,68 +136,83 @@ const Artist: React.FunctionComponent = ({
 				}}
 				showFooter={false}
 			>
-				<Fragment>
-					<Grid>
-						<Grid.Row>
-							<Grid.Column width={4}>
-								{loading ? (
-									<Placeholder inverted={inverted}>
-										<Placeholder.Image square />
-									</Placeholder>
-								) : (
-									ProfilePic()
-								)}
-							</Grid.Column>
-							<Grid.Column width={12}>
-								{!loading && (
-									<Fragment>
-										<Header as="h1" inverted={inverted}>
-											{name}
-											<Header.Subheader>
-												Joined <Moment date={createdAt} fromNow />
-											</Header.Subheader>
-										</Header>
-										<List
-											className="artistProfileList"
-											horizontal
-											inverted={inverted}
-											size="big"
-										>
-											<List.Item
-												active={activeItem === "memes"}
-												onClick={() => setActiveItem("memes")}
+				{error ? (
+					<Container className="errorMsgContainer" textAlign="center">
+						<Header as="h1" inverted={inverted}>
+							This artist doesn't exist
+							<div />
+							<Button
+								color="blue"
+								content="Go back"
+								inverted={inverted}
+								onClick={() => router.push(`/explore/artists`)}
+							/>
+						</Header>
+					</Container>
+				) : (
+					<Fragment>
+						<Grid>
+							<Grid.Row>
+								<Grid.Column width={4}>
+									{loading ? (
+										<Placeholder inverted={inverted}>
+											<Placeholder.Image square />
+										</Placeholder>
+									) : (
+										ProfilePic()
+									)}
+								</Grid.Column>
+								<Grid.Column width={12}>
+									{!loading && (
+										<Fragment>
+											<Header as="h1" inverted={inverted}>
+												{name}
+												<Header.Subheader>
+													Joined <Moment date={createdAt} fromNow />
+												</Header.Subheader>
+											</Header>
+											<List
+												className="artistProfileList"
+												horizontal
+												inverted={inverted}
+												size="big"
 											>
-												<b>{memeCount}</b> memes
-											</List.Item>
-											<List.Item
-												active={activeItem === "templates"}
-												onClick={() => setActiveItem("templates")}
-											>
-												<b>{templateCount}</b> templates
-											</List.Item>
-										</List>
-									</Fragment>
-								)}
-							</Grid.Column>
-						</Grid.Row>
-					</Grid>
+												<List.Item
+													active={activeItem === "memes"}
+													onClick={() => setActiveItem("memes")}
+												>
+													<b>{memeCount}</b> memes
+												</List.Item>
+												<List.Item
+													active={activeItem === "templates"}
+													onClick={() => setActiveItem("templates")}
+												>
+													<b>{templateCount}</b> templates
+												</List.Item>
+											</List>
+										</Fragment>
+									)}
+								</Grid.Column>
+							</Grid.Row>
+						</Grid>
 
-					<Divider section />
+						<Divider section />
 
-					{!error && !loading ? (
-						<SearchResults
-							hasMore={results.hasMore}
-							inverted={inverted}
-							justImages
-							loading={results.loading}
-							loadMore={({ page, userId }) => loadMore(page, userId)}
-							page={results.page}
-							results={results.results}
-							type={activeItem}
-							userId={user.id}
-						/>
-					) : null}
-				</Fragment>
+						{!error && !loading ? (
+							<SearchResults
+								hasMore={results.hasMore}
+								inverted={inverted}
+								justImages
+								loading={results.loading}
+								loadMore={({ page, userId }) => loadMore(page, userId)}
+								page={results.page}
+								results={results.results}
+								type={activeItem}
+								userId={user.id}
+							/>
+						) : null}
+					</Fragment>
+				)}
 			</DefaultLayout>
 		</Provider>
 	)
@@ -204,6 +221,7 @@ const Artist: React.FunctionComponent = ({
 Artist.propTypes = {
 	changeProfilePic: PropTypes.func,
 	error: PropTypes.bool,
+	errorMsg: PropTypes.string,
 	getUser: PropTypes.func,
 	getUserMemes: PropTypes.func,
 	getUserTemplates: PropTypes.func,

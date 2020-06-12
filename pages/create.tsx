@@ -1,4 +1,5 @@
 import { createMeme, getMeme } from "@actions/meme"
+import { getTemplate } from "@actions/template"
 import { Button, Divider, Form, Grid, TextArea } from "semantic-ui-react"
 import { useRouter } from "next/router"
 import { Provider, connect } from "react-redux"
@@ -14,7 +15,7 @@ import store from "@store"
 
 const Create: React.FunctionComponent = (props) => {
 	const router = useRouter()
-	const { id } = router.query
+	const { id, templateId } = router.query
 
 	const [bearer, setBearer] = useState("")
 	const [canSubmit, setCanSubmit] = useState(false)
@@ -54,12 +55,23 @@ const Create: React.FunctionComponent = (props) => {
 			])
 			setInitialRender(true)
 			setCanSubmit(false)
-		} else {
+		}
+
+		if (typeof id !== "undefined") {
 			props.getMeme({ callback: (data) => setImages(data), setImages, id })
 			setInitialRender(false)
 			setCanSubmit(true)
 		}
-	}, [id])
+
+		if (typeof templateId !== "undefined") {
+			props.getTemplate({
+				callback: (id, img) => setTemplate(id, img),
+				id: templateId
+			})
+			setInitialRender(false)
+			setCanSubmit(true)
+		}
+	}, [id, templateId])
 
 	const addMoreImage = useCallback(() => {
 		images.map((img, i) => {
@@ -244,6 +256,13 @@ const Create: React.FunctionComponent = (props) => {
 		setImages(newImages)
 	}
 
+	const setTemplate = (id, img) => {
+		let newImages = [...images]
+		newImages[0].img = img
+		newImages[0].templateId = id
+		setImages(newImages)
+	}
+
 	console.log("images", images)
 
 	return (
@@ -330,6 +349,7 @@ const Create: React.FunctionComponent = (props) => {
 Create.propTypes = {
 	createMeme: PropTypes.func,
 	getMeme: PropTypes.func,
+	getTemplate: PropTypes.func,
 	images: PropTypes.arrayOf(
 		PropTypes.shape({
 			active: PropTypes.bool,
@@ -355,7 +375,8 @@ Create.propTypes = {
 
 Create.defaultProps = {
 	createMeme,
-	getMeme
+	getMeme,
+	getTemplate
 }
 
 const mapStateToProps = (state: any, ownProps: any) => ({
@@ -366,7 +387,8 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 export default compose(
 	connect(mapStateToProps, {
 		createMeme,
-		getMeme
+		getMeme,
+		getTemplate
 	}),
 	withTheme("dark")
 )(Create)

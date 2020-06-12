@@ -1,6 +1,8 @@
 import * as constants from "../constants"
 
 const initial = () => ({
+	error: false,
+	errorMsg: "",
 	loading: true,
 	user: {
 		img: "",
@@ -83,6 +85,29 @@ const user = (state = initial(), action) => {
 						loading: false,
 						page: payload.page,
 						results: userTemplates
+					}
+				}
+			}
+
+		case constants.SET_USER_FETCH_ERROR:
+			return {
+				...state,
+				error: true,
+				errorMsg: "This user does not exist",
+				loading: false,
+				user: {
+					img: "",
+					memes: {
+						hasMore: true,
+						loading: true,
+						page: 0,
+						results: [false, false, false, false, false, false]
+					},
+					templates: {
+						hasMore: true,
+						loading: true,
+						page: 0,
+						results: [false, false, false, false, false, false]
 					}
 				}
 			}

@@ -1,16 +1,18 @@
 import * as constants from "../constants"
+import { s3BaseUrl } from "@options/config"
 import axios from "axios"
 
-export const getTemplate = ({ id }) => (dispatch) => {
+export const getTemplate = ({ callback = () => null, id }) => (dispatch) => {
 	axios
 		.get(`/api/template/${id}`)
 		.then(async (response) => {
 			const { data } = response
-			console.log(response.data)
 			dispatch({
 				payload: data,
 				type: constants.GET_TEMPLATE
 			})
+			const { id, s3Link } = data.template
+			callback(id, `${s3BaseUrl}${s3Link}`)
 		})
 		.catch((error) => {
 			dispatch({

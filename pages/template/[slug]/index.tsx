@@ -16,7 +16,7 @@ import { Provider, connect } from "react-redux"
 import { useRouter } from "next/router"
 import { withTheme } from "@redux/ThemeProvider"
 import { compose } from "redux"
-import DefaultImg from "@public/images/color-bars.png"
+import DefaultPic from "@public/images/placeholders/placeholder-dark.jpg"
 import DefaultLayout from "@layouts/default"
 import Link from "next/link"
 import Moment from "react-moment"
@@ -46,7 +46,7 @@ const Template: React.FunctionComponent = ({
 
 	const { createdAt, id, memeCount, name, s3Link, user } = data
 	const title = name === null ? `Untitled Template #${id}` : name
-	const img = typeof s3Link === "undefined" ? DefaultImg : `${s3BaseUrl}${s3Link}`
+	const img = typeof s3Link === "undefined" ? DefaultPic : `${s3BaseUrl}${s3Link}`
 
 	useEffect(() => {
 		const userData = parseJwt()
@@ -69,8 +69,8 @@ const Template: React.FunctionComponent = ({
 		setEditedTitle(value)
 	}
 
-	const onClickTemplate = (templateId) => {
-		router.push(`/create?templateId=${templateId}`)
+	const onClickTemplate = () => {
+		router.push(`/create?templateId=${id}`)
 	}
 
 	const saveTemplate = () => {
@@ -98,113 +98,130 @@ const Template: React.FunctionComponent = ({
 				}}
 				showFooter={false}
 			>
-				<div className={`templatePageHero ${inverted ? "inverted" : ""}`}>
-					<Container>
-						{loading ? (
-							<Placeholder fluid inverted={inverted}>
-								<Placeholder.Image square />
-							</Placeholder>
-						) : (
-							<Image
-								centered
-								onError={(i) => (i.target.src = DefaultImg)}
-								src={img}
-							/>
-						)}
-					</Container>
-				</div>
-
-				<Container textAlign="center">
-					{!loading && (
-						<Fragment>
-							<Header as="h1" inverted={inverted}>
-								{editMode ? (
-									<Input
-										className="editTemplateNameInput"
-										fluid
-										inverted={inverted}
-										onChange={onChangeTitle}
-										placeholder="Title"
-										value={editedTitle}
-									/>
-								) : (
-									title
-								)}
-								<Header.Subheader>
-									<Moment date={createdAt} fromNow /> •{" "}
-									<Link href={`/artists/${user.username}`}>
-										<a>@{user.username}</a>
-									</Link>
-									{currentUser.id === user.id && (
-										<Fragment>
-											{" "}
-											•{" "}
-											{editMode ? (
-												<span
-													className="editTemplate"
-													onClick={() => setEditMode(false)}
-												>
-													cancel
-												</span>
-											) : (
-												<span
-													className="editTemplate"
-													onClick={() => {
-														setEditedTitle(title)
-														setEditMode(true)
-													}}
-												>
-													edit
-												</span>
-											)}
-										</Fragment>
-									)}
-								</Header.Subheader>
-							</Header>
-
-							<div style={{ marginBottom: "24px" }}>
-								<Statistic inverted={inverted}>
-									<Statistic.Value>{memeCount}</Statistic.Value>
-									<Statistic.Label>Memes Made</Statistic.Label>
-								</Statistic>
-							</div>
-
-							{editMode ? (
-								<Button
-									color="blue"
-									content="Save"
-									inverted={inverted}
-									onClick={saveTemplate}
-									size="big"
-								/>
+				{!error && (
+					<div className={`templatePageHero ${inverted ? "inverted" : ""}`}>
+						<Container>
+							{loading ? (
+								<Placeholder fluid inverted={inverted}>
+									<Placeholder.Image square />
+								</Placeholder>
 							) : (
-								<Button
-									color="blue"
-									content="Use this template"
-									inverted={inverted}
-									onClick={onClickTemplate}
-									size="big"
+								<Image
+									centered
+									onError={(i) => (i.target.src = DefaultPic)}
+									src={img}
 								/>
 							)}
-						</Fragment>
-					)}
+						</Container>
+					</div>
+				)}
 
-					<Divider horizontal inverted={inverted} section>
-						Featured in
-					</Divider>
+				{error ? (
+					<Container className="errorMsgContainer" textAlign="center">
+						<Header as="h1" inverted={inverted}>
+							This template doesn't exist
+							<div />
+							<Button
+								color="blue"
+								content="Go back"
+								inverted={inverted}
+								onClick={() => router.push(`/explore/templates`)}
+							/>
+						</Header>
+					</Container>
+				) : (
+					<Container textAlign="center">
+						{!loading && (
+							<Fragment>
+								<Header as="h1" inverted={inverted}>
+									{editMode ? (
+										<Input
+											className="editTemplateNameInput"
+											fluid
+											inverted={inverted}
+											onChange={onChangeTitle}
+											placeholder="Title"
+											value={editedTitle}
+										/>
+									) : (
+										title
+									)}
+									<Header.Subheader>
+										<Moment date={createdAt} fromNow /> •{" "}
+										<Link href={`/artists/${user.username}`}>
+											<a>@{user.username}</a>
+										</Link>
+										{currentUser.id === user.id && (
+											<Fragment>
+												{" "}
+												•{" "}
+												{editMode ? (
+													<span
+														className="editTemplate"
+														onClick={() => setEditMode(false)}
+													>
+														cancel
+													</span>
+												) : (
+													<span
+														className="editTemplate"
+														onClick={() => {
+															setEditedTitle(title)
+															setEditMode(true)
+														}}
+													>
+														edit
+													</span>
+												)}
+											</Fragment>
+										)}
+									</Header.Subheader>
+								</Header>
 
-					<SearchResults
-						hasMore={memes.hasMore}
-						justImages
-						inverted={inverted}
-						loading={memes.loading}
-						loadMore={({ page, templateId }) => loadMore(page, templateId)}
-						page={memes.page}
-						results={memes.results}
-						type="memes"
-						templateId={slug}
-					/>
-				</Container>
+								<div style={{ marginBottom: "24px" }}>
+									<Statistic inverted={inverted}>
+										<Statistic.Value>{memeCount}</Statistic.Value>
+										<Statistic.Label>Memes Made</Statistic.Label>
+									</Statistic>
+								</div>
+
+								{editMode ? (
+									<Button
+										color="blue"
+										content="Save"
+										inverted={inverted}
+										onClick={saveTemplate}
+										size="big"
+									/>
+								) : (
+									<Button
+										color="blue"
+										content="Use this template"
+										inverted={inverted}
+										onClick={onClickTemplate}
+										size="big"
+									/>
+								)}
+							</Fragment>
+						)}
+
+						<Divider horizontal inverted={inverted} section>
+							Featured in
+						</Divider>
+
+						<SearchResults
+							hasMore={memes.hasMore}
+							justImages
+							inverted={inverted}
+							loading={memes.loading}
+							loadMore={({ page, templateId }) => loadMore(page, templateId)}
+							page={memes.page}
+							results={memes.results}
+							type="memes"
+							templateId={slug}
+						/>
+					</Container>
+				)}
 			</DefaultLayout>
 		</Provider>
 	)

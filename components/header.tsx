@@ -41,7 +41,7 @@ const Header: React.FunctionComponent = ({ basic, inverted, loading, logout }) =
 			)
 
 			return (
-				<Menu.Item position="right">
+				<Menu.Item className="loginItem" position="right">
 					<Dropdown
 						className={`dropDownMenu ${inverted ? "inverted" : ""}`}
 						icon={false}

@@ -1,6 +1,7 @@
 import { getMeme, updateImg, updateMeme, updateViews } from "@actions/meme"
 import {
 	Button,
+	Container,
 	Divider,
 	Form,
 	Grid,
@@ -232,7 +233,18 @@ const Meme: React.FunctionComponent = ({
 			>
 				<Fragment>
 					{error ? (
-						<div>This meme does not exist</div>
+						<Container className="errorMsgContainer" textAlign="center">
+							<Header as="h1" inverted={inverted}>
+								This meme does not exist
+								<div />
+								<Button
+									color="blue"
+									content="Go back"
+									inverted={inverted}
+									onClick={() => router.push(`/explore/memes`)}
+								/>
+							</Header>
+						</Container>
 					) : (
 						<Grid inverted stackable>
 							<Grid.Row>

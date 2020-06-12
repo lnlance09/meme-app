@@ -39,29 +39,6 @@ const Home: React.FunctionComponent = (props) => {
 				}}
 				showFooter={false}
 			>
-				<div className="homePageHeroImage">
-					<Header as="h1" className="heroHeader" inverted={inverted} textAlign="center">
-						Memes for the masses
-						<Header.Subheader>
-							<Link href="/create">
-								<a>
-									<Button
-										animated="fade"
-										color="blue"
-										size="big"
-										style={{ marginTop: "14px" }}
-									>
-										<Button.Content visible>Get Started</Button.Content>
-										<Button.Content hidden>
-											<Icon name="arrow right" /> Create
-										</Button.Content>
-									</Button>
-								</a>
-							</Link>
-						</Header.Subheader>
-					</Header>
-				</div>
-
 				<Divider hidden section />
 
 				<Container>
